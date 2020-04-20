@@ -31,7 +31,5 @@ namespace BSAF.Models
 
         public string ContactNumber { get; set; }
 
-        public virtual Beneficiary Beneficiary { get; set; }
-
     }
 }

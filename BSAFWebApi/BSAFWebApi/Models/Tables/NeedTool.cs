@@ -12,8 +12,5 @@ namespace BSAF.Models
         public string ToolCode { get; set; }
 
         public string Other { get; set; }
-
-        public virtual Beneficiary Beneficiary { get; set; }
-
     }
 }

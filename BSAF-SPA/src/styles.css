@@ -1,1 +1,26 @@
 /* You can add global styles to this file, and also import other style files */
+
+html,
+body {
+    height: 100%;
+}
+
+body {
+    margin: 0;
+    font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+.successalert {
+    background-color: #28a745!important;
+    color: white;
+}
+
+.dangerAlert {
+    background-color: #dc3545!important;
+    color: white;
+}
+
+.infoAlert {
+    background-color: #17a2b8!important;
+    color: white;
+}

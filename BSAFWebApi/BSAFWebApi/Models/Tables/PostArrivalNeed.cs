@@ -16,8 +16,5 @@ namespace BSAF.Models
         public DateTime ProvidedDate { get; set; }
 
         public string Comment { get; set; }
-
-        public virtual Beneficiary Beneficiary { get; set; }
-
     }
 }

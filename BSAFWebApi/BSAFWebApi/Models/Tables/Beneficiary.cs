@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 
 namespace BSAF.Models
 {
@@ -8,8 +7,6 @@ namespace BSAF.Models
         public int BeneficiaryID { get; set; }
 
         public Guid GUID { get; set; }
-
-        public byte[] Photo { get; set; }
 
         public DateTime ScreeningDate { get; set; }
 
@@ -138,20 +135,6 @@ namespace BSAF.Models
         public bool IsCardIssued { get; set; }
 
         public bool IsActive { get; set; }
-
-        public ICollection<BenefitedFromOrg> BenefitedFromOrgs { get; set; }
-        public ICollection<BroughtItem> BroughtItems { get; set; }
-        public ICollection<Determination> Determinations { get; set; }
-        public ICollection<HostCountrySchool> HostCountrySchools { get; set; }
-        public ICollection<Individual> Individuals { get; set; }
-        public ICollection<LivelihoodEmpNeed> LivelihoodEmpNeeds { get; set; }
-        public ICollection<MainConcern> MainConcerns { get; set; }
-        public ICollection<MoneySource> MoneySources { get; set; }
-        public ICollection<NeedTool> NeedTools { get; set; }
-        public ICollection<PostArrivalNeed> PostArrivalNeed { get; set; }
-        public ICollection<PSN> PSNs { get; set; }
-        public ICollection<ReturnReason> ReturnReasons { get; set; }
-        public ICollection<Transportation> Transportations { get; set; }
-
+        public byte[] Photo { get; set; }
     }
 }

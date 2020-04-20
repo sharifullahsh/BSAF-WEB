@@ -21,7 +21,5 @@ namespace BSAF.Models
         public string OrgCode { get; set; }
 
         public string AssistanceProvided { get; set; }
-
-        public virtual Beneficiary Beneficiary { get; set; }
     }
 }

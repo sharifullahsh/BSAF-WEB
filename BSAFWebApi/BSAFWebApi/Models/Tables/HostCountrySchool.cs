@@ -13,8 +13,5 @@ namespace BSAF.Models
 
         [Required]
         public string SchoolTypeCode { get; set; }
-
-        public virtual Beneficiary Beneficiary { get; set; }
-
     }
 }

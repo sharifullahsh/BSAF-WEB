@@ -16,8 +16,8 @@ namespace BSAFWebApi.Controllers
    // [AllowAnonymous]
     public class BeneficiaryController : ControllerBase
     {
-        DataContext db = null;
-        public BeneficiaryController(DataContext context)
+        BWDbContext db = null;
+        public BeneficiaryController(BWDbContext context)
         {
             db = context;
         }
@@ -45,10 +45,10 @@ namespace BSAFWebApi.Controllers
                 {
                     try
                     {
+                        var currentUser = HttpContext.User;
                         var beneficiary = new Beneficiary
                         {
                             GUID = model.GUID,
-                            Photo = model.Photo,
                             ScreeningDate = model.ScreeningDate,
                             ProvinceBCP = model.ProvinceBCP,
                             BorderPoint = model.BorderPoint,
@@ -106,11 +106,13 @@ namespace BSAFWebApi.Controllers
                             DoHaveSecureLivelihood = model.DoHaveSecureLivelihood,
                             DidChildrenGoToSchoole = model.DidChildrenGoToSchoole,
                             NumChildrenAttendedSchoole = model.NumChildrenAttendedSchoole,
-                            InsertedBy = model.InsertedBy,
+                            InsertedBy = currentUser.Identity.Name,
                             InsertedDate = model.InsertedDate,
                             IsSubmitted = true,
                             IsCardIssued = model.IsCardIssued,
                             IsActive = model.IsActive,
+                            Photo=model.Photo
+                            
                         };
                         db.Beneficiaries.Add(beneficiary);
                         db.SaveChanges();

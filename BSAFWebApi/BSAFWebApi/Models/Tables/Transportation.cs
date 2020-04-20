@@ -8,8 +8,5 @@ namespace BSAF.Models
         public string TypedCode { get; set; }
 
         public string Other { get; set; }
-
-        public virtual Beneficiary Beneficiary { get; set; }
-
     }
 }

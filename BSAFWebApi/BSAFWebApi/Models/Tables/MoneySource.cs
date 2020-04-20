@@ -9,8 +9,5 @@ namespace BSAF.Models
         public string MoneySourceCode { get; set; }
 
         public string MoneySourceOther { get; set; }
-
-        public virtual Beneficiary Beneficiary { get; set; }
-
     }
 }

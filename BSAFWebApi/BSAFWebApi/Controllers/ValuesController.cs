@@ -17,6 +17,7 @@ namespace BSAFWebApi.Controllers
         {
             var currentUser = HttpContext.User;
             int spendingTimeWithCompany = 0;
+   
 
             if (currentUser.HasClaim(c => c.Type == "DateOfJoing"))
             {
