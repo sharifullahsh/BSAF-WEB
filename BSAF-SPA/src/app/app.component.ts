@@ -11,12 +11,15 @@ import { AuthService } from './services/auth.service';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit{
-  isLoggedIn: boolean;
-
+  isLoggedIn = false;
 constructor(private authService: AuthService, private router: Router) {}
 ngOnInit(): void {
   this.isLoggedIn = this.authService.loggedIn();
-  this.router.navigate(['/login']);
+  if(!this.isLoggedIn){
+    this.router.navigate(['/login']);
+  }else{
+    this.router.navigate(['/dashboard']);
+  }
 }
 
 }

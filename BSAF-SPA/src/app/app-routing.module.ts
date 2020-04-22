@@ -1,3 +1,5 @@
+import { MainlayoutComponent } from './mainlayout/mainlayout.component';
+import { UserManagementComponent } from './user-management/user-management.component';
 import { LoginComponent } from './login/login.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
@@ -6,27 +8,21 @@ import { BeneficiaryFormComponent } from './beneficiary-form/beneficiary-form.co
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { AuthGuard } from './guards/auth.guard';
+import { AdminGuard } from './guards/admin.guard';
 
 
 const routes: Routes = [
   {path: 'login', component: LoginComponent},
-  {
-    path: 'dashboard', component: DashboardComponent,
-    canActivate: [AuthGuard], data: { roles: ['Admin', 'DataEntry'] }
-  },
-  {
-    path: 'beneficiaryForm', component: BeneficiaryFormComponent,
-    canActivate: [AuthGuard], data: { roles: ['Admin', 'DataEntry'] }
-  },
-  {
-    path: 'beneficiarySearch', component: BeneficiarySearchComponent,
-    canActivate: [AuthGuard], data: { roles: ['Admin', 'DataEntry'] }
-  },
-  { path: '',   redirectTo: '/dashboard', pathMatch: 'full' },
-  {
-    path: '**', component: PageNotFoundComponent,
-    canActivate: [AuthGuard], data: { roles: ['Admin', 'DataEntry'] }
- }
+  {path: '', component: MainlayoutComponent, data: { roles: ['Admin', 'DataEntry']}, canActivate: [AuthGuard],
+  children: [
+    {path: '', redirectTo: 'dashboard', pathMatch: 'full'},
+    {path: 'dashboard', component: DashboardComponent},
+    {path: 'beneficiaryForm', component: BeneficiaryFormComponent},
+    {path: 'beneficiarySearch', component: BeneficiarySearchComponent},
+    {path: 'userManagement',  data: { roles: ['Admin']}, canActivate: [AdminGuard], component: UserManagementComponent},
+    {path: '**', component: PageNotFoundComponent}
+  ]
+}
 ];
 
 @NgModule({
