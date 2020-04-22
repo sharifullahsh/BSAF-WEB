@@ -1,3 +1,8 @@
+import { AdminGuard } from './guards/admin.guard';
+import { AuthGuard } from './guards/auth.guard';
+import { HttpInterceptorService } from './services/http-interceptor.service';
+import { HttpInterceptor } from '@angular/common/http';
+import { AuthService } from './services/auth.service';
 import { CoreModule } from './core/core.module';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
@@ -15,12 +20,8 @@ import { LoginComponent } from './login/login.component';
 import { MainlayoutComponent } from './mainlayout/mainlayout.component';
 import { JwtModule } from '@auth0/angular-jwt';
 import { UserManagementComponent } from './user-management/user-management.component';
-import { MatTableModule } from '@angular/material/table';
-import { MatPaginatorModule } from '@angular/material/paginator';
-import { MatSortModule } from '@angular/material/sort';
 
 export function tokenGetter() {
-  console.log("Inside token geter");
   return localStorage.getItem('token');
 }
 
@@ -49,12 +50,9 @@ export function tokenGetter() {
         blacklistedRoutes: ['localhost:5000/api/auth']
       }
     }),
-    MatTableModule,
-    MatPaginatorModule,
-    MatSortModule,
 
   ],
-  providers: [],
+  providers: [AuthService, AuthGuard, AdminGuard, HttpInterceptorService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
