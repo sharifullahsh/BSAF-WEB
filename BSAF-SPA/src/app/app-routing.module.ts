@@ -8,8 +8,6 @@ import { BeneficiaryFormComponent } from './beneficiary-form/beneficiary-form.co
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { AuthGuard } from './guards/auth.guard';
-import { AdminGuard } from './guards/admin.guard';
-
 
 const routes: Routes = [
   {path: 'login', component: LoginComponent},
@@ -19,7 +17,7 @@ const routes: Routes = [
     {path: 'dashboard', component: DashboardComponent},
     {path: 'beneficiaryForm', component: BeneficiaryFormComponent},
     {path: 'beneficiarySearch', component: BeneficiarySearchComponent},
-    {path: 'userManagement',  data: { roles: ['Admin']}, component: UserManagementComponent},
+    {path: 'userManagement',  data: { roles: ['Admin']}, canActivate: [AuthGuard], component: UserManagementComponent},
     {path: '**', component: PageNotFoundComponent}
   ]
 }

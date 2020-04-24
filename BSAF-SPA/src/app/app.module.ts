@@ -1,4 +1,3 @@
-import { AdminGuard } from './guards/admin.guard';
 import { AuthGuard } from './guards/auth.guard';
 import { HttpInterceptorService } from './services/http-interceptor.service';
 import { HttpInterceptor } from '@angular/common/http';
@@ -52,7 +51,7 @@ export function tokenGetter() {
     }),
 
   ],
-  providers: [AuthService, AuthGuard, AdminGuard, HttpInterceptorService],
+  providers: [AuthService, AuthGuard, HttpInterceptorService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
