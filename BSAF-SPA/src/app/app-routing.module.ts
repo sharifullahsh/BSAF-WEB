@@ -13,13 +13,13 @@ import { AdminGuard } from './guards/admin.guard';
 
 const routes: Routes = [
   {path: 'login', component: LoginComponent},
-  {path: '', component: MainlayoutComponent, data: { roles: ['Admin', 'DataEntry']}, canActivate: [AuthGuard],
+  {path: '', component: MainlayoutComponent, canActivate: [AuthGuard],
   children: [
     {path: '', redirectTo: 'dashboard', pathMatch: 'full'},
     {path: 'dashboard', component: DashboardComponent},
     {path: 'beneficiaryForm', component: BeneficiaryFormComponent},
     {path: 'beneficiarySearch', component: BeneficiarySearchComponent},
-    {path: 'userManagement',  data: { roles: ['Admin']}, canActivate: [AdminGuard], component: UserManagementComponent},
+    {path: 'userManagement',  data: { roles: ['Admin']}, component: UserManagementComponent},
     {path: '**', component: PageNotFoundComponent}
   ]
 }

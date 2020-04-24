@@ -52,6 +52,8 @@ namespace BSAFWebApi
 
             builder = new IdentityBuilder(builder.UserType, builder.Services);
             builder.AddRoles<IdentityRole>();
+            builder.AddRoleValidator<RoleValidator<IdentityRole>>();
+            builder.AddRoleManager<RoleManager<IdentityRole>>();
             builder.AddSignInManager<SignInManager<ApplicationUser>>();
             builder.AddEntityFrameworkStores<BWDbContext>();
             builder.AddDefaultTokenProviders();
