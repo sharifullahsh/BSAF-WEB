@@ -1,0 +1,55 @@
+<mat-sidenav-container class="sidenav-container">
+    <mat-sidenav #drawer class="sidenav" fixedInViewport [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'" [mode]="(isHandset$ | async) ? 'over' : 'side'" [opened]="(isHandset$ | async) === false">
+        <mat-toolbar style="background-color: #3f51b5; padding: 5%;">
+            <img src="assets/images/logo.png" width="90%" height="90%" alt="">
+        </mat-toolbar>
+        <mat-nav-list>
+            <a mat-list-item [routerLink]="['/dashboard']" routerLinkActive="router-link-active">
+                <mat-icon aria-label="Side nav toggle icon" class="icon-space">dashboard</mat-icon>
+                Dashboard
+            </a>
+            <a mat-list-item [routerLink]="['/beneficiaryForm']" routerLinkActive="router-link-active">
+                <mat-icon aria-label="Side nav toggle icon" class="icon-space">perm_identity</mat-icon>
+                Beneficiary Form
+            </a>
+            <a mat-list-item [routerLink]="['/beneficiarySearch']" routerLinkActive="router-link-active">
+                <mat-icon aria-label="Side nav toggle icon" class="icon-space">search</mat-icon>
+                Beneficiary Search
+            </a>
+            <a mat-list-item [routerLink]="['/userManagement']" routerLinkActive="router-link-active">
+                <mat-icon aria-label="Side nav toggle icon" class="icon-space">supervised_user_circle</mat-icon>
+                User Management
+            </a>
+        </mat-nav-list>
+    </mat-sidenav>
+    <mat-sidenav-content>
+        <div>
+            <mat-toolbar color="primary" fxLayout="row">
+                <button type="button" aria-label="Toggle sidenav" mat-icon-button (click)="drawer.toggle()" *ngIf="isHandset$ | async">
+                    <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
+                </button>
+                <span>BSAF-SPA</span>
+
+                <div style="margin-left: auto;" fxFlex fxLayout="row" fxLayoutAlign="end center">
+                    <h6>Welcome {{currentUser?.userName}}</h6>
+                    <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
+                        <mat-icon>account_circle</mat-icon>
+                      </button>
+                    <mat-menu #menu="matMenu" fxf>
+                        <button mat-menu-item>
+                          <mat-icon>perm_identity</mat-icon>
+                          <span>Profile</span>
+                        </button>
+                        <button mat-menu-item (click)="logout()">
+                          <mat-icon>exit_to_app</mat-icon>
+                          <span>Logout</span>
+                        </button>
+                    </mat-menu>
+                </div>
+
+            </mat-toolbar>
+        </div>
+        <!-- Add Content Here -->
+        <router-outlet></router-outlet>
+    </mat-sidenav-content>
+</mat-sidenav-container>
