@@ -1,7 +1,8 @@
-import { AuthGuard } from './guards/auth.guard';
-import { HttpInterceptorService } from './services/http-interceptor.service';
+import { AdminService } from './_services/admin.service';
+import { AuthGuard } from './_guards/auth.guard';
+import { HttpInterceptorService } from './_services/http-interceptor.service';
 import { HttpInterceptor } from '@angular/common/http';
-import { AuthService } from './services/auth.service';
+import { AuthService } from './_services/auth.service';
 import { CoreModule } from './core/core.module';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
@@ -19,6 +20,7 @@ import { LoginComponent } from './login/login.component';
 import { MainlayoutComponent } from './mainlayout/mainlayout.component';
 import { JwtModule } from '@auth0/angular-jwt';
 import { UserManagementComponent } from './user-management/user-management.component';
+import { HasRoleDirective } from './_directives/has-role.directive';
 
 export function tokenGetter() {
   return localStorage.getItem('token');
@@ -34,6 +36,7 @@ export function tokenGetter() {
     LoginComponent,
     MainlayoutComponent,
     UserManagementComponent,
+    HasRoleDirective,
   ],
   imports: [
     BrowserModule,
@@ -51,7 +54,7 @@ export function tokenGetter() {
     }),
 
   ],
-  providers: [AuthService, AuthGuard, HttpInterceptorService],
+  providers: [AuthService, AdminService, AuthGuard, HttpInterceptorService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

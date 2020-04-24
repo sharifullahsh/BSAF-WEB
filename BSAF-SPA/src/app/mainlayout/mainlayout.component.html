@@ -16,7 +16,7 @@
                 <mat-icon aria-label="Side nav toggle icon" class="icon-space">search</mat-icon>
                 Beneficiary Search
             </a>
-            <a mat-list-item [routerLink]="['/userManagement']" routerLinkActive="router-link-active">
+            <a *appHasRole="['Admin']" mat-list-item [routerLink]="['/userManagement']" routerLinkActive="router-link-active">
                 <mat-icon aria-label="Side nav toggle icon" class="icon-space">supervised_user_circle</mat-icon>
                 User Management
             </a>

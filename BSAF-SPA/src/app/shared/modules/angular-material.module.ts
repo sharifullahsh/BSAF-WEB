@@ -26,6 +26,7 @@ import { MatSortModule } from '@angular/material/sort';
 import {MatSnackBarModule} from '@angular/material/snack-bar';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import { MatDividerModule } from '@angular/material/divider';
+import {MatTabsModule} from '@angular/material/tabs';
 //import { MatNativeDateModule } from '@angular/material';
 
 const modules: any[] = [
@@ -53,6 +54,7 @@ const modules: any[] = [
   MatSnackBarModule,
   MatProgressSpinnerModule,
   MatDividerModule,
+  MatTabsModule
 ];
 
 @NgModule({

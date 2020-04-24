@@ -1,6 +1,6 @@
 export interface User {
     id: string;
     userName: string;
-    StationCode?: number;
+    stationCode?: number;
     roles?: string[];
 }

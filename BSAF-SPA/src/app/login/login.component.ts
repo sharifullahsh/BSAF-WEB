@@ -1,7 +1,7 @@
-import { AlertifyService } from './../services/alertify.service';
+import { AlertifyService } from '../_services/alertify.service';
 import { Component } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
-import { AuthService } from '../services/auth.service';
+import { AuthService } from '../_services/auth.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { first } from 'rxjs/operators';
 

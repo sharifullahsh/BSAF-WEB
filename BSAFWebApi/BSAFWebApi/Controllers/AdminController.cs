@@ -21,8 +21,8 @@ namespace BSAFWebApi.Controllers
             _cotext = cotext;
         }
         [AllowAnonymous]
-        [HttpGet("userWithRoles")]
-        public async Task<IActionResult> GetUserWithRoles()
+        [HttpGet("usersWithRoles")]
+        public async Task<IActionResult> GetUsersWithRoles()
         {
             var userList = await (from user in _cotext.Users
                                   orderby user.UserName
@@ -30,7 +30,8 @@ namespace BSAFWebApi.Controllers
                                   {
                                        user.Id,
                                        user.UserName,
-                                       Role = (from userRole in _cotext.UserRoles
+                                       user.StationCode,
+                                       Roles = (from userRole in _cotext.UserRoles
                                                join role in _cotext.Roles
                                                on userRole.RoleId
                                                equals role.Id
