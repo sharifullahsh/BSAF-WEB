@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BSAFWebApi.Models.ViewModels
 {
-    public class BeneficiaryVM
+    public class BeneficiaryDto
     {
         public int BeneficiaryID { get; set; }
 
@@ -143,7 +143,7 @@ namespace BSAFWebApi.Models.ViewModels
         public bool IsCardIssued { get; set; }
         public byte[] Photo { get; set; }
 
-        public List<IndividualVM> Individuals { get; set; }
+        public List<IndividualDto> Individuals { get; set; }
 
         public List<PSN> PSNs { get; set; }
 
@@ -169,9 +169,9 @@ namespace BSAFWebApi.Models.ViewModels
 
         public List<HostCountrySchool> HostCountrySchools { get; set; }
 
-        public BeneficiaryVM()
+        public BeneficiaryDto()
         {
-            Individuals = new List<IndividualVM>();
+            Individuals = new List<IndividualDto>();
             PSNs = new List<PSN>();
             ReturnReasons = new List<ReturnReason>();
             Determinations = new List<Determination>();

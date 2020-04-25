@@ -1,4 +1,5 @@
 ﻿using BSAF.Models;
+using BSAFWebApi.Dtos;
 using BSAFWebApi.Models;
 using BSAFWebApi.Models.ViewModels;
 using Microsoft.AspNetCore.Authorization;
@@ -113,23 +114,7 @@ namespace BSAFWebApi.Controllers
         //    }
         //    return false;
         //}
-        [AllowAnonymous]
-        //[Authorize(Roles = "Admin")]
-        [HttpPost("register")]
-        public  async Task<IActionResult>  Createuser([FromBody] UserRegistrationDto model)
-        {
-            var result = await _userManager.CreateAsync(
-            new ApplicationUser()
-            {
-                UserName = model.UserName
-            }, model.Password
-            );
-            if (result.Succeeded)
-            {
-                return Ok();
-            }
-            return BadRequest(result.Errors.ToString());
-        }
+       
      
     }
 }

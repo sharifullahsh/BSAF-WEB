@@ -4,11 +4,21 @@
             <mat-card-title>User Management</mat-card-title>
         </mat-card-header>
         <mat-card-content>
+            <div fxLayout="row" fxLayoutAlign="end start">
+                <button mat-icon-button mat-raised-button color="primary" title="Add new user" aria-label="Add user">
+                <mat-icon>person_add</mat-icon>
+              </button>
+            </div>
+            <mat-divider>
+            </mat-divider>
             <table class="full-width-table" matSort aria-label="Elements">
                 <tr>
                     <td>Username</td>
                     <td>Station Code</td>
                     <td>roles</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
                     <td></td>
                 </tr>
                 <tr *ngFor="let user of users">
@@ -18,7 +28,25 @@
                         <span *ngFor="let role of user.roles">{{role}}</span>
                     </td>
                     <td>
-                        <button mat-raised-button color="primary">Edit Role</button>
+                        <button mat-icon-button mat-mini-fab color="primary" title="Edit user" aria-label="Edit user">
+                            <mat-icon>edit</mat-icon>
+                          </button>
+                    </td>
+                    <td>
+                        <button mat-icon-button mat-mini-fab color="warn" title="Disable user" aria-label="Diable user">
+                            <mat-icon>person_add_disabled</mat-icon>
+                        </button>
+                    </td>
+                    <td>
+                        <button mat-icon-button mat-mini-fab color="disabled" title="Change password user" aria-label="Change user password">
+                            <mat-icon>vpn_key</mat-icon>
+                        </button>
+                    </td>
+                    <td>
+                        <button mat-raised-button color="primary" title="Edit user Role" aria-label="Edit user role">
+                            <mat-icon>edit</mat-icon>
+                            Role
+                          </button>
                     </td>
                 </tr>
                 <!-- <ng-container matColumnDef="id">

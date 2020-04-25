@@ -1,3 +1,4 @@
+import { AlertifyService } from './../_services/alertify.service';
 import { AdminService } from './../_services/admin.service';
 import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
@@ -19,8 +20,7 @@ export class UserManagementComponent implements AfterViewInit, OnInit {
 
   users: User[];
   /** Columns displayed in the table. Columns IDs can be added, removed, or reordered. */
-  displayedColumns = ['id', 'userName', 'stationCode', 'roles'];
- constructor(private adminService: AdminService){}
+ constructor(private adminService: AdminService, private alertifyService: AlertifyService){}
   ngOnInit() {
     this.dataSource = new UserManagementDataSource();
     this.getUsersWithRoles();
@@ -28,9 +28,8 @@ export class UserManagementComponent implements AfterViewInit, OnInit {
   getUsersWithRoles(){
     this.adminService.getUsersWithRoles().subscribe((users: User[]) =>{
       this.users = users;
-      console.log("user are >>>>>>>>> "+ JSON.stringify(users));
     }, error => {
-      console.log("error is >>>>>>>>>>>>>>> "+ JSON.stringify(error));
+      this.alertifyService.error(error);
     });
   }
 

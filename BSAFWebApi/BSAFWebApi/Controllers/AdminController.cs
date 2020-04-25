@@ -2,9 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using BSAFWebApi.Dtos;
 using BSAFWebApi.Models;
+using BSAFWebApi.Models.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -15,9 +18,14 @@ namespace BSAFWebApi.Controllers
     public class AdminController : ControllerBase
     {
         private readonly BWDbContext _cotext;
+        private UserManager<ApplicationUser> _userManager = null;
+        private SignInManager<ApplicationUser> _signInManager = null;
 
-        public AdminController(BWDbContext cotext)
+        public AdminController(BWDbContext cotext, UserManager<ApplicationUser> userManager,
+        SignInManager<ApplicationUser> signInManager)
         {
+            _userManager = userManager;
+            _signInManager = signInManager;
             _cotext = cotext;
         }
         [AllowAnonymous]
@@ -43,8 +51,26 @@ namespace BSAFWebApi.Controllers
 
         }
 
+        [AllowAnonymous]
+        //[Authorize(Roles = "Admin")]
+        [HttpPost("register")]
+        public async Task<IActionResult> Createuser([FromBody] UserRegistrationDto model)
+        {
+            var result = await _userManager.CreateAsync(
+            new ApplicationUser()
+            {
+                UserName = model.UserName
+            }, model.Password
+            );
+            if (result.Succeeded)
+            {
+                return Ok();
+            }
+            return BadRequest(result.Errors.ToString());
+        }
         [HttpGet("test")]
         [AllowAnonymous]
+      
         public IActionResult test()
         {
             return Ok("Hi");

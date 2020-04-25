@@ -2,12 +2,15 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using BSAF.Models;
+using BSAFWebApi.Dtos;
 using BSAFWebApi.Models;
 using BSAFWebApi.Models.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace BSAFWebApi.Controllers
 {
@@ -17,27 +20,98 @@ namespace BSAFWebApi.Controllers
     public class BeneficiaryController : ControllerBase
     {
         BWDbContext db = null;
-        public BeneficiaryController(BWDbContext context)
+        private readonly IMapper _mapper;
+        public BeneficiaryController(BWDbContext context,IMapper mapper)
         {
             db = context;
+            _mapper = mapper;
         }
         // GET: api/Beneficiary
         [HttpGet]
-        public IEnumerable<string> Get()
+        [AllowAnonymous]
+        public async Task<IActionResult> Get()
         {
-            return new string[] { "value1", "value2" };
+            // var beneficiary = await db.Beneficiaries.Where(b => b.BeneficiaryID == id && b.IsActive == true).FirstOrDefaultAsync();
+            var beneficiary = await (from b in db.Beneficiaries
+                                    join ind in db.Individuals on b.BeneficiaryID equals ind.BeneficiaryID into familyMember
+                                    where b.IsActive == true
+                                    select new BeneficiaryForListDto
+                                    {
+                                        BeneficiaryID = b.BeneficiaryID,
+                                        GUID = b.GUID,
+                                        Name = familyMember.Where(f => f.RelationshipCode == "HH" || f.RelationshipCode == "HSelf").Select(i => i.Name).FirstOrDefault(),
+                                        FName = familyMember.Where(f => f.RelationshipCode == "HH" || f.RelationshipCode == "HSelf").Select(i => i.FName).FirstOrDefault(),
+                                        ScreeningDate = b.ScreeningDate,
+                                        ProvinceBCP = db.Provinces.Where(p => p.ProvinceCode == b.ProvinceBCP).Select(p => p.EnName).FirstOrDefault(),
+                                        BorderPoint = db.BorderCrossingPoints.Where(bcp => bcp.BCPCode == bcp.BCPCode).Select(bcp => bcp.EnName).FirstOrDefault(),
+                                        BeneficiaryType = db.LookupValues.Where(l => l.ValueCode == b.BeneficiaryType).Select(l => l.EnName).FirstOrDefault(),
+                                        ReturnStatus = db.LookupValues.Where(l => l.ValueCode == b.ReturnStatus).Select(l => l.EnName).FirstOrDefault(),
+                                        ReturnProvince = db.Provinces.Where(p => p.ProvinceCode == b.ReturnProvince).Select(l => l.EnName).FirstOrDefault(),
+                                        CountryOfExile = db.LookupValues.Where(l => l.ValueCode == b.CountryOfExile).Select(l => l.EnName).FirstOrDefault(),
+                                        IsCardIssued = b.IsCardIssued
+                                    }
+                      ).ToListAsync();
+            
+                return Ok(beneficiary);
+            
+            
         }
 
         // GET: api/Beneficiary/5
-        [HttpGet("{id}", Name = "Get")]
-        public string Get(int id)
+        [AllowAnonymous]
+        [HttpGet("{id}")]
+        public async Task<IActionResult> Get(int id)
         {
-            return "value";
+            var beneficiary = await db.Beneficiaries.Where(b => b.BeneficiaryID == id && b.IsActive == true).FirstOrDefaultAsync();
+            if (beneficiary != null)
+            {
+                var beneficiaryToReturn = _mapper.Map<BeneficiaryDto>(beneficiary);
+                var individuals = await db.Individuals.Where(i => i.BeneficiaryID == beneficiary.BeneficiaryID)
+                    .Select(i =>
+                    new IndividualDto
+                    {
+                        IndividualID = i.IndividualID,
+                        BeneficiaryID = i.BeneficiaryID,
+                        Name = i.Name,
+                        DrName = i.DrName,
+                        FName = i.FName,
+                        DrFName = i.DrFName,
+                        GenderCode = i.GenderCode,
+                        Gender = db.LookupValues.Where(l => l.ValueCode == i.GenderCode).Select(l => l.EnName).FirstOrDefault(),
+                        MaritalStatusCode = i.MaritalStatusCode,
+                        MaritalStatus = db.LookupValues.Where(l => l.ValueCode == i.MaritalStatusCode).Select(l => l.EnName).FirstOrDefault(),
+                        Age = i.Age,
+                        IDTypeCode = i.IDTypeCode,
+                        IDType = db.LookupValues.Where(l => l.ValueCode == i.IDTypeCode).Select(l => l.EnName).FirstOrDefault(),
+                        IDNo = i.IDNo,
+                        RelationshipCode = i.RelationshipCode,
+                        Relationship = db.LookupValues.Where(l => l.ValueCode == i.RelationshipCode).Select(l => l.EnName).FirstOrDefault(),
+                        ContactNumber = i.ContactNumber
+                    }
+                    )
+                .ToListAsync();
+                beneficiaryToReturn.Individuals = individuals;
+                beneficiaryToReturn.PSNs = db.PSNs.Where(p=>p.BeneficiaryID == beneficiary.BeneficiaryID).ToList();
+                beneficiaryToReturn.ReturnReasons = db.ReturnReasons.Where(r=>r.BeneficiaryID == beneficiary.BeneficiaryID).ToList();
+                beneficiaryToReturn.Determinations = db.Determinations.Where(r => r.BeneficiaryID == beneficiary.BeneficiaryID).ToList();
+                beneficiaryToReturn.MoneySources = db.MoneySources.Where(r => r.BeneficiaryID == beneficiary.BeneficiaryID).ToList();
+                beneficiaryToReturn.BroughtItems = db.BroughtItems.Where(r => r.BeneficiaryID == beneficiary.BeneficiaryID).ToList();
+                beneficiaryToReturn.PostArrivalNeeds = db.PostArrivalNeeds.Where(r => r.BeneficiaryID == beneficiary.BeneficiaryID).ToList();
+                beneficiaryToReturn.BenefitedFromOrgs = db.BenefitedFromOrgs.Where(r => r.BeneficiaryID == beneficiary.BeneficiaryID).ToList();
+                beneficiaryToReturn.Transportations = db.Transportations.Where(r => r.BeneficiaryID == beneficiary.BeneficiaryID).ToList();
+                beneficiaryToReturn.LivelihoodEmpNeeds = db.LivelihoodEmpNeeds.Where(r => r.BeneficiaryID == beneficiary.BeneficiaryID).ToList();
+                beneficiaryToReturn.NeedTools = db.NeedTools.Where(r => r.BeneficiaryID == beneficiary.BeneficiaryID).ToList();
+                beneficiaryToReturn.MainConcerns = db.MainConcerns.Where(r => r.BeneficiaryID == beneficiary.BeneficiaryID).ToList();
+                beneficiaryToReturn.HostCountrySchools = db.HostCountrySchools.Where(r => r.BeneficiaryID == beneficiary.BeneficiaryID).ToList();
+
+                return Ok(beneficiaryToReturn);
+            }
+            return BadRequest();
         }
 
         // POST: api/Beneficiary
         [HttpPost]
-        public bool Post([FromBody] BeneficiaryVM model)
+        public bool Post([FromBody] BeneficiaryDto model)
         {
             if(model != null)
             {
@@ -46,94 +120,14 @@ namespace BSAFWebApi.Controllers
                     try
                     {
                         var currentUser = HttpContext.User;
-                        var beneficiary = new Beneficiary
-                        {
-                            GUID = model.GUID,
-                            ScreeningDate = model.ScreeningDate,
-                            ProvinceBCP = model.ProvinceBCP,
-                            BorderPoint = model.BorderPoint,
-                            BeneficiaryType = model.BeneficiaryType,
-                            ReturnStatus = model.ReturnStatus,
-                            OriginProvince = model.OriginProvince,
-                            OriginDistrict = model.OriginDistrict,
-                            OriginVillage = model.OriginVillage,
-                            ReturnProvince = model.ReturnProvince,
-                            ReturnDistrict = model.ReturnDistrict,
-                            ReturnVillage = model.ReturnVillage,
-                            LeavingReason1 = model.LeavingReason1,
-                            LeavingReason1Other = model.LeavingReason1Other,
-                            LeavingReason2 = model.LeavingReason2,
-                            LeavingReason2Other = model.LeavingReason2Other,
-                            LeavingReason3 = model.LeavingReason3,
-                            LeavingReason3Other = model.LeavingReason3Other,
-                            OwnHouse = model.OwnHouse,
-                            WhereWillLive = model.WhereWillLive,
-                            RentPayForAccom = model.RentPayForAccom,
-                            RentPayCurrency = model.RentPayCurrency,
-                            AllowForJob = model.AllowForJob,
-                            CountryOfExile = model.CountryOfExile,
-                            CountryOfExilOther = model.CountryOfExilOther,
-                            BeforReturnProvince = model.BeforReturnProvince,
-                            BeforReturnDistrictID = model.BeforReturnDistrictID,
-                            BeforReturnRemarks = model.BeforReturnRemarks,
-                            FamilyMemStayedBehind = model.FamilyMemStayedBehind,
-                            FamilyMemStayedBehindNo = model.FamilyMemStayedBehindNo,
-                            LengthOfStayYears = model.LengthOfStayYears,
-                            LengthOfStayMonths = model.LengthOfStayMonths,
-                            LengthOfStayDays = model.LengthOfStayDays,
-                            WouldYouReturn = model.WouldYouReturn,
-                            HaveFamilyBenefited = model.HaveFamilyBenefited,
-                            TransportationDate = model.TransportationDate,
-                            TransportationInfo = model.TransportationInfo,
-                            TransportAccompaniedBy = model.TransportAccompaniedBy,
-                            TransportAccomByNo = model.TransportAccomByNo,
-                            TopNeed1 = model.TopNeed1,
-                            TopNeed1Other = model.TopNeed1Other,
-                            TopNeed2 = model.TopNeed2,
-                            TopNeed2Other = model.TopNeed2Other,
-                            TopNeed3 = model.TopNeed3,
-                            TopNeed3Other = model.TopNeed3Other,
-                            IntendToDo = model.IntendToDo,
-                            IntendToReturnToHostReason = model.IntendToReturnToHostReason,
-                            ProfessionInHostCountry = model.ProfessionInHostCountry,
-                            ProfessionInHostCountryOther = model.ProfessionInHostCountryOther,
-                            HoHCanReadWrite = model.HoHCanReadWrite,
-                            HoHEducationLevel = model.HoHEducationLevel,
-                            HoHEducationLevelOther = model.HoHEducationLevelOther,
-                            NumHHHaveTaskira = model.NumHHHaveTaskira,
-                            NumHHHavePassport = model.NumHHHavePassport,
-                            NumHHHaveDocOther = model.NumHHHaveDocOther,
-                            DoHaveSecureLivelihood = model.DoHaveSecureLivelihood,
-                            DidChildrenGoToSchoole = model.DidChildrenGoToSchoole,
-                            NumChildrenAttendedSchoole = model.NumChildrenAttendedSchoole,
-                            InsertedBy = currentUser.Identity.Name,
-                            InsertedDate = model.InsertedDate,
-                            IsSubmitted = true,
-                            IsCardIssued = model.IsCardIssued,
-                            IsActive = model.IsActive,
-                            Photo=model.Photo
-                            
-                        };
+                        var beneficiary = _mapper.Map<Beneficiary>(model);
+                        beneficiary.IsSubmitted = true;
                         db.Beneficiaries.Add(beneficiary);
                         db.SaveChanges();
 
                         foreach (var ind in model.Individuals)
                         {
-                            var member = new Individual
-                            {
-                                BeneficiaryID = beneficiary.BeneficiaryID,
-                                Name = ind.Name,
-                                DrName = ind.DrName,
-                                FName = ind.FName,
-                                DrFName = ind.DrFName,
-                                GenderCode = ind.GenderCode,
-                                MaritalStatusCode = ind.MaritalStatusCode,
-                                Age = ind.Age,
-                                IDTypeCode = ind.IDTypeCode,
-                                IDNo = ind.IDNo,
-                                RelationshipCode = ind.RelationshipCode,
-                                ContactNumber = ind.ContactNumber
-                            };
+                            var member = _mapper.Map<Individual>(model.Individuals);
                             db.Individuals.Add(member);
                         }
 
@@ -290,7 +284,6 @@ namespace BSAFWebApi.Controllers
                 }
 
             }
-
             return false;
         }
 

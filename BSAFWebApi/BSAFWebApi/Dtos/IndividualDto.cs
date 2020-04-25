@@ -6,9 +6,8 @@ using System.Threading.Tasks;
 
 namespace BSAFWebApi.Models.ViewModels
 {
-    public class IndividualVM
+    public class IndividualDto
     {
-        [Key]
         public int IndividualID { get; set; }
 
         public int? BeneficiaryID { get; set; }
