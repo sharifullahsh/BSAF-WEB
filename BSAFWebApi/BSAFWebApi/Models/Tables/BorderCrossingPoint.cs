@@ -24,5 +24,7 @@ namespace BSAF.Models
         public string PaName { get; set; }
 
         public bool IsActive { get; set; }
+
+
     }
 }

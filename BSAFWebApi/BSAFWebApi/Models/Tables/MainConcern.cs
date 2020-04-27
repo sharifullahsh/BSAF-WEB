@@ -13,5 +13,6 @@ namespace BSAF.Models
         public string ConcernCode { get; set; }
 
         public string Other { get; set; }
+
     }
 }

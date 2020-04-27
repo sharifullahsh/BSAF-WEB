@@ -6,7 +6,6 @@ using AutoMapper;
 using BSAF.Models;
 using BSAFWebApi.Dtos;
 using BSAFWebApi.Models;
-using BSAFWebApi.Models.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -62,7 +61,9 @@ namespace BSAFWebApi.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
-            var beneficiary = await db.Beneficiaries.Where(b => b.BeneficiaryID == id && b.IsActive == true).FirstOrDefaultAsync();
+            var beneficiary = await db.Beneficiaries
+                .Where(b => b.BeneficiaryID == id && b.IsActive == true)
+                .FirstOrDefaultAsync();
             if (beneficiary != null)
             {
                 var beneficiaryToReturn = _mapper.Map<BeneficiaryDto>(beneficiary);
@@ -91,8 +92,8 @@ namespace BSAFWebApi.Controllers
                     )
                 .ToListAsync();
                 beneficiaryToReturn.Individuals = individuals;
-                beneficiaryToReturn.PSNs = db.PSNs.Where(p=>p.BeneficiaryID == beneficiary.BeneficiaryID).ToList();
-                beneficiaryToReturn.ReturnReasons = db.ReturnReasons.Where(r=>r.BeneficiaryID == beneficiary.BeneficiaryID).ToList();
+                beneficiaryToReturn.PSNs = db.PSNs.Where(p => p.BeneficiaryID == beneficiary.BeneficiaryID).ToList();
+                beneficiaryToReturn.ReturnReasons = db.ReturnReasons.Where(r => r.BeneficiaryID == beneficiary.BeneficiaryID).ToList();
                 beneficiaryToReturn.Determinations = db.Determinations.Where(r => r.BeneficiaryID == beneficiary.BeneficiaryID).ToList();
                 beneficiaryToReturn.MoneySources = db.MoneySources.Where(r => r.BeneficiaryID == beneficiary.BeneficiaryID).ToList();
                 beneficiaryToReturn.BroughtItems = db.BroughtItems.Where(r => r.BeneficiaryID == beneficiary.BeneficiaryID).ToList();

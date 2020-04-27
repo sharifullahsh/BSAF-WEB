@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using BSAFWebApi.Dtos;
 using BSAFWebApi.Models;
-using BSAFWebApi.Models.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -73,6 +72,7 @@ namespace BSAFWebApi.Controllers
       
         public IActionResult test()
         {
+            //var beneficiary = _cotext.Beneficiaries.Include(b => b.PSNs).ToList();
             return Ok("Hi");
         }
     }

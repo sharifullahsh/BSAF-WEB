@@ -2,6 +2,44 @@
     width: 100%;
 }
 
-.userContainer {
-    margin: 20px;
+div .mat-card-header-text {
+    margin: 0 16px;
 }
+
+.userContainer {
+    margin: 10px;
+}
+
+.hide {
+    display: none;
+}
+
+.mat-footer-cell {
+    text-align: center;
+    font-style: italic;
+}
+
+
+/* table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 5pt auto;
+}
+
+tr {
+    border-bottom-color: rgba(0, 0, 0, .12);
+}
+
+thead>tr {
+    height: 56px;
+}
+
+table>thead>tr>td {
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+table td {
+    padding-left: 10px;
+    height: 50px;
+} */

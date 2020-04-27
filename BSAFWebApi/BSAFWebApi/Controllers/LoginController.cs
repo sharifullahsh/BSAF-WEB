@@ -1,7 +1,6 @@
 ﻿using BSAF.Models;
 using BSAFWebApi.Dtos;
 using BSAFWebApi.Models;
-using BSAFWebApi.Models.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;

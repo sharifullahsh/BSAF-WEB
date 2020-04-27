@@ -12,5 +12,6 @@ namespace BSAF.Models
         public string ToolCode { get; set; }
 
         public string Other { get; set; }
+
     }
 }

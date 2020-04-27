@@ -27,13 +27,14 @@ import {MatSnackBarModule} from '@angular/material/snack-bar';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import { MatDividerModule } from '@angular/material/divider';
 import {MatTabsModule} from '@angular/material/tabs';
-//import { MatNativeDateModule } from '@angular/material';
+import { MatNativeDateModule } from '@angular/material/core';
 
 const modules: any[] = [
   FlexLayoutModule,
   MatAutocompleteModule,
   MatCheckboxModule,
   MatDatepickerModule,
+  MatNativeDateModule,
   MatFormFieldModule,
   MatInputModule,
   MatRadioModule,

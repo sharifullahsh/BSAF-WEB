@@ -13,5 +13,6 @@ namespace BSAF.Models
 
         [Required]
         public string SchoolTypeCode { get; set; }
+
     }
 }

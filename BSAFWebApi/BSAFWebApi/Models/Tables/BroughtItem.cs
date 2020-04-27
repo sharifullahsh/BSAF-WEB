@@ -10,5 +10,6 @@ namespace BSAF.Models
         public string ItemCode { get; set; }
 
         public string ItemOther { get; set; }
+
     }
 }

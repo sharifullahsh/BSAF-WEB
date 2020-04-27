@@ -1,71 +1,86 @@
-<div class=" userContainer">
+<div class="userContainer">
     <mat-card class="shipping-card">
-        <mat-card-header>
-            <mat-card-title>User Management</mat-card-title>
+        <mat-card-header fxLayout="row" fxLayoutAlign="space-between">
+            <h1 fxFlex="50%" fxLayoutAlign="start center">User Management</h1>
+            <div fxFlex="50%" fxLayoutAlign="end center">
+                <button mat-icon-button mat-raised-button color="primary" title="Add new user" aria-label="Add user">
+                    <mat-icon>person_add</mat-icon>
+                  </button>
+            </div>
         </mat-card-header>
         <mat-card-content>
-            <div fxLayout="row" fxLayoutAlign="end start">
-                <button mat-icon-button mat-raised-button color="primary" title="Add new user" aria-label="Add user">
-                <mat-icon>person_add</mat-icon>
-              </button>
+            <!-- Material table -->
+            <div fxLayout="row">
+                <mat-form-field fxFlex="100%">
+                    <mat-label>Filter User</mat-label>
+                    <input matInput [(ngModel)]="searchKey" (keyup)="applyFilter()" placeholder="Filter user" autocomplete="off">
+                    <button mat-button matSuffix mat-icon-button aria-label="Clear" *ngIf="searchKey" (click)="clearFilter()">
+                    <mat-icon>close</mat-icon>
+                </button>
+                </mat-form-field>
             </div>
-            <mat-divider>
-            </mat-divider>
-            <table class="full-width-table" matSort aria-label="Elements">
-                <tr>
-                    <td>Username</td>
-                    <td>Station Code</td>
-                    <td>roles</td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-                <tr *ngFor="let user of users">
-                    <td>{{user.userName}}</td>
-                    <td>{{user.stationCode}}</td>
-                    <td>
-                        <span *ngFor="let role of user.roles">{{role}}</span>
-                    </td>
-                    <td>
-                        <button mat-icon-button mat-mini-fab color="primary" title="Edit user" aria-label="Edit user">
-                            <mat-icon>edit</mat-icon>
-                          </button>
-                    </td>
-                    <td>
-                        <button mat-icon-button mat-mini-fab color="warn" title="Disable user" aria-label="Diable user">
+            <div class="mat-elevation-z8">
+                <table mat-table class="full-width-table" aria-label="Elements">
+                    <!-- Id Column -->
+                    <ng-container matColumnDef="id">
+                        <th mat-header-cell *matHeaderCellDef>Id</th>
+                        <td mat-cell *matCellDef="let row">{{row.id}}</td>
+                    </ng-container>
+
+                    <!-- Name Column -->
+                    <ng-container matColumnDef="userName">
+                        <th mat-header-cell *matHeaderCellDef>User Name</th>
+                        <td mat-cell *matCellDef="let row">{{row.userName}}</td>
+                    </ng-container>
+                    <!-- station Code Column -->
+                    <ng-container matColumnDef="stationCode">
+                        <th mat-header-cell *matHeaderCellDef>Station Code</th>
+                        <td mat-cell *matCellDef="let row">{{row.stationCode}}</td>
+                    </ng-container>
+
+                    <!-- Role Column -->
+                    <ng-container matColumnDef="roles">
+                        <th mat-header-cell *matHeaderCellDef>Roles</th>
+                        <td mat-cell *matCellDef="let row">
+                            <span *ngFor="let role of row.roles">{{role}}, </span></td>
+                    </ng-container>
+
+                    <!-- Actio Column -->
+                    <ng-container matColumnDef="actions">
+                        <th mat-header-cell *matHeaderCellDef></th>
+                        <td mat-cell *matCellDef="let row" fxLayout="row" fxLayoutAlign="space-between start">
+                            <button mat-icon-button mat-mini-fab color="warn" (click)="DisableUser(row.id)" title="Disable user" aria-label="Diable user">
                             <mat-icon>person_add_disabled</mat-icon>
                         </button>
-                    </td>
-                    <td>
-                        <button mat-icon-button mat-mini-fab color="disabled" title="Change password user" aria-label="Change user password">
+                            <button mat-icon-button mat-mini-fab color="primary" title="Change user role" aria-label="Change user role">
+                            <mat-icon>assignment_ind</mat-icon>
+                        </button>
+                            <button mat-icon-button mat-mini-fab color="disabled" title="Change password user" aria-label="Change user password">
                             <mat-icon>vpn_key</mat-icon>
                         </button>
-                    </td>
-                    <td>
-                        <button mat-raised-button color="primary" title="Edit user Role" aria-label="Edit user role">
-                            <mat-icon>edit</mat-icon>
-                            Role
-                          </button>
-                    </td>
-                </tr>
-                <!-- <ng-container matColumnDef="id">
-                            <th mat-header-cell *matHeaderCellDef mat-sort-header>Id</th>
-                            <td mat-cell *matCellDef="let row">{{row.id}}</td>
-                        </ng-container>
+                        </td>
+                    </ng-container>
+                    <ng-container matColumnDef="loading">
+                        <td mat-footer-cell *matFooterCellDef colspan="5">
+                            loading data...
+                        </td>
+                    </ng-container>
+                    <ng-container matColumnDef="noData">
+                        <td mat-footer-cell *matFooterCellDef colspan="5">
+                            No Data.
+                        </td>
+                    </ng-container>
 
-                        
-                        <ng-container matColumnDef="name">
-                            <th mat-header-cell *matHeaderCellDef mat-sort-header>Name</th>
-                            <td mat-cell *matCellDef="let row">{{row.name}}</td>
-                        </ng-container>
+                    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                    <tr mat-footer-row *matFooterRowDef="['loading']" [ngClass]="{'hide':  dataSource!=null}"></tr>
+                    <tr mat-footer-row *matFooterRowDef="['noData']" [ngClass]="{'hide': !(dataSource!=null && dataSource.data.length ==0)}"></tr>
+                </table>
 
-                        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-                        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr> -->
-            </table>
+                <mat-paginator #paginator [length]="dataSource?.data.length" [pageIndex]="0" [pageSize]="10" [pageSizeOptions]="[10,25, 50, 100, 250]">
+                </mat-paginator>
+            </div>
 
-            <!-- <mat-paginator #paginator [length]="dataSource?.data.length" [pageIndex]="0" [pageSize]="50" [pageSizeOptions]="[25, 50, 100, 250]">
-                    </mat-paginator> -->
         </mat-card-content>
     </mat-card>
 </div>

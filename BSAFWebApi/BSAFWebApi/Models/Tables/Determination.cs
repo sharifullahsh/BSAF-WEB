@@ -12,5 +12,6 @@ namespace BSAF.Models
         public string AnswerCode { get; set; }
 
         public string Other { get; set; }
+
     }
 }

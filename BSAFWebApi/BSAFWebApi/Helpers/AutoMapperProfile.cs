@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using BSAF.Models;
-using BSAFWebApi.Models.ViewModels;
+using BSAFWebApi.Dtos;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,6 +16,10 @@ namespace BSAFWebApi.Helpers
             CreateMap<BeneficiaryDto, Beneficiary>();
             CreateMap<IndividualDto, Individual>();
             CreateMap<Individual, IndividualDto>();
+            CreateMap<LookupValue,LookupDto>()
+                .ForMember(dest=>dest.LookupName,opt=> {
+                    opt.MapFrom(src => src.EnName.FirstOrDefault());
+                });
         }
     }
 }

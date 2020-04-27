@@ -9,5 +9,6 @@ namespace BSAF.Models
         public string MoneySourceCode { get; set; }
 
         public string MoneySourceOther { get; set; }
+
     }
 }

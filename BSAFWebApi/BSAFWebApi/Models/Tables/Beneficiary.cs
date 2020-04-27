@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace BSAF.Models
 {
@@ -136,5 +137,6 @@ namespace BSAF.Models
 
         public bool IsActive { get; set; }
         public byte[] Photo { get; set; }
+
     }
 }

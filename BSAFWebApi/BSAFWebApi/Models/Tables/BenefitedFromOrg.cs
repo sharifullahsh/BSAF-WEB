@@ -21,5 +21,6 @@ namespace BSAF.Models
         public string OrgCode { get; set; }
 
         public string AssistanceProvided { get; set; }
+
     }
 }
