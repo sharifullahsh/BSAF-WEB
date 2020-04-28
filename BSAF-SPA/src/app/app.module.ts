@@ -12,15 +12,17 @@ import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AngularMaterialModule } from './shared/modules/angular-material.module';
 import { SharedModule } from './shared/modules/shared.module';
-import { BeneficiarySearchComponent } from './beneficiary-search/beneficiary-search.component';
+import { BeneficiarySearchComponent } from './beneficiary/beneficiary-search/beneficiary-search.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
-import { BeneficiaryFormComponent } from './beneficiary-form/beneficiary-form.component';
+import { BeneficiaryFormComponent } from './beneficiary/beneficiary-form/beneficiary-form.component';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 import { LoginComponent } from './login/login.component';
 import { MainlayoutComponent } from './mainlayout/mainlayout.component';
 import { JwtModule } from '@auth0/angular-jwt';
 import { UserManagementComponent } from './user-management/user-management.component';
 import { HasRoleDirective } from './_directives/has-role.directive';
+import { IndividualsComponent } from './beneficiary/individuals/individuals.component';
+import { IndividualDialogComponent } from './beneficiary/individual-dialog/individual-dialog.component';
 
 export function tokenGetter() {
   return localStorage.getItem('token');
@@ -37,6 +39,8 @@ export function tokenGetter() {
     MainlayoutComponent,
     UserManagementComponent,
     HasRoleDirective,
+    IndividualsComponent,
+    IndividualDialogComponent,
   ],
   imports: [
     BrowserModule,
@@ -55,6 +59,7 @@ export function tokenGetter() {
 
   ],
   providers: [AuthService, AdminService, AuthGuard, HttpInterceptorService],
+  entryComponents: [IndividualDialogComponent],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

@@ -1,0 +1,52 @@
+<h1 mat-dialog-title>Hi {{data.name}}</h1>
+<div mat-dialog-content>
+
+    <form [formGroup]="individualForm" novalidate (ngSubmit)="onSubmit()">
+
+        <div class="row" fxLayoutAlign="space-between">
+            <div class="col">
+                <!-- <mat-form-field fxFlex="100%">
+                    <mat-label>Screening Date</mat-label>
+                    <input matInput [matDatepicker]="ScreeningDate" formControlName="ScreeningDate">
+                    <mat-datepicker-toggle matSuffix [for]="ScreeningDate"></mat-datepicker-toggle>
+                    <mat-datepicker #ScreeningDate></mat-datepicker>
+                </mat-form-field> -->
+            </div>
+            <!-- <div class="col">
+                <mat-form-field class="full-width">
+                    <mat-select placeholder="Province" formControlName="ProvinceBCP">
+                        <mat-option *ngFor="let provicne of initialLooupsData?.provinces" [value]="provicne.lookupCode">
+                            {{ provicne.lookupName }}
+                        </mat-option>
+                    </mat-select>
+                    <mat-error *ngIf="beneficiaryForm.controls['ProvinceBCP'].hasError('required')">
+                        State is <strong>required</strong>
+                    </mat-error>
+                </mat-form-field>
+            </div> -->
+
+        </div>
+
+        <!-- <div class="row" *ngIf="hasUnitNumber">
+            <div class="col">
+                <mat-form-field class="full-width">
+                    <textarea matInput placeholder="Address 2" formControlName="address2"></textarea>
+                </mat-form-field>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <mat-radio-group formControlName="shipping">
+                    <mat-radio-button value="free">Free Shipping</mat-radio-button>
+                    <mat-radio-button value="priority">Priority Shipping</mat-radio-button>
+                    <mat-radio-button value="nextday">Next Day Shipping</mat-radio-button>
+                </mat-radio-group>
+            </div>
+        </div> -->
+    </form>
+</div>
+<div mat-dialog-actions align="end">
+    <button mat-button (click)="onNoClick()">Cancle</button>
+    <button mat-button mat-raised-button color="primary" (click)="saveIndividual()" cdkFocusInitial>Save</button>
+</div>
+<!-- [mat-dialog-close]="data.animal" -->

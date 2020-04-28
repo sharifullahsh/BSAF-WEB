@@ -1,17 +1,8 @@
-import { InitialLookups } from './../models/InitialLookups';
-import { LookupService } from './../_services/lookup.service';
+import { InitialLookups } from '../../models/InitialLookups';
+import { LookupService } from '../../_services/lookup.service';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 
-export interface PeriodicElement {
-  name: string;
-  position: number;
-  weight: number;
-  symbol: string;
-}
-const ELEMENT_DATA: PeriodicElement[] = [
-  {position: 1, name: 'Hydrogen', weight: 1.0079, symbol: 'H'}
-];
 
 @Component({
   selector: 'app-beneficiary-form',
@@ -48,8 +39,6 @@ export class BeneficiaryFormComponent implements OnInit {
 
   ];
   initialLooupsData: InitialLookups;
-  displayedColumns: string[] = ['position', 'name', 'weight', 'symbol'];
-  dataSource = ELEMENT_DATA;
   constructor(private fb: FormBuilder, private lookupService: LookupService) {}
   ngOnInit(): void {
     this.lookupService.getInitialLookups().subscribe((data: InitialLookups) =>

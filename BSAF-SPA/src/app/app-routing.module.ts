@@ -3,8 +3,8 @@ import { UserManagementComponent } from './user-management/user-management.compo
 import { LoginComponent } from './login/login.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
-import { BeneficiarySearchComponent } from './beneficiary-search/beneficiary-search.component';
-import { BeneficiaryFormComponent } from './beneficiary-form/beneficiary-form.component';
+import { BeneficiarySearchComponent } from './beneficiary/beneficiary-search/beneficiary-search.component';
+import { BeneficiaryFormComponent } from './beneficiary/beneficiary-form/beneficiary-form.component';
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { AuthGuard } from './_guards/auth.guard';

@@ -28,6 +28,7 @@ import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import { MatDividerModule } from '@angular/material/divider';
 import {MatTabsModule} from '@angular/material/tabs';
 import { MatNativeDateModule } from '@angular/material/core';
+import { MatDialogModule, MatDialogContent } from '@angular/material/dialog';
 
 const modules: any[] = [
   FlexLayoutModule,
@@ -55,7 +56,8 @@ const modules: any[] = [
   MatSnackBarModule,
   MatProgressSpinnerModule,
   MatDividerModule,
-  MatTabsModule
+  MatTabsModule,
+  MatDialogModule,
 ];
 
 @NgModule({
