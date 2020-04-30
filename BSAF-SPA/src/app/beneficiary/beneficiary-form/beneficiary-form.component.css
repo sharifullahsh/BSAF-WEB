@@ -2,14 +2,13 @@
     width: 100%;
 }
 
-.shipping-card {
+.beneficary-card {
     min-width: 120px;
     margin: 10px;
 }
 
 .mat-radio-button {
-    display: block;
-    margin: 5px 0;
+    /* margin-left: 15px; */
 }
 
 .row {
@@ -30,7 +29,36 @@ table {
     width: 100%;
 }
 
+table .indTable {
+    font-family: Roboto, "Helvetica Neue", sans-serif;
+    border-spacing: 0;
+}
+
+th {
+    text-align: start;
+    word-wrap: unset;
+    white-space: nowrap;
+    font-size: 12px;
+    font-weight: 500;
+    padding: 0;
+    border-bottom-width: 1px;
+    border-bottom-style: solid;
+}
+
+td {
+    font-size: 14px;
+    font-weight: 500;
+    padding: 0;
+    border-bottom-width: 1px;
+    border-bottom-style: solid;
+}
+
 .individualHolder {
     height: 200px;
     overflow-x: scroll;
+    overflow-y: scroll;
+}
+
+.mat-tab-body {
+    top: 20px !important;
 }

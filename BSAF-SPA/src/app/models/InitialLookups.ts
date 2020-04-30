@@ -6,7 +6,7 @@ export interface InitialLookups{
     maritalStatus: Lookup[];
     idTypes: Lookup[];
     relationships: Lookup[];
-    PSNs: Lookup[];
+    psns: Lookup[];
     leavingReasons: Lookup[];
     returnReasons: Lookup[];
     whereWillLive: Lookup[];

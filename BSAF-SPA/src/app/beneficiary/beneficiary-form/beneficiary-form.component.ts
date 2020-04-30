@@ -1,8 +1,7 @@
 import { InitialLookups } from '../../models/InitialLookups';
 import { LookupService } from '../../_services/lookup.service';
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, Validators } from '@angular/forms';
-
+import { FormBuilder, Validators, FormControl } from '@angular/forms';
 
 @Component({
   selector: 'app-beneficiary-form',
@@ -10,6 +9,7 @@ import { FormBuilder, Validators } from '@angular/forms';
   styleUrls: ['./beneficiary-form.component.css']
 })
 export class BeneficiaryFormComponent implements OnInit {
+  selectedTab = new FormControl(0);
   beneficiaryForm = this.fb.group({
     ScreeningDate: null,
     ProvinceBCP: null,
@@ -29,15 +29,6 @@ export class BeneficiaryFormComponent implements OnInit {
     shipping: ['free', Validators.required]
   });
 
-  hasUnitNumber = false;
-
-  states = [
-    {name: 'Alabama', abbreviation: 'AL'},
-    {name: 'Alaska', abbreviation: 'AK'},
-    {name: 'American Samoa', abbreviation: 'AS'},
-    {name: 'Arizona', abbreviation: 'AZ'}
-
-  ];
   initialLooupsData: InitialLookups;
   constructor(private fb: FormBuilder, private lookupService: LookupService) {}
   ngOnInit(): void {
@@ -47,7 +38,10 @@ export class BeneficiaryFormComponent implements OnInit {
       console.log("data is >>>>>>> "+ JSON.stringify(this.initialLooupsData));
     });
   }
-
+  nextTab(){
+    let p = this.selectedTab.value;
+    console.log("index is >>>>>>>>>>>"+p);
+  }
   onSubmit() {
     alert('Thanks!');
   }

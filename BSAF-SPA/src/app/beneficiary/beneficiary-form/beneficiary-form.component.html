@@ -1,164 +1,237 @@
 <form [formGroup]="beneficiaryForm" novalidate (ngSubmit)="onSubmit()">
-    <mat-card class="shipping-card">
+    <mat-card class="beneficary-card">
         <mat-card-header>
             <mat-card-title>Beneficairy Information</mat-card-title>
         </mat-card-header>
         <mat-card-content>
-            <p>1. Border Crossing Point Information</p>
-            <div class="row" fxLayoutAlign="space-between">
-                <div class="col">
-                    <mat-form-field fxFlex="100%">
-                        <mat-label>Screening Date</mat-label>
-                        <input matInput [matDatepicker]="ScreeningDate" formControlName="ScreeningDate">
-                        <mat-datepicker-toggle matSuffix [for]="ScreeningDate"></mat-datepicker-toggle>
-                        <mat-datepicker #ScreeningDate></mat-datepicker>
-                    </mat-form-field>
-                </div>
-                <div class="col">
-                    <mat-form-field class="full-width">
-                        <mat-select placeholder="Province" formControlName="ProvinceBCP">
-                            <mat-option *ngFor="let provicne of initialLooupsData?.provinces" [value]="provicne.lookupCode">
-                                {{ provicne.lookupName }}
-                            </mat-option>
-                        </mat-select>
-                        <mat-error *ngIf="beneficiaryForm.controls['ProvinceBCP'].hasError('required')">
-                            State is <strong>required</strong>
-                        </mat-error>
-                    </mat-form-field>
-                </div>
-                <div class="col">
-                    <mat-form-field class="full-width">
-                        <mat-select placeholder="Border Point" formControlName="BorderPoint">
-                            <mat-option *ngFor="let bPoint of initialLooupsData?.borderCrossingPoints" [value]="bPoint.lookupCode">
-                                {{ bPoint.lookupName }}
-                            </mat-option>
-                        </mat-select>
-                        <mat-error *ngIf="beneficiaryForm.controls['BorderPoint'].hasError('required')">
-                            State is <strong>required</strong>
-                        </mat-error>
-                    </mat-form-field>
-                </div>
-            </div>
-            <p>2. Beneficiary Informaion</p>
-            <div class="row">
-                <div class="col">
-                    <p>Beneficiary Type: </p>
-                    <mat-radio-group formControlName="BeneficiaryType" fxLayout="row" fxLayoutGap="20px">
-                        <mat-radio-button value="Family">Family</mat-radio-button>
-                        <mat-radio-button value="Individual">Individual</mat-radio-button>
-                    </mat-radio-group>
-                </div>
-                <div class="col">
-                    <p>Return Status: </p>
-                    <mat-radio-group formControlName="ReturnStatus" fxLayout="row" fxLayoutGap="20px">
-                        <mat-radio-button value="DEP">Deported</mat-radio-button>
-                        <mat-radio-button value="DC">Document claimant</mat-radio-button>
-                        <mat-radio-button value="SR">Spontaneous returnee</mat-radio-button>
-                    </mat-radio-group>
-                </div>
-            </div>
-            <!-- <div class="row">
-                <div class="col">
-                    <mat-form-field class="full-width">
-                        <input type="number" matInput placeholder="Number of family memeber">
-                    </mat-form-field>
-                </div>
-            </div> -->
-            <div class="row">
-                <div class="col individualHolder">
-                    <app-individuals></app-individuals>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col">
-                    <mat-form-field class="full-width">
-                        <input matInput placeholder="Company" formControlName="company">
-                    </mat-form-field>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col">
-                    <mat-form-field class="full-width">
-                        <input matInput placeholder="First name" formControlName="firstName">
-                        <mat-error *ngIf="beneficiaryForm.controls['firstName'].hasError('required')">
-                            First name is <strong>required</strong>
-                        </mat-error>
-                    </mat-form-field>
-                </div>
-                <div class="col">
-                    <mat-form-field class="full-width">
-                        <input matInput placeholder="Last name" formControlName="lastName">
-                        <mat-error *ngIf="beneficiaryForm.controls['lastName'].hasError('required')">
-                            Last name is <strong>required</strong>
-                        </mat-error>
-                    </mat-form-field>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col">
-                    <mat-form-field class="full-width">
-                        <textarea matInput placeholder="Address" formControlName="address"></textarea>
-                        <mat-error *ngIf="beneficiaryForm.controls['address'].hasError('required')">
-                            Address is <strong>required</strong>
-                        </mat-error>
-                    </mat-form-field>
-                </div>
-            </div>
-            <div class="row" *ngIf="!hasUnitNumber">
-                <div class="col">
-                    <button mat-button type="button" (click)="hasUnitNumber = !hasUnitNumber">
-            + Add C/O, Apt, Suite, Unit
-          </button>
-                </div>
-            </div>
-            <div class="row" *ngIf="hasUnitNumber">
-                <div class="col">
-                    <mat-form-field class="full-width">
-                        <textarea matInput placeholder="Address 2" formControlName="address2"></textarea>
-                    </mat-form-field>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col">
-                    <mat-form-field class="full-width">
-                        <input matInput placeholder="City" formControlName="city">
-                        <mat-error *ngIf="beneficiaryForm.controls['city'].hasError('required')">
-                            City is <strong>required</strong>
-                        </mat-error>
-                    </mat-form-field>
-                </div>
-                <div class="col">
-                    <mat-form-field class="full-width">
-                        <mat-select placeholder="State" formControlName="state">
-                            <mat-option *ngFor="let state of states" [value]="state.abbreviation">
-                                {{ state.name }}
-                            </mat-option>
-                        </mat-select>
-                        <mat-error *ngIf="beneficiaryForm.controls['state'].hasError('required')">
-                            State is <strong>required</strong>
-                        </mat-error>
-                    </mat-form-field>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col">
-                    <mat-form-field class="full-width">
-                        <input matInput #postalCode maxlength="5" placeholder="Postal Code" type="number" formControlName="postalCode">
-                        <mat-hint align="end">{{postalCode.value.length}} / 5</mat-hint>
-                    </mat-form-field>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col">
-                    <mat-radio-group formControlName="shipping">
-                        <mat-radio-button value="free">Free Shipping</mat-radio-button>
-                        <mat-radio-button value="priority">Priority Shipping</mat-radio-button>
-                        <mat-radio-button value="nextday">Next Day Shipping</mat-radio-button>
-                    </mat-radio-group>
-                </div>
-            </div>
+            <mat-tab-group [selectedIndex]="selectedTab.value" (selectedIndexChange)="selectedTab.setValue($event)">
+                <mat-tab label="Profile">
+                    <p>1. Border Crossing Point Information</p>
+                    <div fxLayout="row wrap" fxLayoutAlign="space-between">
+                        <div fxFlex="0 1 calc(33.3% - 32px)">
+                            <mat-form-field fxFlex="100%">
+                                <mat-label>Screening Date</mat-label>
+                                <input matInput [matDatepicker]="ScreeningDate" formControlName="ScreeningDate">
+                                <mat-datepicker-toggle matSuffix [for]="ScreeningDate"></mat-datepicker-toggle>
+                                <mat-datepicker #ScreeningDate></mat-datepicker>
+                            </mat-form-field>
+                        </div>
+                        <div fxFlex="0 1 calc(33.3% - 32px)">
+                            <mat-form-field class="full-width">
+                                <mat-select placeholder="Province" formControlName="ProvinceBCP">
+                                    <mat-option *ngFor="let provicne of initialLooupsData?.provinces" [value]="provicne.lookupCode">
+                                        {{ provicne.lookupName }}
+                                    </mat-option>
+                                </mat-select>
+                                <mat-error *ngIf="beneficiaryForm.controls['ProvinceBCP'].hasError('required')">
+                                    State is <strong>required</strong>
+                                </mat-error>
+                            </mat-form-field>
+                        </div>
+                        <div fxFlex="0 1 calc(33.3% - 32px)">
+                            <mat-form-field class="full-width">
+                                <mat-select placeholder="Border Point" formControlName="BorderPoint">
+                                    <mat-option *ngFor="let bPoint of initialLooupsData?.borderCrossingPoints" [value]="bPoint.lookupCode">
+                                        {{ bPoint.lookupName }}
+                                    </mat-option>
+                                </mat-select>
+                                <mat-error *ngIf="beneficiaryForm.controls['BorderPoint'].hasError('required')">
+                                    State is <strong>required</strong>
+                                </mat-error>
+                            </mat-form-field>
+                        </div>
+                    </div>
+                    <p>2. Beneficiary Informaion</p>
+                    <div fxLayout="row wrap" fxLayoutAlign="space-between start">
+                        <div fxLayout="column" fxFlex="0 1 calc(40% - 32px)">
+                            <div fxLayout="row" fxLayoutAlign="space-between start">
+                                <p>Beneficiary Type: </p>
+                                <mat-radio-group formControlName="BeneficiaryType" fxLayout="row" fxLayoutGap="30px">
+                                    <mat-radio-button value="Family">Family</mat-radio-button>
+                                    <mat-radio-button value="Individual">Individual</mat-radio-button>
+                                </mat-radio-group>
+                            </div>
+
+                        </div>
+                        <div fxLayout="column" fxFlex="0 1 calc(60.3% - 32px)">
+                            <div fxLayout="row" fxLayoutAlign="space-between start">
+                                <p>Return Status: </p>
+                                <mat-radio-group formControlName="ReturnStatus" fxLayout="row" fxLayoutGap="30px">
+                                    <mat-radio-button value="DEP">Deported</mat-radio-button>
+                                    <mat-radio-button value="DC">Document claimant</mat-radio-button>
+                                    <mat-radio-button value="SR">Spontaneous returnee</mat-radio-button>
+                                </mat-radio-group>
+                            </div>
+                        </div>
+                    </div>
+                    <mat-divider>
+                    </mat-divider>
+
+                    <div fxLayout="row">
+                        <div fxLayout="column" class="individualHolder">
+                            <p>3. Family members</p>
+                            <table class="indTable">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 10%;">Name</th>
+                                        <th style="width: 10%;">Father Name</th>
+                                        <th style="width: 5%;">Gender</th>
+                                        <th style="width: 5%;">Marital Status</th>
+                                        <th style="width: 3%;">Age</th>
+                                        <th style="width: 5%;">ID Type</th>
+                                        <th style="width: 5%;">ID No</th>
+                                        <th style="width: 5%;">Relationship</th>
+                                        <th style="width: 5%;">Contact No</th>
+                                        <th style="width: 5%; text-align: right;">نوم/نام</th>
+                                        <th style="width: 5%; text-align: right;">ولد</th>
+                                        <th style="width: 5%;"></th>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <input matInput placeholder="Name">
+                                        </td>
+                                        <td>
+                                            <input matInput placeholder="Faher Name">
+                                        </td>
+                                        <td>
+                                            <mat-select placeholder="Gender">
+                                                <mat-option *ngFor="let gender of initialLooupsData?.gender" [value]="gender.lookupCode">
+                                                    {{ gender.lookupName }}
+                                                </mat-option>
+                                            </mat-select>
+                                        </td>
+                                        <td>
+                                            <mat-select placeholder="Marital Status">
+                                                <mat-option *ngFor="let mStatus of initialLooupsData?.maritalStatus" [value]="mStatus.lookupCode">
+                                                    {{ mStatus.lookupName }}
+                                                </mat-option>
+                                            </mat-select>
+                                        </td>
+                                        <td>
+                                            <input matInput placeholder="Age">
+                                        </td>
+                                        <td>
+                                            <mat-select placeholder="ID Type">
+                                                <mat-option *ngFor="let idType of initialLooupsData?.idTypes" [value]="idType.lookupCode">
+                                                    {{ idType.lookupName }}
+                                                </mat-option>
+                                            </mat-select>
+                                        </td>
+                                        <td>
+                                            <input matInput placeholder="idNo">
+                                        </td>
+                                        <td>
+                                            <mat-select placeholder="Relationship">
+                                                <mat-option *ngFor="let relationship of initialLooupsData?.relationships" [value]="relationship.lookupCode">
+                                                    {{ relationship.lookupName }}
+                                                </mat-option>
+                                            </mat-select>
+                                        </td>
+                                        <td>
+                                            <input matInput placeholder="Contact No">
+                                        </td>
+                                        <td>
+                                            <input matInput placeholder="نوم/نام" style="text-align: right;">
+                                        </td>
+                                        <td>
+                                            <input matInput placeholder="ولد" style="text-align: right;">
+                                        </td>
+                                        <td fxLayout="row" fxLayoutAlign="end center">
+                                            <button mat-raised-button color="primary" title="Add new user" aria-label="Add user">
+                                                <mat-icon>person_add</mat-icon>
+                                                Save
+                                            </button>
+                                            <!-- <button mat-raised-button color="primary">Save</button> -->
+                                        </td>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <p style="margin-top: 10px;">4. Please indicate the place of origin and intended place of return </p>
+                    <div fxLayout="row wrap" fxLayoutAlign="space-between center">
+                        <div fxLayout="column" fxFlex="0 1 calc(40% - 32px)">
+                            <mat-form-field class="full-width">
+                                <mat-select placeholder="Origin Province">
+                                    <mat-option *ngFor="let provicne of initialLooupsData?.provinces" [value]="provicne.lookupCode">
+                                        {{ provicne.lookupName }}
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+                        <div fxLayout="column" fxFlex="0 1 calc(20% - 32px)" fxLayoutAlign="center center">
+                            <mat-checkbox id="chSameProvince">Same as Origin</mat-checkbox>
+                        </div>
+                        <div fxLayout="column" fxFlex="0 1 calc(40.3% - 32px)">
+                            <mat-form-field class="full-width">
+                                <mat-select placeholder="Return Province">
+                                    <mat-option *ngFor="let provicne of initialLooupsData?.provinces" [value]="provicne.lookupCode">
+                                        {{ provicne.lookupName }}
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+                    </div>
+                    <div fxLayout="row wrap" fxLayoutAlign="space-between center">
+                        <div fxLayout="column" fxFlex="0 1 calc(40% - 32px)">
+                            <mat-form-field class="full-width">
+                                <mat-select placeholder="Origin District">
+                                    <mat-option *ngFor="let provicne of initialLooupsData?.provinces" [value]="provicne.lookupCode">
+                                        {{ provicne.lookupName }}
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+                        <div fxLayout="column" fxFlex="0 1 calc(20% - 32px)" fxLayoutAlign="center center">
+                            <mat-checkbox id="chSameDistrict">Same as Origin</mat-checkbox>
+                        </div>
+                        <div fxLayout="column" fxFlex="0 1 calc(40% - 32px)">
+                            <mat-form-field class="full-width">
+                                <mat-select placeholder="Return District">
+                                    <mat-option *ngFor="let provicne of initialLooupsData?.provinces" [value]="provicne.lookupCode">
+                                        {{ provicne.lookupName }}
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+                    </div>
+                    <div fxLayout="row wrap" fxLayoutAlign="space-between center">
+                        <div fxLayout="column" fxFlex="0 1 calc(40% - 32px)">
+                            <mat-form-field class="full-width">
+                                <input matInput placeholder="Origin Village">
+                            </mat-form-field>
+                        </div>
+                        <div fxLayout="column" fxFlex="0 1 calc(20% - 32px)" fxLayoutAlign="center center">
+                            <mat-checkbox id="chSameVillage">Same as Origin</mat-checkbox>
+                        </div>
+                        <div fxLayout="column" fxFlex="0 1 calc(40% - 32px)">
+                            <mat-form-field class="full-width">
+                                <input matInput placeholder="Village">
+                            </mat-form-field>
+                        </div>
+                    </div>
+                </mat-tab>
+                <mat-tab label="Protection">
+                    <p>5. Does this case have person with specific needs(PSN)</p>
+                    <div fxLayout="row wrap" fxLayout.lt-sm="column" fxLayoutGap="32px" fxLayoutAlign="flex-start">
+                        <ng-container *ngFor="let psn of initialLooupsData?.psns; let i=index;">
+                            <div fxFlex="0 1 calc(33.3% - 32px)" fxFlex.lt-md="0 1 calc(50% - 32px)" fxFlex.lt-sm="100%">
+                                <mat-checkbox value="{{psn.lookupCode}" style="padding-right: 20px;">{{psn.lookupName}}</mat-checkbox>
+                            </div>
+                        </ng-container>
+                    </div>
+                    <div fxLayout="column">
+                        <mat-form-field class="full-width">
+                            <input matInput placeholder="PSN other">
+                        </mat-form-field>
+                    </div>
+                </mat-tab>
+            </mat-tab-group>
         </mat-card-content>
-        <mat-card-actions>
+        <mat-card-actions fxLayout="row" fxLayoutAlign="end start">
+            <button mat-raised-button color="primary" *ngIf="selectedTab.value!=0" type="button" (click)="selectedTab.setValue(selectedTab.value-1)">Previous</button>
+            <button mat-raised-button color="primary" (click)="selectedTab.setValue(selectedTab.value+1)" type="button">Next</button>
             <button mat-raised-button color="primary" type="submit">Submit</button>
         </mat-card-actions>
     </mat-card>
