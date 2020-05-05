@@ -1,0 +1,14 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"type": "npm",
+			"script": "build",
+			"path": "BSAF-SPA/",
+			"group": "build",
+			"problemMatcher": [],
+			"label": "npm: build - BSAF-SPA",
+			"detail": "ng build"
+		}
+	]
+}

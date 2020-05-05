@@ -26,9 +26,9 @@ namespace BSAFWebApi.Controllers
             _mapper = mapper;
         }
         // GET: api/Beneficiary
-        [HttpGet]
+        [HttpPost("listPartial")]
         [AllowAnonymous]
-        public async Task<IActionResult> Get()
+        public async Task<IActionResult> listPartial([FromBody]SearchBeneficiaryDto model)
         {
             // var beneficiary = await db.Beneficiaries.Where(b => b.BeneficiaryID == id && b.IsActive == true).FirstOrDefaultAsync();
             var beneficiary = await (from b in db.Beneficiaries
@@ -37,22 +37,68 @@ namespace BSAFWebApi.Controllers
                                     select new BeneficiaryForListDto
                                     {
                                         BeneficiaryID = b.BeneficiaryID,
-                                        GUID = b.GUID,
+                                        CardID = b.CardID,
                                         Name = familyMember.Where(f => f.RelationshipCode == "HH" || f.RelationshipCode == "HSelf").Select(i => i.Name).FirstOrDefault(),
                                         FName = familyMember.Where(f => f.RelationshipCode == "HH" || f.RelationshipCode == "HSelf").Select(i => i.FName).FirstOrDefault(),
                                         ScreeningDate = b.ScreeningDate,
-                                        ProvinceBCP = db.Provinces.Where(p => p.ProvinceCode == b.ProvinceBCP).Select(p => p.EnName).FirstOrDefault(),
-                                        BorderPoint = db.BorderCrossingPoints.Where(bcp => bcp.BCPCode == bcp.BCPCode).Select(bcp => bcp.EnName).FirstOrDefault(),
-                                        BeneficiaryType = db.LookupValues.Where(l => l.ValueCode == b.BeneficiaryType).Select(l => l.EnName).FirstOrDefault(),
-                                        ReturnStatus = db.LookupValues.Where(l => l.ValueCode == b.ReturnStatus).Select(l => l.EnName).FirstOrDefault(),
-                                        ReturnProvince = db.Provinces.Where(p => p.ProvinceCode == b.ReturnProvince).Select(l => l.EnName).FirstOrDefault(),
-                                        CountryOfExile = db.LookupValues.Where(l => l.ValueCode == b.CountryOfExile).Select(l => l.EnName).FirstOrDefault(),
+                                        BorderPoint = b.BorderPoint,
+                                        BeneficiaryType = b.BeneficiaryType,
+                                        ReturnStatus = b.ReturnStatus,
                                         IsCardIssued = b.IsCardIssued
                                     }
                       ).ToListAsync();
-            
-                return Ok(beneficiary);
-            
+
+            if (!string.IsNullOrEmpty(model.CardID))
+            {
+                beneficiary = beneficiary.Where(b => b.CardID == model.CardID).ToList();
+            }
+            if (!string.IsNullOrEmpty(model.BeneficiaryName))
+            {
+                beneficiary = beneficiary.Where(b => b.Name == model.BeneficiaryName).ToList();
+            }
+            if (!string.IsNullOrEmpty(model.BeneficiaryFName))
+            {
+                beneficiary = beneficiary.Where(b => b.FName == model.BeneficiaryFName).ToList();
+            }
+            if (!string.IsNullOrEmpty(model.BorderPoint))
+            {
+                beneficiary = beneficiary.Where(b => b.BorderPoint == model.BorderPoint).ToList();
+            }
+            if (!string.IsNullOrEmpty(model.BeneficiaryType))
+            {
+                beneficiary = beneficiary.Where(b => b.BeneficiaryType == model.BeneficiaryType).ToList();
+            }
+            if (!string.IsNullOrEmpty(model.ReturnStatus))
+            {
+                beneficiary = beneficiary.Where(b => b.ReturnStatus == model.ReturnStatus).ToList();
+            }
+            if (model.ScreeningDateFrom != null)
+            {
+                beneficiary = beneficiary.Where(b => b.ScreeningDate >= model.ScreeningDateFrom).ToList();
+            }
+            if (model.ScreeningDateTo != null)
+            {
+                beneficiary = beneficiary.Where(b => b.ScreeningDate <= model.ScreeningDateTo).ToList();
+            }
+            beneficiary = beneficiary.Select(b=>
+            new BeneficiaryForListDto
+            {
+                BeneficiaryID = b.BeneficiaryID,
+                CardID = b.CardID,
+                Name = b.Name,
+                FName = b.FName,
+                ScreeningDate = b.ScreeningDate,
+                BorderPoint = db.BorderCrossingPoints.Where(bcp => bcp.BCPCode == b.BorderPoint).Select(bcp => bcp.EnName).FirstOrDefault(),
+                BeneficiaryType = b.BeneficiaryType,
+                ReturnStatus = db.LookupValues.Where(l => l.ValueCode == b.ReturnStatus).Select(l => l.EnName).FirstOrDefault(),
+                IsCardIssued = b.IsCardIssued
+            }
+            ).OrderByDescending(b=>b.ScreeningDate).ToList();
+            var valueToReturn = new {
+                total = beneficiary.Count,
+                data = beneficiary.Skip(model.PageIndex * model.PageSize).Take(model.PageSize).ToList()
+            };
+            return Ok(valueToReturn);
             
         }
 

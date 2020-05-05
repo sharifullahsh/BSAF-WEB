@@ -9,7 +9,7 @@ namespace BSAFWebApi.Dtos
     {
         public int BeneficiaryID { get; set; }
 
-        public Guid GUID { get; set; }
+        public string CardID { get; set; }
 
         public string Name { get; set; }
 
@@ -17,17 +17,11 @@ namespace BSAFWebApi.Dtos
 
         public DateTime ScreeningDate { get; set; }
 
-        public string ProvinceBCP { get; set; }
-
         public string BorderPoint { get; set; }
 
         public string BeneficiaryType { get; set; }
 
         public string ReturnStatus { get; set; }
-
-        public string ReturnProvince { get; set; }
-
-        public string CountryOfExile { get; set; }
 
         public bool IsCardIssued { get; set; }
 

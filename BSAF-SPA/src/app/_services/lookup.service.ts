@@ -6,8 +6,11 @@ import { HttpClient } from '@angular/common/http';
   providedIn: 'root'
 })
 export class LookupService {
-  baseUrl = environment.apiUrl;
   constructor(private http: HttpClient) { }
+  baseUrl = environment.apiUrl;
+  getSearchLookups() {
+    return this.http.get(this.baseUrl + 'lookup/searchLookups');
+  }
   getInitialLookups(){
     return this.http.get(this.baseUrl + 'lookup/initialLookups');
   }

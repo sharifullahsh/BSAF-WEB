@@ -39,9 +39,31 @@ namespace BSAFWebApi.Controllers
                 intendToDos = db.LookupValues.Where(l=>l.LookupCode == "WDYITD").Select(l=>new LookupDto { LookupCode = l.ValueCode, LookupName = l.EnName}).ToList(),
                 professions = db.LookupValues.Where(l=>l.LookupCode == "PROFESSION").Select(l=>new LookupDto { LookupCode = l.ValueCode, LookupName = l.EnName}).ToList(),
                 educationLevels = db.LookupValues.Where(l=>l.LookupCode == "EDUCATION").Select(l=>new LookupDto { LookupCode = l.ValueCode, LookupName = l.EnName}).ToList(),
+                determinations = db.LookupValues.Where(l=>l.LookupCode == "RANKIMP").Select(l=>new LookupDto { LookupCode = l.ValueCode, LookupName = l.EnName}).ToList(),
+                moneySources = db.LookupValues.Where(l=>l.LookupCode == "MFRP").Select(l=>new LookupDto { LookupCode = l.ValueCode, LookupName = l.EnName}).ToList(),
+                broughtItems = db.LookupValues.Where(l=>l.LookupCode == "ITEMS").Select(l=>new LookupDto { LookupCode = l.ValueCode, LookupName = l.EnName}).ToList(),
+                postArrivalNeeds = db.LookupValues.Where(l=>l.LookupCode == "pahan").Select(l=>new LookupDto { LookupCode = l.ValueCode, LookupName = l.EnName}).ToList(),
+                transportations = db.LookupValues.Where(l=>l.LookupCode == "TRNSPORT").Select(l=>new LookupDto { LookupCode = l.ValueCode, LookupName = l.EnName}).ToList(),
+                topNeeds = db.LookupValues.Where(l=>l.LookupCode == "TOPNEED").Select(l=>new LookupDto { LookupCode = l.ValueCode, LookupName = l.EnName}).ToList(),
+                obtainLivelihoodHelps = db.LookupValues.Where(l=>l.LookupCode == "WHCH").Select(l=>new LookupDto { LookupCode = l.ValueCode, LookupName = l.EnName}).ToList(),
+                tools = db.LookupValues.Where(l=>l.LookupCode == "TOOLS").Select(l=>new LookupDto { LookupCode = l.ValueCode, LookupName = l.EnName}).ToList(),
+                mainConcerns = db.LookupValues.Where(l=>l.LookupCode == "WAY3MC").Select(l=>new LookupDto { LookupCode = l.ValueCode, LookupName = l.EnName}).ToList(),
 
             };
             return Ok(lookups);
         }
+
+        [AllowAnonymous]
+        [HttpGet("searchLookups")]
+        public async Task<IActionResult> GetSearchLookups()
+        {
+            var lookups = new SearchLookupDto
+            {
+                borderCrossingPoints = db.BorderCrossingPoints.Select(b => new LookupDto { LookupCode = b.BCPCode, LookupName = b.EnName }).ToList(),
+                returnStatus = db.LookupValues.Where(l => l.LookupCode == "RSTATUS").Select(l => new LookupDto { LookupCode = l.ValueCode, LookupName = l.EnName }).ToList(),
+            };
+            return Ok(lookups);
+        }
+
     }
 }

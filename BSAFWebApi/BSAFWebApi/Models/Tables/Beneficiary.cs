@@ -7,7 +7,7 @@ namespace BSAF.Models
     {
         public int BeneficiaryID { get; set; }
 
-        public Guid GUID { get; set; }
+        public string CardID { get; set; }
 
         public DateTime ScreeningDate { get; set; }
 
@@ -21,13 +21,13 @@ namespace BSAF.Models
 
         public string OriginProvince { get; set; }
 
-        public int? OriginDistrict { get; set; }
+        public string OriginDistrict { get; set; }
 
         public string OriginVillage { get; set; }
 
         public string ReturnProvince { get; set; }
 
-        public int? ReturnDistrict { get; set; }
+        public string ReturnDistrict { get; set; }
 
         public string ReturnVillage { get; set; }
 

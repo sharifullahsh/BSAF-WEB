@@ -1,3 +1,4 @@
+import { LookupService } from 'src/app/_services/lookup.service';
 import { AdminService } from './_services/admin.service';
 import { AuthGuard } from './_guards/auth.guard';
 import { HttpInterceptorService } from './_services/http-interceptor.service';
@@ -58,7 +59,7 @@ export function tokenGetter() {
     }),
 
   ],
-  providers: [AuthService, AdminService, AuthGuard, HttpInterceptorService],
+  providers: [AuthService, AdminService, AuthGuard, HttpInterceptorService, LookupService],
   entryComponents: [IndividualDialogComponent],
   bootstrap: [AppComponent]
 })

@@ -10,10 +10,6 @@ div .mat-card-header-text {
     margin: 10px;
 }
 
-.hide {
-    display: none;
-}
-
 .mat-footer-cell {
     text-align: center;
     font-style: italic;

@@ -9,6 +9,7 @@ import { FormBuilder, Validators, FormControl } from '@angular/forms';
   styleUrls: ['./beneficiary-form.component.css']
 })
 export class BeneficiaryFormComponent implements OnInit {
+  postArrivalNeedTbleColumns: string[] = ['NeedAssistance', 'IsProvided', 'ProvidedDate', 'Comments'];
   selectedTab = new FormControl(0);
   beneficiaryForm = this.fb.group({
     ScreeningDate: null,
@@ -39,8 +40,7 @@ export class BeneficiaryFormComponent implements OnInit {
     });
   }
   nextTab(){
-    let p = this.selectedTab.value;
-    console.log("index is >>>>>>>>>>>"+p);
+    
   }
   onSubmit() {
     alert('Thanks!');

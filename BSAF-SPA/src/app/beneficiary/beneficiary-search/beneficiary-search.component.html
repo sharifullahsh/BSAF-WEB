@@ -1,25 +1,167 @@
-<div class="mat-elevation-z8">
-  <table mat-table class="full-width-table" matSort aria-label="Elements">
-    <!-- Id Column -->
-    <ng-container matColumnDef="id">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header>Id</th>
-      <td mat-cell *matCellDef="let row">{{row.id}}</td>
-    </ng-container>
+<div class="beneficary-search-container">
+    <form [formGroup]="searchForm" novalidate autocomplete="off" (ngSubmit)="onSubmit()">
+        <mat-card>
+            <mat-card-header>
+                <mat-card-title>Search Criterial</mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
+                <div fxLayout="row wrap" fxLayoutGap="32px">
+                    <mat-form-field fxFlex>
+                        <mat-label>Card ID</mat-label>
+                        <input matInput formControlName="cardID">
+                    </mat-form-field>
+                    <mat-form-field fxFlex>
+                        <mat-label>Name</mat-label>
+                        <input matInput formControlName="beneficiaryName">
+                    </mat-form-field>
+                    <mat-form-field fxFlex>
+                        <mat-label>Father's Name</mat-label>
+                        <input matInput formControlName="beneficiaryFName">
+                    </mat-form-field>
+                    <mat-form-field fxFlex>
+                        <mat-label>Border Point</mat-label>
+                        <mat-select formControlName="borderPoint">
+                            <mat-option *ngFor="let bPoint of searchLooupsData?.borderCrossingPoints" [value]="bPoint.lookupCode">
+                                {{ bPoint.lookupName }}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+                <div fxLayout="row wrap" fxLayoutGap="32px">
+                    <mat-form-field fxFlex>
+                        <mat-label>Beneficiary Type</mat-label>
+                        <mat-select formControlName="beneficiaryType">
+                            <mat-option value="Individual">
+                                Individual
+                            </mat-option>
+                            <mat-option value="Family">
+                                Family
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                    <mat-form-field fxFlex>
+                        <mat-label>Return Status</mat-label>
+                        <mat-select formControlName="returnStatus">
+                            <mat-option *ngFor="let lookup of searchLooupsData?.returnStatus" [value]="lookup.lookupCode">
+                                {{ lookup.lookupName }}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                    <mat-form-field fxFlex>
+                        <mat-label>From Date</mat-label>
+                        <input matInput readonly formControlName="ScreeningDateFrom" [matDatepicker]="ScreeningDateFrom" [max]="maxDate" (click)="ScreeningDateFrom.open()">
+                        <mat-datepicker-toggle matSuffix [for]="ScreeningDateFrom"></mat-datepicker-toggle>
+                        <mat-datepicker #ScreeningDateFrom></mat-datepicker>
+                    </mat-form-field>
+                    <mat-form-field fxFlex>
+                        <mat-label>To Date</mat-label>
+                        <input matInput readonly formControlName="ScreeningDateTo" [matDatepicker]="ScreeningDateTo" [max]="maxDate" (click)="ScreeningDateTo.open()">
+                        <mat-datepicker-toggle matSuffix [for]="ScreeningDateTo"></mat-datepicker-toggle>
+                        <mat-datepicker #ScreeningDateTo></mat-datepicker>
+                    </mat-form-field>
+                </div>
+            </mat-card-content>
+            <mat-card-actions fxLayout="row" fxLayoutAlign="end start" fxLayoutGap="30px">
+                <button mat-button type="button" (click)="resetSearch()">Reset</button>
+                <button mat-button mat-raised-button color="primary" type="submit">Search</button>
+            </mat-card-actions>
+        </mat-card>
+    </form>
+    <mat-card class="mt10">
+        <!-- <mat-card-header>
+            <mat-card-title>Search Reasult</mat-card-title>
+        </mat-card-header> -->
+        <mat-card-content>
+            <table mat-table class="full-width-table" aria-label="Beneficiary">
+                <!-- index Column -->
+                <ng-container matColumnDef="#">
+                    <th mat-header-cell *matHeaderCellDef>#</th>
+                    <td mat-cell *matCellDef="let row;let index = index;">{{index+1}}</td>
+                </ng-container>
 
-    <!-- Name Column -->
-    <ng-container matColumnDef="name">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header>Name</th>
-      <td mat-cell *matCellDef="let row">{{row.name}}</td>
-    </ng-container>
+                <!--card Id Column -->
+                <ng-container matColumnDef="cardID">
+                    <th mat-header-cell *matHeaderCellDef>Card ID</th>
+                    <td mat-cell *matCellDef="let row">
+                        <a [routerLink]="['/beneficiaryForm',{id:row.cardID}]" routerLinkActive="router-link-active">{{row.cardID}}</a>
+                    </td>
+                </ng-container>
 
-    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-  </table>
+                <!-- Name Column -->
+                <ng-container matColumnDef="name">
+                    <th mat-header-cell *matHeaderCellDef>Name</th>
+                    <td mat-cell *matCellDef="let row">{{row.name}}</td>
+                </ng-container>
 
-  <mat-paginator #paginator
-      [length]="dataSource?.data.length"
-      [pageIndex]="0"
-      [pageSize]="50"
-      [pageSizeOptions]="[25, 50, 100, 250]">
-  </mat-paginator>
+                <!-- Father Name Column -->
+                <ng-container matColumnDef="fName">
+                    <th mat-header-cell *matHeaderCellDef>Father Name</th>
+                    <td mat-cell *matCellDef="let row">{{row.fName}}</td>
+                </ng-container>
+
+                <!-- Screening Date Column -->
+                <ng-container matColumnDef="screeningDate">
+                    <th mat-header-cell *matHeaderCellDef>Screening Date</th>
+                    <td mat-cell *matCellDef="let row">{{row.screeningDate | date}}</td>
+                </ng-container>
+
+                <!-- Borderpoint Column -->
+                <ng-container matColumnDef="borderPoint">
+                    <th mat-header-cell *matHeaderCellDef>Border Point</th>
+                    <td mat-cell *matCellDef="let row">{{row.borderPoint}}</td>
+                </ng-container>
+
+                <!-- Beneficiary Type Column -->
+                <ng-container matColumnDef="beneficiaryType">
+                    <th mat-header-cell *matHeaderCellDef>Beneficiary Type</th>
+                    <td mat-cell *matCellDef="let row">{{row.beneficiaryType}}</td>
+                </ng-container>
+
+                <!-- Return status Column -->
+                <ng-container matColumnDef="returnStatus">
+                    <th mat-header-cell *matHeaderCellDef>Return Status</th>
+                    <td mat-cell *matCellDef="let row">{{row.returnStatus}}</td>
+                </ng-container>
+
+                <!-- Is Card Issued Column -->
+                <ng-container matColumnDef="isCardIssued">
+                    <th mat-header-cell *matHeaderCellDef>Is Card Issued</th>
+                    <td mat-cell *matCellDef="let row">
+                        <mat-checkbox [disabled]="true" [checked]='row.isCardIssued'></mat-checkbox>
+                    </td>
+                </ng-container>
+
+                <!-- Action Column -->
+                <ng-container matColumnDef="action">
+                    <th mat-header-cell *matHeaderCellDef></th>
+                    <td mat-cell *matCellDef="let row">
+                        <button mat-icon-button mat-mini-fab color="default" (click)="ViewBeneficiary(row.cardID)" title="View Beneficiary" aria-label="View Beneficiay">
+                            <mat-icon>visibility</mat-icon>
+                        </button>
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="loading">
+                    <td mat-footer-cell *matFooterCellDef colspan="9" style="text-align: center;">
+                        loading data...
+                    </td>
+                </ng-container>
+                <ng-container matColumnDef="noData">
+                    <td mat-footer-cell *matFooterCellDef colspan="9" style="text-align: center;">
+                        No Data.
+                    </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                <tr mat-footer-row *matFooterRowDef="['loading']" [ngClass]="{'hide':  dataSource!=null}"></tr>
+                <tr mat-footer-row *matFooterRowDef="['noData']" [ngClass]="{'hide': !(dataSource!=null && dataSource.data.length ==0)}"></tr>
+            </table>
+        </mat-card-content>
+        <mat-card-actions fxLayout="row" fxLayoutAlign="end start" fxLayoutGap="30px">
+            <mat-paginator #paginator [(length)]="length" (page)="pageChange($event)" [(pageIndex)]="pageIndex" [(pageSize)]="pageSize" [pageSizeOptions]="[10,25, 50, 100, 250]">
+            </mat-paginator>
+        </mat-card-actions>
+    </mat-card>
+
 </div>

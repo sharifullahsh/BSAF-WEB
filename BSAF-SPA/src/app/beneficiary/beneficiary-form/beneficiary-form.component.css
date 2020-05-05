@@ -59,6 +59,6 @@ td {
     overflow-y: scroll;
 }
 
-.mat-tab-body {
-    top: 20px !important;
+.borderButtom {
+    border-bottom: 1px solid gray;
 }

@@ -14,4 +14,13 @@ export interface InitialLookups{
     intendToDos: Lookup[];
     professions: Lookup[];
     educationLevels: Lookup[];
+    determinations: Lookup[];
+    moneySources: Lookup[];
+    broughtItems: Lookup[];
+    postArrivalNeeds: Lookup[];
+    transportations: Lookup[];
+    topNeeds: Lookup[];
+    obtainLivelihoodHelps: Lookup[];
+    tools: Lookup[];
+    mainConcerns: Lookup[];
 }

@@ -1,3 +1,23 @@
 .full-width-table {
-  width: 100%;
+    width: 100%;
+}
+
+table {
+    font-size: 13px;
+}
+
+.full-width {
+    width: 100%;
+}
+
+.beneficary-search-container {
+    margin: 10px;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+a {
+    text-decoration: none;
 }

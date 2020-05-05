@@ -32,9 +32,6 @@ export class LoginComponent{
     }
     this.loading = true;
     const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl') || '/dashboard';
-    console.log("return url is >>>>>>>>>"+ returnUrl);
-    console.log('inside login');
-    console.log('is form valid >>>>>' + this.loginForm.valid);
     this.authService.login(this.loginForm.value)
       .pipe(first())
       .subscribe(

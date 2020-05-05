@@ -4,9 +4,9 @@
             <mat-card-title>Beneficairy Information</mat-card-title>
         </mat-card-header>
         <mat-card-content>
-            <mat-tab-group [selectedIndex]="selectedTab.value" (selectedIndexChange)="selectedTab.setValue($event)">
+            <mat-tab-group #beneficiaryTab [selectedIndex]="selectedTab.value" (selectedIndexChange)="selectedTab.setValue($event)">
                 <mat-tab label="Profile">
-                    <p>1. Border Crossing Point Information</p>
+                    <h4 class="mt20">1. Border Crossing Point Information</h4>
                     <div fxLayout="row wrap" fxLayoutAlign="space-between">
                         <div fxFlex="0 1 calc(33.3% - 32px)">
                             <mat-form-field fxFlex="100%">
@@ -41,35 +41,35 @@
                             </mat-form-field>
                         </div>
                     </div>
-                    <p>2. Beneficiary Informaion</p>
-                    <div fxLayout="row wrap" fxLayoutAlign="space-between start">
+                    <h4>2. Beneficiary Informaion</h4>
+                    <div fxLayout="row wrap">
                         <div fxLayout="column" fxFlex="0 1 calc(40% - 32px)">
-                            <div fxLayout="row" fxLayoutAlign="space-between start">
-                                <p>Beneficiary Type: </p>
-                                <mat-radio-group formControlName="BeneficiaryType" fxLayout="row" fxLayoutGap="30px">
-                                    <mat-radio-button value="Family">Family</mat-radio-button>
-                                    <mat-radio-button value="Individual">Individual</mat-radio-button>
-                                </mat-radio-group>
-                            </div>
+                            <!-- <div fxLayout="row" fxLayoutAlign="space-between start"> -->
+                            <p>Beneficiary Type: </p>
+                            <mat-radio-group formControlName="BeneficiaryType" fxLayout="row" fxLayoutGap="30px">
+                                <mat-radio-button value="Family">Family</mat-radio-button>
+                                <mat-radio-button value="Individual">Individual</mat-radio-button>
+                            </mat-radio-group>
+                            <!-- </div> -->
 
                         </div>
                         <div fxLayout="column" fxFlex="0 1 calc(60.3% - 32px)">
-                            <div fxLayout="row" fxLayoutAlign="space-between start">
-                                <p>Return Status: </p>
-                                <mat-radio-group formControlName="ReturnStatus" fxLayout="row" fxLayoutGap="30px">
-                                    <mat-radio-button value="DEP">Deported</mat-radio-button>
-                                    <mat-radio-button value="DC">Document claimant</mat-radio-button>
-                                    <mat-radio-button value="SR">Spontaneous returnee</mat-radio-button>
-                                </mat-radio-group>
-                            </div>
+                            <!-- <div fxLayout="row" fxLayoutAlign="space-between start"> -->
+                            <p>Return Status: </p>
+                            <mat-radio-group formControlName="ReturnStatus" fxLayout="row" fxLayoutGap="30px">
+                                <mat-radio-button value="DEP">Deported</mat-radio-button>
+                                <mat-radio-button value="DC">Document claimant</mat-radio-button>
+                                <mat-radio-button value="SR">Spontaneous returnee</mat-radio-button>
+                            </mat-radio-group>
+                            <!-- </div> -->
                         </div>
                     </div>
-                    <mat-divider>
+                    <mat-divider class="mt20">
                     </mat-divider>
 
-                    <div fxLayout="row">
+                    <div fxLayout="row" class="mt20">
                         <div fxLayout="column" class="individualHolder">
-                            <p>3. Family members</p>
+                            <h4>3. Family members</h4>
                             <table class="indTable">
                                 <thead>
                                     <tr>
@@ -149,7 +149,7 @@
                             </table>
                         </div>
                     </div>
-                    <p style="margin-top: 10px;">4. Please indicate the place of origin and intended place of return </p>
+                    <h4 class="mt10">4. Please indicate the place of origin and intended place of return </h4>
                     <div fxLayout="row wrap" fxLayoutAlign="space-between center">
                         <div fxLayout="column" fxFlex="0 1 calc(40% - 32px)">
                             <mat-form-field class="full-width">
@@ -213,11 +213,11 @@
                     </div>
                 </mat-tab>
                 <mat-tab label="Protection">
-                    <p>5. Does this case have person with specific needs(PSN)</p>
+                    <h4 class="mt20">5. Does this case have person with specific needs(PSN)</h4>
                     <div fxLayout="row wrap" fxLayout.lt-sm="column" fxLayoutGap="32px" fxLayoutAlign="flex-start">
                         <ng-container *ngFor="let psn of initialLooupsData?.psns; let i=index;">
                             <div fxFlex="0 1 calc(33.3% - 32px)" fxFlex.lt-md="0 1 calc(50% - 32px)" fxFlex.lt-sm="100%">
-                                <mat-checkbox value="{{psn.lookupCode}" style="padding-right: 20px;">{{psn.lookupName}}</mat-checkbox>
+                                <mat-checkbox value="{{psn.lookupCode}">{{psn.lookupName}}</mat-checkbox>
                             </div>
                         </ng-container>
                     </div>
@@ -226,12 +226,558 @@
                             <input matInput placeholder="PSN other">
                         </mat-form-field>
                     </div>
+                    <h4>6. What were the three main reasons for leaving Afghanistan?</h4>
+                    <div fxLayout="row wrap" fxLayoutAlign="space-between">
+                        <div fxFlex="0 1 calc(40% - 32px)">
+                            <mat-form-field class="full-width">
+                                <mat-select placeholder="First Reason">
+                                    <mat-option *ngFor="let reason of initialLooupsData?.leavingReasons" [value]="reason.lookupCode">
+                                        {{ reason.lookupName }}
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+                        <div fxFlex="0 1 calc(60% - 32px)">
+                            <mat-form-field fxFlex="100%">
+                                <mat-label>First Reason Other</mat-label>
+                                <input matInput placeholder="First Reason Other">
+                            </mat-form-field>
+                        </div>
+                    </div>
+                    <div fxLayout="row wrap" fxLayoutAlign="space-between">
+                        <div fxFlex="0 1 calc(40% - 32px)">
+                            <mat-form-field class="full-width">
+                                <mat-select placeholder="Second Reason">
+                                    <mat-option *ngFor="let reason of initialLooupsData?.leavingReasons" [value]="reason.lookupCode">
+                                        {{ reason.lookupName }}
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+                        <div fxFlex="0 1 calc(60% - 32px)">
+                            <mat-form-field fxFlex="100%">
+                                <mat-label>Second Reason Other</mat-label>
+                                <input matInput placeholder="Second Reason Other">
+                            </mat-form-field>
+                        </div>
+                    </div>
+                    <div fxLayout="row wrap" fxLayoutAlign="space-between">
+                        <div fxFlex="0 1 calc(40% - 32px)">
+                            <mat-form-field class="full-width">
+                                <mat-select placeholder="Third Reason">
+                                    <mat-option *ngFor="let reason of initialLooupsData?.leavingReasons" [value]="reason.lookupCode">
+                                        {{ reason.lookupName }}
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+                        <div fxFlex="0 1 calc(60% - 32px)">
+                            <mat-form-field fxFlex="100%">
+                                <mat-label>Third Reason Other</mat-label>
+                                <input matInput placeholder="Third Reason Other">
+                            </mat-form-field>
+                        </div>
+                    </div>
+                    <h4>7. What are the main reasons behind your return to Afghanistan?</h4>
+                    <div fxLayout="row wrap" fxLayout.lt-sm="column" fxLayoutGap="32px" fxLayoutAlign="flex-start">
+                        <ng-container *ngFor="let reason of initialLooupsData?.returnReasons; let i=index;">
+                            <div fxFlex="0 1 calc(33.3% - 32px)" fxFlex.lt-md="0 1 calc(50% - 32px)" fxFlex.lt-sm="100%">
+                                <mat-checkbox value="{{reason.lookupCode}">{{reason.lookupName}}</mat-checkbox>
+                            </div>
+                        </ng-container>
+                    </div>
+                    <div fxLayout="column">
+                        <mat-form-field class="full-width">
+                            <input matInput placeholder="Return Reason other">
+                        </mat-form-field>
+                    </div>
+                    <h4>8. Rank which of these options is the most important for you to determine your destination in Afghanistan</h4>
+                    <div [ngClass]="{'borderButtom': !last}" class="pt10" fxLayout="row wrap" *ngFor="let determination of initialLooupsData?.determinations; last as last" fxLayoutAlign="space-between start">
+                        <div fxFlex="0 1 calc(40% - 32px)" fxLayoutAlign="space-between start">
+                            <mat-label style=" margin-right: 20px;">{{determination.lookupName}}</mat-label>
+                            <input *ngIf="determination.lookupCode == 'RankImpOther'" fxFlex="100%" matInput placeholder="Return Reason other">
+                        </div>
+                        <mat-radio-group fxFlex="0 1 calc(60% - 32px)" fxLayoutAlign="space-between start" fxLayout.lt-sm="column" aria-label="Select an option">
+                            <mat-radio-button value="NAAIMP">Not at all Important</mat-radio-button>
+                            <mat-radio-button value="SIMP">Slightly Important</mat-radio-button>
+                            <mat-radio-button value="IMP">Important</mat-radio-button>
+                            <mat-radio-button value="VIMP">Very Important</mat-radio-button>
+                        </mat-radio-group>
+                    </div>
+                    <mat-divider style="background-color: #3f51b5; height: 1px;">
+                    </mat-divider>
+                    <div class="mt20" fxLayout="row wrap" fxLayoutAlign="space-between start" fxLayoutGap="20px">
+                        <h4 fxFelx>9. Do you own housing (house/apartment)?</h4>
+                        <mat-radio-group name="OwnHouse" fxFlex fxLayoutGap="20px" fxLayout.lt-sm="column" aria-label="Select an option">
+                            <mat-radio-button value="Yes">Yes</mat-radio-button>
+                            <mat-radio-button value="No">No</mat-radio-button>
+                        </mat-radio-group>
+                    </div>
+                    <div fxLayout="row wrap" fxLayoutAlign="space-between start" fxLayoutAlign="start center" fxLayoutGap="20px">
+                        <h4 fxFelx style="text-align: center;">10. Where will you live?</h4>
+                        <mat-form-field fxFlex="0 1 40%" fxLayout.lt-sm="column" floatLabel="never">
+                            <mat-select placeholder="Select where will you live?">
+                                <mat-option *ngFor="let reason of initialLooupsData?.whereWillLive" [value]="reason.lookupCode">
+                                    {{ reason.lookupName }}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+                    <div class="mt20" fxLayout="row wrap" fxLayoutAlign="space-between start" fxLayoutGap="20px">
+                        <h4 fxFelx class="pt20">11. How much rent would you pay per month for accommodation?</h4>
+
+                        <mat-form-field fxFlexAlign="start" fxFlex floatLabel="never">
+                            <input matInput placeholder="Rent amont">
+                        </mat-form-field>
+                        <mat-radio-group class="pt20" name="RentPayCurrency" fxFlex fxLayoutGap="20px" fxLayout.lt-sm="column" aria-label="Select an option">
+                            <mat-radio-button value="USD">USD</mat-radio-button>
+                            <mat-radio-button value="AFG">AFG</mat-radio-button>
+                        </mat-radio-group>
+                    </div>
+                    <h4>12. How would you find the money for rental payments?</h4>
+                    <div fxLayout="row wrap" fxLayout.lt-sm="column" fxLayoutGap="32px" fxLayoutAlign="flex-start">
+                        <ng-container *ngFor="let source of initialLooupsData?.moneySources; let i=index;">
+                            <div fxFlex="0 1 calc(33.3% - 32px)" fxFlex.lt-md="0 1 calc(50% - 32px)" fxFlex.lt-sm="100%">
+                                <mat-checkbox value="{{source.lookupCode}">{{source.lookupName}}</mat-checkbox>
+                            </div>
+                        </ng-container>
+                    </div>
+                    <div fxLayout="column">
+                        <mat-form-field class="full-width">
+                            <input matInput placeholder="Money source other">
+                        </mat-form-field>
+                    </div>
+                    <div class="mt20" fxLayout="row wrap" fxLayoutAlign="space-between start" fxLayoutGap="20px">
+                        <h4 fxFelx>13. If there was a job opening for your wife, sister, daughter or adult female family member, would you allow her to work? </h4>
+                        <mat-radio-group name="AllowForJob" fxFlex fxLayoutGap="20px" fxLayout.lt-sm="column" aria-label="Select an option">
+                            <mat-radio-button value="Yes">Yes</mat-radio-button>
+                            <mat-radio-button value="No">No</mat-radio-button>
+                        </mat-radio-group>
+                    </div>
+                </mat-tab>
+                <mat-tab label="Host Country">
+                    <div class="mt20" fxLayout="row wrap" fxLayoutAlign="space-between start">
+                        <h4 fxFlex="0 1 calc(20% - 32px)" class="pt20">14. Country of Exile</h4>
+                        <mat-radio-group fxFlex="0 1 calc(30% - 32px)" class="pt20" name="CountryOfExile" fxLayoutAlign="space-between start" fxLayoutGap="30px" fxLayout.lt-sm="column" aria-label="Select an option">
+                            <mat-radio-button value="Iran">Iran</mat-radio-button>
+                            <mat-radio-button value="Paskistan">Pakistan</mat-radio-button>
+                            <mat-radio-button value="COther">Other</mat-radio-button>
+                        </mat-radio-group>
+                        <mat-form-field fxFlex="0 1 calc(50% - 32px)">
+                            <input matInput placeholder="Other Country">
+                        </mat-form-field>
+                    </div>
+                    <h4>15. Place of residence before return/deportation</h4>
+                    <div fxLayout="row wrap" fxLayoutAlign="space-between">
+                        <div fxFlex="0 1 calc(33.3% - 32px)">
+                            <mat-form-field class="full-width">
+                                <mat-select placeholder="Province">
+                                    <mat-option *ngFor="let provicne of initialLooupsData?.provinces" [value]="provicne.lookupCode">
+                                        {{ provicne.lookupName }}
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+                        <div fxFlex="0 1 calc(33.3% - 32px)">
+                            <mat-form-field class="full-width">
+                                <mat-select placeholder="District">
+                                    <mat-option *ngFor="let provicne of initialLooupsData?.provinces" [value]="provicne.lookupCode">
+                                        {{ provicne.lookupName }}
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+                        <div fxFlex="0 1 calc(33.3% - 32px)">
+                            <mat-form-field class="full-width">
+                                <input matInput placeholder="Remarks">
+                            </mat-form-field>
+                        </div>
+                    </div>
+                    <div class="mt20" fxLayout="row wrap" fxLayoutAlign="space-around start">
+                        <h4 fxFlex="0 1 calc(40% - 32px)" class="pt20">Do you have family members who stayed behind? </h4>
+                        <mat-radio-group fxFlex="0 1 calc(20% - 32px)" class="pt20" name="FamilyMemStayedBehind" fxLayoutGap="20px" fxLayout.lt-sm="column" aria-label="Select an option">
+                            <mat-radio-button value="Iran">Yes</mat-radio-button>
+                            <mat-radio-button value="Paskistan">No</mat-radio-button>
+                        </mat-radio-group>
+                        <mat-label fxFlex="0 1 calc(20% - 32px)" class="mt20">If yes how many</mat-label>
+                        <mat-form-field fxFlex>
+                            <input matInput placeholder="Number of member stayed behind">
+                        </mat-form-field>
+                    </div>
+                    <div class="mt20" fxLayout="row wrap" fxLayoutAlign="space-between start" fxLayoutGap="20px">
+                        <h4 fxFelex class="pt20">16. Length of stay in host country </h4>
+                        <mat-form-field fxFlex>
+                            <mat-label>Years</mat-label>
+                            <input matInput type="number">
+                        </mat-form-field>
+                        <mat-form-field fxFlex>
+                            <mat-label>Months</mat-label>
+                            <input matInput type="number">
+                        </mat-form-field>
+                        <mat-form-field fxFlex>
+                            <mat-label>Days</mat-label>
+                            <input matInput type="number">
+                        </mat-form-field>
+                    </div>
+                    <h4>17. Items brought from host country</h4>
+                    <div fxLayout="row wrap" fxLayout.lt-sm="column" fxLayoutGap="32px" fxLayoutAlign="flex-start">
+                        <ng-container *ngFor="let item of initialLooupsData?.broughtItems; let i=index;">
+                            <div fxFlex="0 1 calc(10.3% - 32px)" fxFlex.lt-md="0 1 calc(50% - 32px)" fxFlex.lt-sm="100%">
+                                <mat-checkbox value="{{item.lookupCode}">{{item.lookupName}}</mat-checkbox>
+                            </div>
+                        </ng-container>
+                    </div>
+                    <div fxLayout="column">
+                        <mat-form-field class="full-width">
+                            <input matInput placeholder="Item brought other">
+                        </mat-form-field>
+                    </div>
+                    <div class="mt20" fxLayout="row wrap" fxLayoutAlign="space-between start" fxLayoutGap="20px">
+                        <h4 fxFelx>18. If you had the opportunity would you return to Pakistan/Iran?</h4>
+                        <mat-radio-group name="WouldYouReturn" fxFlex fxLayoutGap="20px" fxLayout.lt-sm="column" aria-label="Select an option">
+                            <mat-radio-button value="Yes">Yes</mat-radio-button>
+                            <mat-radio-button value="No">No</mat-radio-button>
+                        </mat-radio-group>
+                    </div>
+                </mat-tab>
+                <mat-tab label="Assistance Needs 1">
+                    <table mat-table [dataSource]="initialLooupsData?.postArrivalNeeds" class="mat-elevation-z8">
+                        <ng-container matColumnDef="NeedAssistance">
+                            <th mat-header-cell *matHeaderCellDef> Need/Assistance </th>
+                            <td mat-cell *matCellDef="let row"> {{row.lookupName}} </td>
+                        </ng-container>
+                        <ng-container matColumnDef="IsProvided">
+                            <th mat-header-cell *matHeaderCellDef> Is Provided </th>
+                            <td mat-cell *matCellDef="let row">
+                                <mat-checkbox></mat-checkbox>
+                            </td>
+                        </ng-container>
+                        <ng-container matColumnDef="ProvidedDate">
+                            <th mat-header-cell *matHeaderCellDef> Provided Date </th>
+                            <td mat-cell *matCellDef="let row">
+                                <mat-form-field>
+                                    <!-- <mat-label>Choose a date</mat-label> -->
+                                    <input matInput [matDatepicker]="providedDate">
+                                    <mat-datepicker-toggle matSuffix [for]="providedDate"></mat-datepicker-toggle>
+                                    <mat-datepicker #providedDate></mat-datepicker>
+                                </mat-form-field>
+                            </td>
+                        </ng-container>
+                        <ng-container matColumnDef="Comments">
+                            <th mat-header-cell *matHeaderCellDef> Provided Date </th>
+                            <td mat-cell *matCellDef="let row">
+                                <mat-form-field class="full-width" floatLabel="never">
+                                    <input matInput placeholder="Comments">
+                                </mat-form-field>
+                            </td>
+                        </ng-container>
+                        <tr mat-header-row *matHeaderRowDef="postArrivalNeedTbleColumns"></tr>
+                        <tr mat-row *matRowDef="let row; columns: postArrivalNeedTbleColumns;"></tr>
+                    </table>
+                </mat-tab>
+                <mat-tab label="Assistance Needs 2">
+                    <div class="mt20" fxLayout="row wrap" fxLayoutAlign="space-between start" fxLayoutGap="20px">
+                        <h4 fxFelx>20. Have you or your family benefited from UNHCR or IOM programming in the past? </h4>
+                        <mat-radio-group name="HaveFamilyBenefited" fxFlex fxLayoutGap="20px" fxLayout.lt-sm="column" aria-label="Select an option">
+                            <mat-radio-button value="Yes">Yes</mat-radio-button>
+                            <mat-radio-button value="No">No</mat-radio-button>
+                        </mat-radio-group>
+                    </div>
+                    <div fxLayout="column">
+                        <p>If yes, when and where</p>
+                        <fieldset>
+                            <legend>Organization Iformation</legend>
+                            <div fxLayout="row wrap" fxLayoutAlign="space-between start" fxLayoutGap="10px">
+                                <div fxFlex="15%">
+                                    <mat-form-field fxFlex="100%">
+                                        <mat-label>Date</mat-label>
+                                        <input matInput [matDatepicker]="date">
+                                        <mat-datepicker-toggle matSuffix [for]="date"></mat-datepicker-toggle>
+                                        <mat-datepicker #date></mat-datepicker>
+                                    </mat-form-field>
+                                </div>
+                                <div fxFlex="15%">
+                                    <mat-form-field class="full-width">
+                                        <mat-select placeholder="Province">
+                                            <mat-option *ngFor="let provicne of initialLooupsData?.provinces" [value]="provicne.lookupCode">
+                                                {{ provicne.lookupName }}
+                                            </mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                </div>
+                                <div fxFlex="15%">
+                                    <mat-form-field class="full-width">
+                                        <mat-select placeholder="District">
+                                            <mat-option *ngFor="let provicne of initialLooupsData?.provinces" [value]="provicne.lookupCode">
+                                                {{ provicne.lookupName }}
+                                            </mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                </div>
+                                <div fxFlex="15%">
+                                    <mat-form-field class="full-width">
+                                        <input matInput placeholder="Village/Nahya">
+                                    </mat-form-field>
+                                </div>
+                                <div fxFlex="15%">
+                                    <mat-form-field class="full-width">
+                                        <mat-select placeholder="Organization">
+                                            <mat-option *ngFor="let provicne of initialLooupsData?.organizations" [value]="provicne.lookupCode">
+                                                {{ provicne.lookupName }}
+                                            </mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                </div>
+                                <div fxFlex="20%">
+                                    <mat-form-field class="full-width">
+                                        <input matInput placeholder="Assistance Provided">
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                        </fieldset>
+                    </div>
+                    <div fxLayout="row wrap" fxLayoutGap="20px">
+                        <h4 class="mt20" fxFelx>21. Transportation (UMC and other cases with difficulties)</h4>
+                        <div fxFlex="20%">
+                            <mat-form-field floatLabel="never" fxFlex="100%">
+                                <mat-label>Date</mat-label>
+                                <input matInput [matDatepicker]="TransportationDate">
+                                <mat-datepicker-toggle matSuffix [for]="TransportationDate"></mat-datepicker-toggle>
+                                <mat-datepicker #TransportationDate></mat-datepicker>
+                            </mat-form-field>
+                        </div>
+                    </div>
+                    <div fxLayout="row wrap" fxLayout.lt-sm="column" fxLayoutGap="32px" fxLayoutAlign="flex-start">
+                        <ng-container *ngFor="let transport of initialLooupsData?.transportations; let i=index;">
+                            <div fxFlex="0 1 calc(50% - 32px)" fxFlex.lt-md="0 1 calc(50% - 32px)" fxFlex.lt-sm="100%">
+                                <mat-checkbox value="{{transport.lookupCode}">{{transport.lookupName}}</mat-checkbox>
+                            </div>
+                        </ng-container>
+                    </div>
+                    <div fxLayout="column">
+                        <mat-form-field class="full-width">
+                            <input matInput placeholder="Other transportation difficulties">
+                        </mat-form-field>
+                    </div>
+                    <div fxLayout="column">
+                        <mat-form-field class="full-width">
+                            <input matInput placeholder="Additional information">
+                        </mat-form-field>
+                    </div>
+                    <div fxLayout="row" fxLayoutGap="30px" fxLayoutAlign="space-between start">
+                        <mat-form-field fxFlext class="full-width">
+                            <input matInput placeholder="Accompanied by">
+                        </mat-form-field>
+                        <mat-form-field fxFlext class="full-width">
+                            <input matInput placeholder="Mobile">
+                        </mat-form-field>
+                    </div>
+                </mat-tab>
+                <mat-tab label="Reintegration Need">
+                    <h4 class="mt20">22. What are the three top needs in order of importance</h4>
+                    <div fxLayout="row wrap" fxLayoutAlign="space-between" fxLayoutGap="32px">
+                        <div fxFlex="0 1 calc(40% - 32px)">
+                            <mat-form-field class="full-width">
+                                <mat-select placeholder="First Need">
+                                    <mat-option *ngFor="let need of initialLooupsData?.topNeeds" [value]="need.lookupCode">
+                                        {{ need.lookupName }}
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+                        <div fxFlex="0 1 calc(60% - 32px)">
+                            <mat-form-field fxFlex="100%">
+                                <mat-label>First Reason Other</mat-label>
+                                <input matInput placeholder="First Need Other">
+                            </mat-form-field>
+                        </div>
+                    </div>
+                    <div fxLayout="row wrap" fxLayoutAlign="space-between" fxLayoutGap="32px">
+                        <div fxFlex="0 1 calc(40% - 32px)">
+                            <mat-form-field class="full-width">
+                                <mat-select placeholder="Secon Need">
+                                    <mat-option *ngFor="let need of initialLooupsData?.topNeeds" [value]="need.lookupCode">
+                                        {{ need.lookupName }}
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+                        <div fxFlex="0 1 calc(60% - 32px)">
+                            <mat-form-field fxFlex="100%">
+                                <mat-label>Secon Need Other</mat-label>
+                                <input matInput placeholder="Second Need Other">
+                            </mat-form-field>
+                        </div>
+                    </div>
+                    <div fxLayout="row wrap" fxLayoutAlign="space-between" fxLayoutGap="32px">
+                        <div fxFlex="0 1 calc(40% - 32px)">
+                            <mat-form-field class="full-width">
+                                <mat-select placeholder="Third Need">
+                                    <mat-option *ngFor="let need of initialLooupsData?.topNeeds" [value]="need.lookupCode">
+                                        {{ need.lookupName }}
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+                        <div fxFlex="0 1 calc(60% - 32px)">
+                            <mat-form-field fxFlex="100%">
+                                <mat-label>Third Need Other</mat-label>
+                                <input matInput placeholder="Third Need Other">
+                            </mat-form-field>
+                        </div>
+                    </div>
+                    <div fxLayout="row wrap" fxLayoutAlign="space-between" fxLayoutGap="20px">
+                        <h4 class="mt20" fxFlex="0 1 calc(35% - 20px)">23. What do you intend to do?</h4>
+                        <div fxFlex="0 1 calc(35% - 20px)">
+                            <mat-form-field class="full-width" floatLabel="never">
+                                <mat-select placeholder="Select intend to do" floatLabel="never">
+                                    <mat-option *ngFor="let toDo of initialLooupsData?.intendToDos" [value]="toDo.lookupCode">
+                                        {{ toDo.lookupName }}
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+                        <div fxFlex="0 1 calc(30% - 20px)">
+                            <mat-form-field fxFlex="100%">
+                                <mat-label>State Reason</mat-label>
+                                <input matInput placeholder="State Reason">
+                            </mat-form-field>
+                        </div>
+                    </div>
+                    <div fxLayout="row wrap" fxLayoutAlign="space-between" fxLayoutGap="20px">
+                        <h4 class="mt20" fxFlex="0 1 calc(35% - 20px)">24. What was your profession in Pakistan/Iran?</h4>
+                        <div fxFlex="0 1 calc(35% - 20px)">
+                            <mat-form-field class="full-width" floatLabel="never">
+                                <mat-select placeholder="Select Profession">
+                                    <mat-option *ngFor="let profession of initialLooupsData?.professions" [value]="profession.lookupCode">
+                                        {{ profession.lookupName }}
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+                        <div fxFlex="0 1 calc(30% - 20px)">
+                            <mat-form-field fxFlex="100%">
+                                <mat-label>Profession Other</mat-label>
+                                <input matInput placeholder="Profession Other">
+                            </mat-form-field>
+                        </div>
+                    </div>
+                    <h4 class="mt20" fxFlex="0 1 calc(40% - 20px)">25. What can help you obtain livelihood opportunities or employment in Afghanistan?</h4>
+                    <div fxLayout="row wrap" fxLayoutAlign="space-between" fxLayoutGap="20px">
+                        <mat-checkbox fxFlex *ngFor="let help of initialLooupsData?.obtainLivelihoodHelps" value="{{transport.lookupCode}">{{help.lookupName}}</mat-checkbox>
+                    </div>
+                    <fieldset>
+                        <legend>Tools</legend>
+                        <div fxLayout="row" fxLayoutGap="20px">
+                            <mat-checkbox fxFlex *ngFor="let tool of initialLooupsData?.tools" value="{{tool.lookupCode}">{{tool.lookupName}}</mat-checkbox>
+                        </div>
+                        <mat-form-field fxLayout="column" fxFlex="100%">
+                            <mat-label>Tool Other</mat-label>
+                            <input matInput placeholder="Tool Other">
+                        </mat-form-field>
+                    </fieldset>
+                    <div class="mt20" fxLayout="row wrap" fxLayoutAlign="space-between start" fxLayoutGap="20px">
+                        <h4 fxFelx>26 Can you read and write- HoH</h4>
+                        <mat-radio-group name="HoHCanReadWrite" fxFlex fxLayoutGap="20px" fxLayout.lt-sm="column" aria-label="Select an option">
+                            <mat-radio-button value="Yes">Yes</mat-radio-button>
+                            <mat-radio-button value="No">No</mat-radio-button>
+                        </mat-radio-group>
+                    </div>
+                    <div fxLayout="row wrap" fxLayoutAlign="space-between" fxLayoutGap="20px">
+                        <h4 class="mt20" fxFlex="0 1 calc(40% - 20px)">27. What is the highest education level achieved by the HoH?</h4>
+                        <div fxFlex="0 1 calc(30% - 20px)">
+                            <mat-form-field class="full-width" floatLabel="never">
+                                <mat-select placeholder="Select Education level">
+                                    <mat-option *ngFor="let education of initialLooupsData?.educationLevels" [value]="education.lookupCode">
+                                        {{ education.lookupName }}
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+                        <div fxFlex="0 1 calc(30% - 20px)">
+                            <mat-form-field fxFlex="100%">
+                                <mat-label>Education level Other</mat-label>
+                                <input matInput name="HoHEducationLevelOther" placeholder="Education level Other">
+                            </mat-form-field>
+                        </div>
+                    </div>
+                    <h4>28. What are your main concerns in Afghanistan?</h4>
+                    <fieldset>
+                        <legend>Main concerns</legend>
+                        <div fxLayout="row wrap" fxLayout.lt-sm="column" fxLayoutGap="30px" fxLayoutAlign="flex-start">
+                            <mat-checkbox fxFlex *ngFor="let source of initialLooupsData?.moneySources; let i=index;" value="{{source.lookupCode}">{{source.lookupName}}</mat-checkbox>
+                        </div>
+                        <div fxLayout="column">
+                            <mat-form-field class="full-width">
+                                <input matInput placeholder="Main concern other">
+                            </mat-form-field>
+                        </div>
+                    </fieldset>
+                    <h4 class="mt20">29. How many members of Household have Afghan documentation?</h4>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Document Type</th>
+                                <th>Number of household members</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><label for="">Tazkira</label></td>
+                                <td>
+                                    <mat-form-field class="full-width">
+                                        <input matInput name="NumHHHaveTaskira" placeholder="Number of household members have">
+                                    </mat-form-field>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><label for="">Passport</label></td>
+                                <td>
+                                    <mat-form-field class="full-width">
+                                        <input matInput name="NumHHHavePassport" placeholder="# have Passport">
+                                    </mat-form-field>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><label for="">Other (driver’s license, marriage certificate, school certificates etc.)</label></td>
+                                <td>
+                                    <mat-form-field class="full-width">
+                                        <input matInput name="NumHHHaveDocOther" placeholder="Number of household members have">
+                                    </mat-form-field>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="mt20" fxLayout="row wrap" fxLayoutAlign="space-between start" fxLayoutGap="20px">
+                        <h4 fxFelx>30. Do you have any secure means of livelihood or savings to subsist from? </h4>
+                        <mat-radio-group name="DoHaveSecureLivelihood" fxFlex fxLayoutGap="20px" fxLayout.lt-sm="column" aria-label="Select an option">
+                            <mat-radio-button value="Yes">Yes</mat-radio-button>
+                            <mat-radio-button value="No">No</mat-radio-button>
+                        </mat-radio-group>
+                    </div>
+                    <div class="mt20" fxLayout="row wrap" fxLayoutAlign="space-between start" fxLayoutGap="20px">
+                        <h4 fxFelx>31. Did your children go to school in host country?</h4>
+                        <mat-radio-group name="DidChildrenGoToSchoole" fxFlex fxLayoutGap="20px" fxLayout.lt-sm="column" aria-label="Select an option">
+                            <mat-radio-button value="Yes">Yes</mat-radio-button>
+                            <mat-radio-button value="No">No</mat-radio-button>
+                        </mat-radio-group>
+                    </div>
+                    <fieldset>
+                        <legend>if Yes, specify</legend>
+                        <div fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="30px">
+                            <mat-checkbox class="mt20">Primary School</mat-checkbox>
+                            <mat-checkbox class="mt20">Secondary School</mat-checkbox>
+                            <mat-form-field class="full-width">
+                                <input matInput name="NumChildrenAttendedSchoole" placeholder="How many of your children attended school? ">
+                            </mat-form-field>
+                        </div>
+                    </fieldset>
                 </mat-tab>
             </mat-tab-group>
         </mat-card-content>
         <mat-card-actions fxLayout="row" fxLayoutAlign="end start">
-            <button mat-raised-button color="primary" *ngIf="selectedTab.value!=0" type="button" (click)="selectedTab.setValue(selectedTab.value-1)">Previous</button>
-            <button mat-raised-button color="primary" (click)="selectedTab.setValue(selectedTab.value+1)" type="button">Next</button>
+            <button mat-raised-button color="primary" *ngIf="selectedTab.value!=0" (click)="selectedTab.setValue((selectedTab.value)-1)" type="button">Previous</button>
+            <button mat-raised-button color="primary" (click)="selectedTab.setValue((selectedTab.value)+1)" type="button">Next</button>
             <button mat-raised-button color="primary" type="submit">Submit</button>
         </mat-card-actions>
     </mat-card>
