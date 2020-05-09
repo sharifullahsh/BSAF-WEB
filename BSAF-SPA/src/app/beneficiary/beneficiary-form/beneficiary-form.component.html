@@ -193,7 +193,7 @@
                         </div>
                         <div fxLayout="column" fxFlex="0 1 calc(40.3% - 32px)">
                             <mat-form-field class="full-width">
-                                <mat-select placeholder="Return Province" formControlName="returnProvince">
+                                <mat-select placeholder="Return Province" (selectionChange)="returnProvinceChanged($event)" formControlName="returnProvince">
                                     <mat-option *ngFor="let provicne of initialLooupsData?.provinces" [value]="provicne.lookupCode">
                                         {{ provicne.lookupName }}
                                     </mat-option>
@@ -247,7 +247,7 @@
                             <div fxFlex="0 1 calc(33.3% - 32px)" fxFlex.lt-md="0 1 calc(50% - 32px)" fxFlex.lt-sm="100%">
                                 <div fxLayout="row" fxLayoutGap="20px">
                                     <mat-checkbox value="{{psn.lookupCode}}" [checked]="psn.isSelected">{{psn.lookupName}}</mat-checkbox>
-                                    <input matInput placeholder="PSN other" value="{{psn.psnOther}}" *ngIf="psn.lookupName == 'Other'">
+                                    <input matInput placeholder="PSN other" value="{{psn.Other}}" *ngIf="psn.lookupName == 'Other'">
                                 </div>
                             </div>
                         </ng-container>
@@ -316,10 +316,24 @@
                         </ng-container>
                     </div>
                     <h4 class="mt20">8. Rank which of these options is the most important for you to determine your destination in Afghanistan</h4>
-                    <div [ngClass]="{'borderButtom': !last}" class="pt10" fxLayout="row wrap" *ngFor="let determination of initialLooupsData?.determinations; last as last" fxLayoutAlign="space-between start">
+                    <!-- <div [ngClass]="{'borderButtom': !last}" class="pt10" fxLayout="row wrap" *ngFor="let determination of initialLooupsData?.determinations; last as last" fxLayoutAlign="space-between start">
                         <div fxFlex="0 1 calc(40% - 32px)" fxLayoutAlign="space-between start">
                             <mat-label style=" margin-right: 20px;">{{determination.lookupName}}</mat-label>
-                            <input *ngIf="determination.lookupCode == 'RankImpOther'" fxFlex="100%" matInput placeholder="Return Reason other">
+                            <input *ngIf="determination.lookupCode == 'RankImpOther'" fxFlex="100%" matInput placeholder="Determination other">
+                        </div>
+                        <mat-radio-group fxFlex="0 1 calc(60% - 32px)" fxLayoutAlign="space-between start" fxLayout.lt-sm="column" aria-label="Select an option">
+                            <mat-radio-button value="NAAIMP">Not at all Important</mat-radio-button>
+                            <mat-radio-button value="SIMP">Slightly Important</mat-radio-button>
+                            <mat-radio-button value="IMP">Important</mat-radio-button>
+                            <mat-radio-button value="VIMP">Very Important</mat-radio-button>
+                        </mat-radio-group>
+                    </div> -->
+                    <!-- <div [formGroupName]="name">
+
+                    </div> -->
+                    <div [ngClass]="{'borderButtom': !last}" class="pt10" fxLayout="row wrap" fxLayoutAlign="space-between start">
+                        <div fxFlex="0 1 calc(40% - 32px)" fxLayoutAlign="space-between start">
+                            <mat-label style=" margin-right: 20px;">Access to a job</mat-label>
                         </div>
                         <mat-radio-group fxFlex="0 1 calc(60% - 32px)" fxLayoutAlign="space-between start" fxLayout.lt-sm="column" aria-label="Select an option">
                             <mat-radio-button value="NAAIMP">Not at all Important</mat-radio-button>
@@ -328,6 +342,7 @@
                             <mat-radio-button value="VIMP">Very Important</mat-radio-button>
                         </mat-radio-group>
                     </div>
+
                     <mat-divider style="background-color: #3f51b5; height: 1px;">
                     </mat-divider>
                     <div class="mt20" fxLayout="row wrap" fxLayoutAlign="space-between start" fxLayoutGap="20px">
@@ -382,7 +397,7 @@
                 <mat-tab label="Host Country">
                     <div class="mt20" fxLayout="row wrap" fxLayoutAlign="space-between start">
                         <h4 fxFlex="0 1 calc(20% - 32px)" class="pt20">14. Country of Exile</h4>
-                        <mat-radio-group fxFlex="0 1 calc(30% - 32px)" class="pt20" formControlName="countryOfExile" fxLayoutAlign="space-between start" fxLayoutGap="30px" fxLayout.lt-sm="column" aria-label="Select an option">
+                        <mat-radio-group (change)="hostCountryChanged($event)" fxFlex="0 1 calc(30% - 32px)" class="pt20" formControlName="countryOfExile" fxLayoutAlign="space-between start" fxLayoutGap="30px" fxLayout.lt-sm="column" aria-label="Select an option">
                             <mat-radio-button value="Iran">Iran</mat-radio-button>
                             <mat-radio-button value="Pakistan">Pakistan</mat-radio-button>
                             <mat-radio-button value="COther">Other</mat-radio-button>
@@ -395,9 +410,9 @@
                     <div fxLayout="row wrap" fxLayoutAlign="space-between">
                         <div fxFlex="0 1 calc(33.3% - 32px)">
                             <mat-form-field class="full-width">
-                                <mat-select placeholder="Province">
-                                    <mat-option *ngFor="let provicne of initialLooupsData?.provinces" [value]="provicne.lookupCode">
-                                        {{ provicne.lookupName }}
+                                <mat-select placeholder="Province" (selectionChange)="hostCountryProvinceChanged($event)">
+                                    <mat-option *ngFor="let provicne of hostCountryProvinces" [value]="provicne.id">
+                                        {{ provicne.name }}
                                     </mat-option>
                                 </mat-select>
                             </mat-form-field>
@@ -405,8 +420,8 @@
                         <div fxFlex="0 1 calc(33.3% - 32px)">
                             <mat-form-field class="full-width">
                                 <mat-select placeholder="District">
-                                    <mat-option *ngFor="let provicne of initialLooupsData?.provinces" [value]="provicne.lookupCode">
-                                        {{ provicne.lookupName }}
+                                    <mat-option *ngFor="let district of hostCountryDistricts" [value]="district.id">
+                                        {{ district.name }}
                                     </mat-option>
                                 </mat-select>
                             </mat-form-field>
@@ -758,7 +773,7 @@
                                 <td><label for="">Passport</label></td>
                                 <td>
                                     <mat-form-field class="full-width">
-                                        <input formControlName="numHHHavePassport" matInput placeholder="# have Passport">
+                                        <input formControlName="numHHHavePassport" matInput placeholder="Number of household members have Passport">
                                     </mat-form-field>
                                 </td>
                             </tr>

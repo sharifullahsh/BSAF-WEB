@@ -77,6 +77,32 @@ namespace BSAFWebApi.Controllers
                 .Select(d => new LookupDto { LookupCode = d.DistrictCode, LookupName = d.EnName }).ToList();
             return Ok(districts);
         }
+        [AllowAnonymous]
+        [HttpGet("hostCountryProvinces/{countryCode}")]
+        public async Task<IActionResult> GethostCountryProvinces(string countryCode)
+        {
+            //var lookups = new SearchLookupDto
+            //{
+            //    borderCrossingPoints = db.BorderCrossingPoints.Select(b => new LookupDto { LookupCode = b.BCPCode, LookupName = b.EnName }).ToList(),
+            //    returnStatus = db.LookupValues.Where(l => l.LookupCode == "RSTATUS").Select(l => new LookupDto { LookupCode = l.ValueCode, LookupName = l.EnName }).ToList(),
+            //};
+            var districts = db.HostCountryProvinces.Where(d => d.CountryCode == countryCode && d.IsActive == true)
+                .Select(d => new HostCountryProvinceDto { ID = d.ProvinceId, Name = d.EnName }).ToList();
+            return Ok(districts);
+        }
+        [AllowAnonymous]
+        [HttpGet("hostCountryDistricts/{provinceId}")]
+        public async Task<IActionResult> GetHostCountryDistricts(int provinceId)
+        {
+            //var lookups = new SearchLookupDto
+            //{
+            //    borderCrossingPoints = db.BorderCrossingPoints.Select(b => new LookupDto { LookupCode = b.BCPCode, LookupName = b.EnName }).ToList(),
+            //    returnStatus = db.LookupValues.Where(l => l.LookupCode == "RSTATUS").Select(l => new LookupDto { LookupCode = l.ValueCode, LookupName = l.EnName }).ToList(),
+            //};
+            var districts = db.HostCountryDistricts.Where(d => d.ProvinceId == provinceId && d.IsActive == true)
+                .Select(d => new HostCountryProvinceDto { ID = d.DistrictId, Name = d.EnName }).ToList();
+            return Ok(districts);
+        }
 
     }
 }

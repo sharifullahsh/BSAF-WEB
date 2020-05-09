@@ -1,7 +1,7 @@
 import { CheckboxForView } from '../../models/CheckboxForView';
 import { PSN } from './../../models/PSN';
 import { AlertifyService } from './../../_services/alertify.service';
-import { Lookup } from './../../models/Lookup';
+import { Lookup, HostCountryProvince, HostCountryDistrict } from './../../models/Lookup';
 import { Individual } from './../individuals/individuals.component';
 import { Beneficiary } from './../../models/Beneficiary';
 import { BeneficiaryService } from './../../_services/beneficiary.service';
@@ -28,6 +28,10 @@ export class BeneficiaryFormComponent implements OnInit {
   returnDistricts: Lookup[];
   psn: CheckboxForView[] = [];
   returnReason: CheckboxForView[] = [];
+  initialLooupsData: InitialLookups;
+  photoPath: any;
+  hostCountryProvinces: HostCountryProvince[];
+  hostCountryDistricts: HostCountryDistrict[];
   beneficiaryForm = this.fb.group({
     cardID: null,
     screeningDate: null,
@@ -224,8 +228,7 @@ export class BeneficiaryFormComponent implements OnInit {
   //   })
   //  ]);
 
-  initialLooupsData: InitialLookups;
-  photoPath: any;
+
   constructor(private fb: FormBuilder, private lookupService: LookupService,
               private route: ActivatedRoute, private beneficiaryService: BeneficiaryService,
               private alertifyService: AlertifyService,
@@ -237,7 +240,7 @@ export class BeneficiaryFormComponent implements OnInit {
   ngOnInit(): void {
       this.route.data.subscribe((data: {initialLookups: InitialLookups}) => {
         this.initialLooupsData = data.initialLookups;
-        // console.log("data is >>>>>>> "+ JSON.stringify(this.initialLooupsData));
+        console.log("data is >>>>>>> "+ JSON.stringify(this.initialLooupsData));
       });
     // this.heroes$ = this.route.paramMap.pipe(
     //   switchMap(params => {
@@ -254,69 +257,67 @@ export class BeneficiaryFormComponent implements OnInit {
  
       const id = +this.route.snapshot.paramMap.get('id');
       // console.log('id is >>>>>>>>>>>>>>><<<<<<<<<<<<<<< ' + id);
-      this.beneficiaryService.getBeneficiary(id).subscribe((response: Beneficiary) => {
-      // console.log('beneficiary is >>>>>>>>>>>>>> ' + JSON.stringify(response));
-      this.beneficiary = response;
-      this.individuals = response.individuals;
-      this.beneficiaryForm.patchValue({
-        ...response,
-        ownHouse: response.ownHouse,
-        allowForJob: response.allowForJob,
-        familyMemStayedBehind: response.familyMemStayedBehind.toString(),
-        wouldYouReturn: response.wouldYouReturn,
-        haveFamilyBenefited:response.haveFamilyBenefited,
-        hoHCanReadWrite: response.hoHCanReadWrite
-      },{onlySelf:true});
-      const originProvince = this.beneficiaryForm.get('originProvince').value;
-      if (originProvince){
-        this.lookupService.getDistrictLookups(originProvince).subscribe((response: Lookup[]) => {
-          this.originDistricts = response;
+      if(id){
+        this.beneficiaryService.getBeneficiary(id).subscribe((response: Beneficiary) => {
+          // console.log('beneficiary is >>>>>>>>>>>>>> ' + JSON.stringify(response));
+          this.beneficiary = response;
+          this.individuals = response.individuals;
+          this.beneficiaryForm.patchValue({
+            ...response
+          },{onlySelf:true});
+          const originProvince = this.beneficiaryForm.get('originProvince').value;
+          if (originProvince){
+            this.lookupService.getDistrictLookups(originProvince).subscribe((response: Lookup[]) => {
+              this.originDistricts = response;
+            }, (error) => {
+              console.log('erro is >>>>>>' + JSON.stringify(error));
+              this.alertifyService.error('Unable to load origin districts.');
+            });
+          }
+          const returnProvince = this.beneficiaryForm.get('returnProvince').value;
+          if (originProvince){
+            this.lookupService.getDistrictLookups(returnProvince).subscribe((response: Lookup[]) => {
+              this.returnDistricts = response;
+            }, (error) => {
+              console.log('erro is >>>>>>' + JSON.stringify(error));
+              this.alertifyService.error('Unable to load origin districts.');
+            });
+          }
+          this.psn = this.createCheckboxList(this.initialLooupsData.psns);
+          for (const bPsn of this.beneficiary.psNs) {
+            for (const i in this.psn) {
+              if(bPsn.psnCode === this.psn[i].lookupCode){
+                this.psn[i].isSelected =true;
+                this.psn[i].Other = bPsn.psnOther;
+              }
+            }
+          }
+          // console.log("return reason are >>>>>>>"+JSON.stringify(this.initialLooupsData.returnReasons));
+          this.returnReason = this.createCheckboxList(this.initialLooupsData.returnReasons);
+          for (const reason of this.beneficiary.returnReasons) {
+            for (const i in this.returnReason) {
+              if(reason.reasonCode === this.returnReason[i].lookupCode){
+                this.returnReason[i].isSelected = true;
+                this.returnReason[i].Other = reason.Other;
+              }
+            }
+          }
+          this.loadHostCountryProvinces(response.countryOfExile);
+          // this.photoPath = "data:image/png;base64,"+ response.photo;
+          console.log("photo is >>>>>>>>>>>"+response.photo);
+          if(response.photo){
+            this.photoPath = this._sanitizer.bypassSecurityTrustResourceUrl(`data:image/png;base64, ${response.photo}`);
+          }else{
+            this.photoPath = this._sanitizer.bypassSecurityTrustResourceUrl(`data:image/png;base64, ${image}`);
+    
+          }
+    
+          // console.log('form value are >>>>>>>>>>> ' + JSON.stringify(this.beneficiaryForm.value));
         }, (error) => {
-          console.log('erro is >>>>>>' + JSON.stringify(error));
-          this.alertifyService.error('Unable to load origin districts.');
+          console.log('can not lood beneficar ');
         });
       }
-      const returnProvince = this.beneficiaryForm.get('returnProvince').value;
-      if (originProvince){
-        this.lookupService.getDistrictLookups(returnProvince).subscribe((response: Lookup[]) => {
-          this.returnDistricts = response;
-        }, (error) => {
-          console.log('erro is >>>>>>' + JSON.stringify(error));
-          this.alertifyService.error('Unable to load origin districts.');
-        });
-      }
-      this.psn = this.createCheckboxList(this.initialLooupsData.psns);
-      for (const bPsn of this.beneficiary.psNs) {
-        for (const i in this.psn) {
-          if(bPsn.psnCode === this.psn[i].lookupCode){
-            this.psn[i].isSelected =true;
-            this.psn[i].Other = bPsn.psnOther;
-          }
-        }
-      }
-      // console.log("return reason are >>>>>>>"+JSON.stringify(this.initialLooupsData.returnReasons));
-      this.returnReason = this.createCheckboxList(this.initialLooupsData.returnReasons);
-      for (const reason of this.beneficiary.returnReasons) {
-        for (const i in this.returnReason) {
-          if(reason.reasonCode === this.returnReason[i].lookupCode){
-            this.returnReason[i].isSelected = true;
-            this.returnReason[i].Other = reason.Other;
-          }
-        }
-      }
-      // this.photoPath = "data:image/png;base64,"+ response.photo;
-      console.log("photo is >>>>>>>>>>>"+response.photo);
-      if(response.photo){
-        this.photoPath = this._sanitizer.bypassSecurityTrustResourceUrl(`data:image/png;base64, ${response.photo}`);
-      }else{
-        this.photoPath = this._sanitizer.bypassSecurityTrustResourceUrl(`data:image/png;base64, ${image}`);
-
-      }
-
-      // console.log('form value are >>>>>>>>>>> ' + JSON.stringify(this.beneficiaryForm.value));
-    }, (error) => {
-      console.log('can not lood beneficar ');
-    });
+  
   }
  createCheckboxList(lookupList:Lookup[]){
   let createdList:CheckboxForView[] = [];
@@ -340,9 +341,52 @@ export class BeneficiaryFormComponent implements OnInit {
   //   return this.beneficiaryForm.get('individuals') as FormArray;
   // }
   originProvinceChanged(event: any){
-    console.log('value of origin province change and is >>>>' + event);
-    const province = this.beneficiaryForm.get('originProvince').value;
-    console.log('province is >>>>>>>>>>>>>' + province);
+    if(event.value){
+      this.lookupService.getDistrictLookups(event.value).subscribe((response: Lookup[]) => {
+        this.originDistricts = response;
+      }, (error) => {
+        console.log('erro is >>>>>>' + JSON.stringify(error));
+        this.alertifyService.error('Unable to load origin districts.');
+      });
+    }
+  }
+  hostCountryProvinceChanged(event: any){
+    if(event.value){
+      this.lookupService.getHostCountryDistricts(event.value).subscribe((response: HostCountryDistrict[]) => {
+        this.hostCountryDistricts = response;
+      }, (error) => {
+        console.log('erro is >>>>>>' + JSON.stringify(error));
+        this.alertifyService.error('Unable to load origin districts.');
+      });
+    }
+  }
+  loadHostCountryProvinces(country: string){
+    this.hostCountryDistricts = [];
+    if(country && (country =="Iran" || country == "Pakistan")){
+      const ountryCode = country == "Iran" ? "IRN":"PAK";
+      this.lookupService.getHostCountryProvinces(ountryCode).subscribe((response: HostCountryProvince[]) => {
+      this.hostCountryProvinces = response;
+    }, (error) => {
+      console.log('erro is >>>>>>' + JSON.stringify(error));
+      this.alertifyService.error('Unable to load origin districts.');
+    });
+    }else{
+      this.hostCountryProvinces = [];
+      this.hostCountryDistricts = [];
+    }
+  }
+  hostCountryChanged(event: any){
+    this.loadHostCountryProvinces(event.value);
+  }
+  returnProvinceChanged(event: any){
+    if(event.value){
+      this.lookupService.getDistrictLookups(event.value).subscribe((response: Lookup[]) => {
+        this.returnDistricts = response;
+      }, (error) => {
+        console.log('erro is >>>>>>' + JSON.stringify(error));
+        this.alertifyService.error('Unable to load origin districts.');
+      });
+    }
   }
   nextTab(){
 

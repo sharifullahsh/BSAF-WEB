@@ -17,9 +17,16 @@ export class LookupService {
   getDistrictLookups(provinceCode: string) {
     return this.http.get(this.baseUrl + 'lookup/districtLookups/' + provinceCode);
   }
+  getHostCountryProvinces(countryCode: string) {
+    return this.http.get(this.baseUrl + 'lookup/hostCountryProvinces/' + countryCode);
+  }
+  getHostCountryDistricts(provinceCode: string) {
+    return this.http.get(this.baseUrl + 'lookup/hostCountryDistricts/' + provinceCode);
+  }
   getInitialLookups(): Observable<InitialLookups>{
     return this.http.get<InitialLookups>(this.baseUrl + 'lookup/initialLookups').pipe(map(response=>{
       return response;
   }));
+
 }
 }

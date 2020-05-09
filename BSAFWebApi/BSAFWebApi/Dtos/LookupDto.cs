@@ -11,4 +11,16 @@ namespace BSAFWebApi.Dtos
 
         public string LookupName { get; set; }
     }
+    public class HostCountryProvinceDto
+    {
+        public int ID { get; set; }
+
+        public string Name { get; set; }
+    }
+    public class HostCountryDistrictDto
+    {
+        public int ID { get; set; }
+
+        public string Name { get; set; }
+    }
 }
