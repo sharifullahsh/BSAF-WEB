@@ -8,6 +8,7 @@ import { BeneficiaryFormComponent } from './beneficiary/beneficiary-form/benefic
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { AuthGuard } from './_guards/auth.guard';
+import { BeneficiaryResolverService } from './_resolvers/beneficiary-resolver.service';
 
 const routes: Routes = [
   {path: 'login', component: LoginComponent},
@@ -15,7 +16,13 @@ const routes: Routes = [
   children: [
     {path: '', redirectTo: 'dashboard', pathMatch: 'full'},
     {path: 'dashboard', component: DashboardComponent},
-    {path: 'beneficiaryForm', component: BeneficiaryFormComponent},
+    {
+      path: 'beneficiaryForm',
+       component: BeneficiaryFormComponent,
+       resolve: {
+        initialLookups: BeneficiaryResolverService
+      }
+      },
     {path: 'beneficiarySearch', component: BeneficiarySearchComponent},
     {path: 'userManagement',  data: { roles: ['Admin']}, canActivate: [AuthGuard], component: UserManagementComponent},
     {path: '**', component: PageNotFoundComponent}

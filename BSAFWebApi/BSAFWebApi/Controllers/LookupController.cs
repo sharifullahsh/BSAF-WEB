@@ -54,8 +54,8 @@ namespace BSAFWebApi.Controllers
         }
 
         [AllowAnonymous]
-        [HttpGet("searchLookups")]
-        public async Task<IActionResult> GetSearchLookups()
+        [HttpGet("beneficiarySearchLookups")]
+        public async Task<IActionResult> GetBeneficiarySearchLookups()
         {
             var lookups = new SearchLookupDto
             {
@@ -63,6 +63,19 @@ namespace BSAFWebApi.Controllers
                 returnStatus = db.LookupValues.Where(l => l.LookupCode == "RSTATUS").Select(l => new LookupDto { LookupCode = l.ValueCode, LookupName = l.EnName }).ToList(),
             };
             return Ok(lookups);
+        }
+        [AllowAnonymous]
+        [HttpGet("districtLookups/{provinceCode}")]
+        public async Task<IActionResult> GetDistrictLookups(string provinceCode)
+        {
+            //var lookups = new SearchLookupDto
+            //{
+            //    borderCrossingPoints = db.BorderCrossingPoints.Select(b => new LookupDto { LookupCode = b.BCPCode, LookupName = b.EnName }).ToList(),
+            //    returnStatus = db.LookupValues.Where(l => l.LookupCode == "RSTATUS").Select(l => new LookupDto { LookupCode = l.ValueCode, LookupName = l.EnName }).ToList(),
+            //};
+            var districts = db.Districts.Where(d => d.ProvinceCode == provinceCode && d.IsActive == true)
+                .Select(d => new LookupDto { LookupCode = d.DistrictCode, LookupName = d.EnName }).ToList();
+            return Ok(districts);
         }
 
     }

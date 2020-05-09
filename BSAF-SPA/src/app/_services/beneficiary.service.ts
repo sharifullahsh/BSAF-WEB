@@ -16,4 +16,8 @@ export class BeneficiaryService {
   getSearchedBeneficiary(searchCritria: any): Observable<any> {
     return this.http.post(this.baseUrl + 'beneficiary/listPartial', searchCritria, httpOptions);
   }
+  getBeneficiary(id:number){
+    return this.http.get(this.baseUrl+'beneficiary/'+id);
+  }
 }
+

@@ -11,5 +11,4 @@ export interface Individual {
     contactNumber?: string;
     drName?: string;
     drFName?: string;
-  
   }
