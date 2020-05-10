@@ -340,7 +340,7 @@ export class BeneficiaryFormComponent implements OnInit {
     option = {
       lookupCode: item.lookupCode,
       lookupName: item.lookupName,
-      Other: null,
+      other: null,
       answerCode: null
     };
     if (option.lookupName !== 'Other'){
