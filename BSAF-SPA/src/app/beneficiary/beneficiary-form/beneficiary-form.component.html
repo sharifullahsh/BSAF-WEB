@@ -316,26 +316,12 @@
                         </ng-container>
                     </div>
                     <h4 class="mt20">8. Rank which of these options is the most important for you to determine your destination in Afghanistan</h4>
-                    <!-- <div [ngClass]="{'borderButtom': !last}" class="pt10" fxLayout="row wrap" *ngFor="let determination of initialLooupsData?.determinations; last as last" fxLayoutAlign="space-between start">
+                    <div [ngClass]="{'borderButtom': !last}" class="pt10" fxLayout="row wrap" *ngFor="let determination of determinations; last as last" fxLayoutAlign="space-between start">
                         <div fxFlex="0 1 calc(40% - 32px)" fxLayoutAlign="space-between start">
                             <mat-label style=" margin-right: 20px;">{{determination.lookupName}}</mat-label>
-                            <input *ngIf="determination.lookupCode == 'RankImpOther'" fxFlex="100%" matInput placeholder="Determination other">
+                            <input *ngIf="determination.lookupCode == 'RankImpOther'" value="{{determination.other}}" fxFlex="100%" matInput placeholder="Determination other">
                         </div>
-                        <mat-radio-group fxFlex="0 1 calc(60% - 32px)" fxLayoutAlign="space-between start" fxLayout.lt-sm="column" aria-label="Select an option">
-                            <mat-radio-button value="NAAIMP">Not at all Important</mat-radio-button>
-                            <mat-radio-button value="SIMP">Slightly Important</mat-radio-button>
-                            <mat-radio-button value="IMP">Important</mat-radio-button>
-                            <mat-radio-button value="VIMP">Very Important</mat-radio-button>
-                        </mat-radio-group>
-                    </div> -->
-                    <!-- <div [formGroupName]="name">
-
-                    </div> -->
-                    <div [ngClass]="{'borderButtom': !last}" class="pt10" fxLayout="row wrap" fxLayoutAlign="space-between start">
-                        <div fxFlex="0 1 calc(40% - 32px)" fxLayoutAlign="space-between start">
-                            <mat-label style=" margin-right: 20px;">Access to a job</mat-label>
-                        </div>
-                        <mat-radio-group fxFlex="0 1 calc(60% - 32px)" fxLayoutAlign="space-between start" fxLayout.lt-sm="column" aria-label="Select an option">
+                        <mat-radio-group fxFlex="0 1 calc(60% - 32px)" [value]="determination.answerCode" fxLayoutAlign="space-between start" fxLayout.lt-sm="column" aria-label="Select an option">
                             <mat-radio-button value="NAAIMP">Not at all Important</mat-radio-button>
                             <mat-radio-button value="SIMP">Slightly Important</mat-radio-button>
                             <mat-radio-button value="IMP">Important</mat-radio-button>

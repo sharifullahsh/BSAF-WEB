@@ -1,3 +1,4 @@
+import { DeterminationForView } from './../../models/Determination';
 import { CheckboxForView } from '../../models/CheckboxForView';
 import { PSN } from './../../models/PSN';
 import { AlertifyService } from './../../_services/alertify.service';
@@ -32,6 +33,7 @@ export class BeneficiaryFormComponent implements OnInit {
   photoPath: any;
   hostCountryProvinces: HostCountryProvince[];
   hostCountryDistricts: HostCountryDistrict[];
+  determinations: DeterminationForView[] = [];
   beneficiaryForm = this.fb.group({
     cardID: null,
     screeningDate: null,
@@ -240,7 +242,7 @@ export class BeneficiaryFormComponent implements OnInit {
   ngOnInit(): void {
       this.route.data.subscribe((data: {initialLookups: InitialLookups}) => {
         this.initialLooupsData = data.initialLookups;
-        console.log("data is >>>>>>> "+ JSON.stringify(this.initialLooupsData));
+        console.log('data is >>>>>>> ' + JSON.stringify(this.initialLooupsData));
       });
     // this.heroes$ = this.route.paramMap.pipe(
     //   switchMap(params => {
@@ -257,14 +259,14 @@ export class BeneficiaryFormComponent implements OnInit {
  
       const id = +this.route.snapshot.paramMap.get('id');
       // console.log('id is >>>>>>>>>>>>>>><<<<<<<<<<<<<<< ' + id);
-      if(id){
+      if (id){
         this.beneficiaryService.getBeneficiary(id).subscribe((response: Beneficiary) => {
           // console.log('beneficiary is >>>>>>>>>>>>>> ' + JSON.stringify(response));
           this.beneficiary = response;
           this.individuals = response.individuals;
           this.beneficiaryForm.patchValue({
             ...response
-          },{onlySelf:true});
+          }, {onlySelf: true});
           const originProvince = this.beneficiaryForm.get('originProvince').value;
           if (originProvince){
             this.lookupService.getDistrictLookups(originProvince).subscribe((response: Lookup[]) => {
@@ -286,8 +288,8 @@ export class BeneficiaryFormComponent implements OnInit {
           this.psn = this.createCheckboxList(this.initialLooupsData.psns);
           for (const bPsn of this.beneficiary.psNs) {
             for (const i in this.psn) {
-              if(bPsn.psnCode === this.psn[i].lookupCode){
-                this.psn[i].isSelected =true;
+              if (bPsn.psnCode === this.psn[i].lookupCode){
+                this.psn[i].isSelected = true;
                 this.psn[i].Other = bPsn.psnOther;
               }
             }
@@ -296,16 +298,28 @@ export class BeneficiaryFormComponent implements OnInit {
           this.returnReason = this.createCheckboxList(this.initialLooupsData.returnReasons);
           for (const reason of this.beneficiary.returnReasons) {
             for (const i in this.returnReason) {
-              if(reason.reasonCode === this.returnReason[i].lookupCode){
+              if (reason.reasonCode === this.returnReason[i].lookupCode){
                 this.returnReason[i].isSelected = true;
                 this.returnReason[i].Other = reason.Other;
               }
             }
           }
+
           this.loadHostCountryProvinces(response.countryOfExile);
+          // update the list with beneficiary data
+          this.determinations = this.createDeterminationsForView(this.initialLooupsData.determinations);
+          for (const determination of this.beneficiary.determinations) {
+            for (const i in this.determinations) {
+              if (determination.determinationCode === this.determinations[i].lookupCode){
+                this.determinations[i].answerCode = determination.answerCode;
+                this.determinations[i].other = determination.other;
+              }
+            }
+          }
+
           // this.photoPath = "data:image/png;base64,"+ response.photo;
-          console.log("photo is >>>>>>>>>>>"+response.photo);
-          if(response.photo){
+          console.log('photo is >>>>>>>>>>>' + response.photo);
+          if (response.photo){
             this.photoPath = this._sanitizer.bypassSecurityTrustResourceUrl(`data:image/png;base64, ${response.photo}`);
           }else{
             this.photoPath = this._sanitizer.bypassSecurityTrustResourceUrl(`data:image/png;base64, ${image}`);
@@ -319,8 +333,26 @@ export class BeneficiaryFormComponent implements OnInit {
       }
   
   }
- createCheckboxList(lookupList:Lookup[]){
-  let createdList:CheckboxForView[] = [];
+  createDeterminationsForView(lookupList: Lookup[]): DeterminationForView[] {
+    let createdList: DeterminationForView[] = [];
+    for (const item of lookupList){
+    let option: DeterminationForView;
+    option = {
+      lookupCode: item.lookupCode,
+      lookupName: item.lookupName,
+      Other: null,
+      answerCode: null
+    };
+    if (option.lookupName !== 'Other'){
+     createdList.unshift(option);
+   }else{
+    createdList.push(option);
+   }
+  }
+    return createdList;
+  }
+ createCheckboxList(lookupList: Lookup[]){
+  let createdList: CheckboxForView[] = [];
   for (const item of lookupList){
     let option: CheckboxForView;
     option = {
@@ -341,7 +373,7 @@ export class BeneficiaryFormComponent implements OnInit {
   //   return this.beneficiaryForm.get('individuals') as FormArray;
   // }
   originProvinceChanged(event: any){
-    if(event.value){
+    if (event.value){
       this.lookupService.getDistrictLookups(event.value).subscribe((response: Lookup[]) => {
         this.originDistricts = response;
       }, (error) => {
@@ -351,7 +383,7 @@ export class BeneficiaryFormComponent implements OnInit {
     }
   }
   hostCountryProvinceChanged(event: any){
-    if(event.value){
+    if (event.value){
       this.lookupService.getHostCountryDistricts(event.value).subscribe((response: HostCountryDistrict[]) => {
         this.hostCountryDistricts = response;
       }, (error) => {
@@ -362,8 +394,8 @@ export class BeneficiaryFormComponent implements OnInit {
   }
   loadHostCountryProvinces(country: string){
     this.hostCountryDistricts = [];
-    if(country && (country =="Iran" || country == "Pakistan")){
-      const ountryCode = country == "Iran" ? "IRN":"PAK";
+    if (country && (country == 'Iran' || country == 'Pakistan')){
+      const ountryCode = country == 'Iran' ? 'IRN' : 'PAK';
       this.lookupService.getHostCountryProvinces(ountryCode).subscribe((response: HostCountryProvince[]) => {
       this.hostCountryProvinces = response;
     }, (error) => {
@@ -379,7 +411,7 @@ export class BeneficiaryFormComponent implements OnInit {
     this.loadHostCountryProvinces(event.value);
   }
   returnProvinceChanged(event: any){
-    if(event.value){
+    if (event.value){
       this.lookupService.getDistrictLookups(event.value).subscribe((response: Lookup[]) => {
         this.returnDistricts = response;
       }, (error) => {

@@ -5,3 +5,9 @@ export interface Determination{
     answerCode: string;
     other?: string;
 }
+export interface DeterminationForView{
+    lookupName: string;
+    lookupCode: string;
+    other?: string;
+    answerCode?: string;
+}
