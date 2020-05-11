@@ -112,7 +112,7 @@ namespace BSAFWebApi.Controllers
                 .FirstOrDefaultAsync();
             if (beneficiary != null)
             {
-                var beneficiaryToReturn = _mapper.Map<BeneficiaryDto>(beneficiary);
+                var beneficiaryToReturn = _mapper.Map<BeneficiaryFormDto>(beneficiary);
                 var individuals = await db.Individuals.Where(i => i.BeneficiaryID == beneficiary.BeneficiaryID)
                     .Select(i =>
                     new IndividualDto
@@ -138,18 +138,18 @@ namespace BSAFWebApi.Controllers
                     )
                 .ToListAsync();
                 beneficiaryToReturn.Individuals = individuals;
-                beneficiaryToReturn.PSNs = db.PSNs.Where(p => p.BeneficiaryID == beneficiary.BeneficiaryID).ToList();
-                beneficiaryToReturn.ReturnReasons = db.ReturnReasons.Where(r => r.BeneficiaryID == beneficiary.BeneficiaryID).ToList();
-                beneficiaryToReturn.Determinations = db.Determinations.Where(r => r.BeneficiaryID == beneficiary.BeneficiaryID).ToList();
-                beneficiaryToReturn.MoneySources = db.MoneySources.Where(r => r.BeneficiaryID == beneficiary.BeneficiaryID).ToList();
-                beneficiaryToReturn.BroughtItems = db.BroughtItems.Where(r => r.BeneficiaryID == beneficiary.BeneficiaryID).ToList();
+                beneficiaryToReturn.PSNs = db.PSNs.Where(p => p.BeneficiaryID == beneficiary.BeneficiaryID).Select(o => new SelectOptionDto { ID = o.ID, LookupCode = o.PSNCode, Other= o.PSNOther}).ToList();
+                beneficiaryToReturn.ReturnReasons = db.ReturnReasons.Where(r => r.BeneficiaryID == beneficiary.BeneficiaryID).Select(o => new SelectOptionDto { ID = o.ID, LookupCode = o.ReasonCode, Other = o.Other }).ToList();
+                beneficiaryToReturn.Determinations = db.Determinations.Where(r => r.BeneficiaryID == beneficiary.BeneficiaryID).Select(o => new DeterminationDto { ID = o.ID, LookupCode = o.DeterminationCode, Other = o.Other, AnswerCode = o.AnswerCode }).ToList();
+                beneficiaryToReturn.MoneySources = db.MoneySources.Where(r => r.BeneficiaryID == beneficiary.BeneficiaryID).Select(o => new SelectOptionDto { ID = o.ID, LookupCode = o.MoneySourceCode, Other = o.MoneySourceOther }).ToList();
+                beneficiaryToReturn.BroughtItems = db.BroughtItems.Where(r => r.BeneficiaryID == beneficiary.BeneficiaryID).Select(o => new SelectOptionDto { ID = o.ID, LookupCode = o.ItemCode, Other = o.ItemOther }).ToList();
                 beneficiaryToReturn.PostArrivalNeeds = db.PostArrivalNeeds.Where(r => r.BeneficiaryID == beneficiary.BeneficiaryID).ToList();
                 beneficiaryToReturn.BenefitedFromOrgs = db.BenefitedFromOrgs.Where(r => r.BeneficiaryID == beneficiary.BeneficiaryID).ToList();
-                beneficiaryToReturn.Transportations = db.Transportations.Where(r => r.BeneficiaryID == beneficiary.BeneficiaryID).ToList();
-                beneficiaryToReturn.LivelihoodEmpNeeds = db.LivelihoodEmpNeeds.Where(r => r.BeneficiaryID == beneficiary.BeneficiaryID).ToList();
-                beneficiaryToReturn.NeedTools = db.NeedTools.Where(r => r.BeneficiaryID == beneficiary.BeneficiaryID).ToList();
-                beneficiaryToReturn.MainConcerns = db.MainConcerns.Where(r => r.BeneficiaryID == beneficiary.BeneficiaryID).ToList();
-                beneficiaryToReturn.HostCountrySchools = db.HostCountrySchools.Where(r => r.BeneficiaryID == beneficiary.BeneficiaryID).ToList();
+                beneficiaryToReturn.Transportations = db.Transportations.Where(r => r.BeneficiaryID == beneficiary.BeneficiaryID).Select(o => new SelectOptionDto { ID = o.ID, LookupCode = o.TypedCode, Other = o.Other }).ToList();
+                beneficiaryToReturn.LivelihoodEmpNeeds = db.LivelihoodEmpNeeds.Where(r => r.BeneficiaryID == beneficiary.BeneficiaryID).Select(o => new SelectOptionDto { ID = o.ID, LookupCode = o.NeedCode}).ToList();
+                beneficiaryToReturn.NeedTools = db.NeedTools.Where(r => r.BeneficiaryID == beneficiary.BeneficiaryID).Select(o => new SelectOptionDto { ID = o.ID, LookupCode = o.ToolCode, Other = o.Other }).ToList();
+                beneficiaryToReturn.MainConcerns = db.MainConcerns.Where(r => r.BeneficiaryID == beneficiary.BeneficiaryID).Select(o => new SelectOptionDto { ID = o.ID, LookupCode = o.ConcernCode, Other = o.Other }).ToList();
+                beneficiaryToReturn.HostCountrySchools = db.HostCountrySchools.Where(r => r.BeneficiaryID == beneficiary.BeneficiaryID).Select(o => new SelectOptionDto { ID = o.ID, LookupCode = o.SchoolTypeCode }).ToList();
 
                 return Ok(beneficiaryToReturn);
             }

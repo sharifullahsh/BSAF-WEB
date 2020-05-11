@@ -1,7 +1,6 @@
 export interface Determination{
     id: number;
-    beneficiaryID: number;
-    determinationCode: string;
+    lookupCode: string;
     answerCode: string;
     other?: string;
 }

@@ -1,16 +1,8 @@
-import { Transportation } from './Transportation';
-import { MoneySource } from './MoneySource';
 import { Determination } from './Determination';
-import { ReturnReason } from './ReturnReasons';
-import { PSN } from './PSN';
 import { Individual } from './Individual';
-import { BroughtItem } from './BroughtItem';
 import { PostArrivalNeed } from './PostArrivalNeeds';
 import { BenefitedFromOrg } from './BenefitedFromOrg';
-import { LivelihoodEmpNeed } from './LivelihoodEmpNeed';
-import { NeedTool } from './NeedTool';
-import { MainConcern } from './MainConcern';
-import { HostCountrySchool } from './HostCountrySchool';
+import { SelectOption } from './SelectOption';
 export interface Beneficiary{
         beneficiaryID: number;
 
@@ -140,27 +132,27 @@ export interface Beneficiary{
 
        individuals: Individual[];
 
-        psNs: PSN[];
+        psNs: SelectOption[];
 
-       returnReasons: ReturnReason[];
+       returnReasons: SelectOption[];
 
         determinations: Determination[];
 
-        moneySources: MoneySource[]
+        moneySources: SelectOption[]
 
-        broughtItems: BroughtItem[];
+        broughtItems: SelectOption[];
 
         PostArrivalNeeds: PostArrivalNeed[];
 
         benefitedFromOrgs: BenefitedFromOrg[];
 
-        transportations: Transportation[];
+        transportations: SelectOption[];
 
-        livelihoodEmpNeeds: LivelihoodEmpNeed[]
+        livelihoodEmpNeeds: SelectOption[]
 
-        needTools: NeedTool[];
+        needTools: SelectOption[];
 
-        mainConcerns: MainConcern[];
+        mainConcerns: SelectOption[];
 
-        hostCountrySchools: HostCountrySchool[];
+        hostCountrySchools: SelectOption[];
 }

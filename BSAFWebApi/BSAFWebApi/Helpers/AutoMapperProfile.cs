@@ -14,6 +14,8 @@ namespace BSAFWebApi.Helpers
         {
             CreateMap<Beneficiary, BeneficiaryDto>();
             CreateMap<BeneficiaryDto, Beneficiary>();
+            CreateMap<BeneficiaryFormDto, Beneficiary>();
+            CreateMap<Beneficiary, BeneficiaryFormDto>();
             CreateMap<IndividualDto, Individual>();
             CreateMap<Individual, IndividualDto>();
             CreateMap<LookupValue,LookupDto>()

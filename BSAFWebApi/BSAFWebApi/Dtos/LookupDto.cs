@@ -23,4 +23,24 @@ namespace BSAFWebApi.Dtos
 
         public string Name { get; set; }
     }
+
+    public class SelectOptionDto
+    {
+        public int ID { get; set; }
+
+        public string LookupCode { get; set; }
+
+        public string Other { get; set; }
+    }
+    public class DeterminationDto
+    {
+        public int ID { get; set; }
+
+        public string LookupCode { get; set; }
+
+        public string AnswerCode { get; set; }
+
+        public string Other { get; set; }
+    }
+
 }

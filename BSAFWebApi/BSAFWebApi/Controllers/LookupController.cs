@@ -48,6 +48,7 @@ namespace BSAFWebApi.Controllers
                 obtainLivelihoodHelps = db.LookupValues.Where(l=>l.LookupCode == "WHCH").Select(l=>new LookupDto { LookupCode = l.ValueCode, LookupName = l.EnName}).ToList(),
                 tools = db.LookupValues.Where(l=>l.LookupCode == "TOOLS").Select(l=>new LookupDto { LookupCode = l.ValueCode, LookupName = l.EnName}).ToList(),
                 mainConcerns = db.LookupValues.Where(l=>l.LookupCode == "WAY3MC").Select(l=>new LookupDto { LookupCode = l.ValueCode, LookupName = l.EnName}).ToList(),
+                hostCountrySchools = db.LookupValues.Where(l=>l.LookupCode == "SCHOOLTYPE").Select(l=>new LookupDto { LookupCode = l.ValueCode, LookupName = l.EnName}).ToList(),
 
             };
             return Ok(lookups);

@@ -23,4 +23,5 @@ export interface InitialLookups{
     obtainLivelihoodHelps: Lookup[];
     tools: Lookup[];
     mainConcerns: Lookup[];
+    hostCountrySchools: Lookup[];
 }

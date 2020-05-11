@@ -30,6 +30,8 @@ namespace BSAFWebApi.Dtos
         public List<LookupDto> obtainLivelihoodHelps { get; set; }
         public List<LookupDto> tools { get; set; }
         public List<LookupDto> mainConcerns { get; set; }
+        public List<LookupDto> hostCountrySchools { get; set; }
+
 
     }
 }
