@@ -92,17 +92,17 @@ export interface Beneficiary{
 
         topNeed2: string;
 
-         topNeed2Other: string;
+        topNeed2Other: string;
 
-         topNeed3: string;
+        topNeed3: string;
 
-         topNeed3Other: string;
+        topNeed3Other: string;
 
-         intendToDo: string;
+        intendToDo: string;
 
-         intendToReturnToHostReason: string ;
+        intendToReturnToHostReason: string ;
 
-         professionInHostCountry: string;
+        professionInHostCountry: string;
 
         professionInHostCountryOther: string ;
 
@@ -142,7 +142,7 @@ export interface Beneficiary{
 
         broughtItems: SelectOption[];
 
-        PostArrivalNeeds: PostArrivalNeed[];
+        postArrivalNeeds: PostArrivalNeed[];
 
         benefitedFromOrgs: BenefitedFromOrg[];
 

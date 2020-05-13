@@ -18,8 +18,6 @@ namespace BSAFWebApi.Dtos
 
         public string BorderPoint { get; set; }
 
-        public string BeneficiaryCardNo { get; set; }
-
         public string BeneficiaryType { get; set; }
 
         public string ReturnStatus { get; set; }
@@ -128,19 +126,10 @@ namespace BSAFWebApi.Dtos
 
         public int? NumChildrenAttendedSchoole { get; set; }
 
-        public string InsertedBy { get; set; }
-
-        public DateTime InsertedDate { get; set; }
-
-        public string LastUpdatedBy { get; set; }
-
-        public DateTime? LastUpdatedDate { get; set; }
-
-        public bool IsActive { get; set; }
-
         public bool IsSubmitted { get; set; }
 
         public bool IsCardIssued { get; set; }
+
         public byte[] Photo { get; set; }
 
         public List<IndividualDto> Individuals { get; set; }
@@ -155,7 +144,7 @@ namespace BSAFWebApi.Dtos
 
         public List<SelectOptionDto> BroughtItems { get; set; }
 
-        public List<PostArrivalNeed> PostArrivalNeeds { get; set; }
+        public List<PostArrivalNeedsDto> PostArrivalNeeds { get; set; }
 
         public List<BenefitedFromOrg> BenefitedFromOrgs { get; set; }
 
@@ -177,7 +166,7 @@ namespace BSAFWebApi.Dtos
             Determinations = new List<DeterminationDto>();
             MoneySources = new List<SelectOptionDto>();
             BroughtItems = new List<SelectOptionDto>();
-            PostArrivalNeeds = new List<PostArrivalNeed>();
+            PostArrivalNeeds = new List<PostArrivalNeedsDto>();
             BenefitedFromOrgs = new List<BenefitedFromOrg>();
             Transportations = new List<SelectOptionDto>();
             LivelihoodEmpNeeds = new List<SelectOptionDto>();

@@ -1,3 +1,4 @@
+import { PostArrivalNeedForView } from './../../models/PostArrivalNeeds';
 import { DeterminationForView } from './../../models/Determination';
 import { CheckboxForView } from '../../models/CheckboxForView';
 import { AlertifyService } from './../../_services/alertify.service';
@@ -38,6 +39,7 @@ export class BeneficiaryFormComponent implements OnInit {
   transportations: CheckboxForView[] = [];
   livelihoodEmpNeeds: CheckboxForView[] = [];
   needTools: CheckboxForView[] = [];
+  postArrivalNeedsList: PostArrivalNeedForView[] = [];
   mainConcerns: CheckboxForView[] = [];
   hostCountrySchools: CheckboxForView[] = [];
   benefitedIndistrictList1: Lookup[] = [];
@@ -115,6 +117,7 @@ export class BeneficiaryFormComponent implements OnInit {
     lastUpdatedDate: [null],
     individuals: this.fb.array([]),
     benefitedFromOrgs: this.fb.array([]),
+    postArrivalNeeds: this.fb.array([]),
     // psns: ,
     //  returnReasons: this.fb.array([
     //   this.fb.group({
@@ -256,6 +259,8 @@ export class BeneficiaryFormComponent implements OnInit {
       this.route.data.subscribe((data: {initialLookups: InitialLookups}) => {
         this.initialLooupsData = data.initialLookups;
         console.log('data is >>>>>>> ' + JSON.stringify(this.initialLooupsData));
+        this.postArrivalNeedsList = this.createPostArrivalNeedsList(this.initialLooupsData.postArrivalNeeds);
+        this.setPostArrivalNeedsForm();
       });
     // this.heroes$ = this.route.paramMap.pipe(
     //   switchMap(params => {
@@ -268,7 +273,7 @@ export class BeneficiaryFormComponent implements OnInit {
     //   {
     //   this.initialLooupsData = data;
     //   console.log("data is >>>>>>> "+ JSON.stringify(this.initialLooupsData));
-    // });
+    // }); 
  
       const id = +this.route.snapshot.paramMap.get('id');
       // console.log('id is >>>>>>>>>>>>>>><<<<<<<<<<<<<<< ' + id);
@@ -281,9 +286,70 @@ export class BeneficiaryFormComponent implements OnInit {
             this.addBenefitedFromOrg();
           }
           this.beneficiaryForm.patchValue({
-            ...response
+            beneficiaryID: response.beneficiaryID,
+            cardID: response.cardID,
+            screeningDate: response.screeningDate,
+            provinceBCP: response.provinceBCP,
+            borderPoint: response.borderPoint,
+            beneficiaryType: response.beneficiaryType,
+            returnStatus: response.returnStatus,
+            originProvince: response.originProvince,
+            originDistrict: response.originDistrict,
+            originVillage: response.originVillage,
+            returnProvince: response.returnProvince,
+            returnDistrict: response.returnDistrict,
+            returnVillage: response.returnVillage,
+            leavingReason1: response.leavingReason1,
+            leavingReason1Other: response.leavingReason1Other,
+            leavingReason2: response.leavingReason2,
+            leavingReason2Other: response.leavingReason2Other,
+            leavingReason3: response.leavingReason3,
+            leavingReason3Other: response.leavingReason3Other,
+            ownHouse: response.ownHouse,
+            whereWillLive: response.whereWillLive,
+            rentPayForAccom: response.rentPayForAccom,
+            rentPayCurrency: response.rentPayCurrency,
+            allowForJob: response.allowForJob,
+            countryOfExile: response.countryOfExile,
+            countryOfExilOther: response.countryOfExilOther,
+            beforReturnProvince: response.beforReturnProvince,
+            beforReturnDistrictID: response.beforReturnDistrictID,
+            beforReturnRemarks: response.beforReturnRemarks,
+            familyMemStayedBehind: response.familyMemStayedBehind,
+            familyMemStayedBehindNo: response.familyMemStayedBehindNo,
+            lengthOfStayYears: response.lengthOfStayYears,
+            lengthOfStayMonths: response.lengthOfStayMonths,
+            lengthOfStayDays: response.lengthOfStayDays,
+            wouldYouReturn: response.wouldYouReturn,
+            haveFamilyBenefited: response.haveFamilyBenefited,
+            transportationDate: response.transportationDate,
+            transportationInfo: response.transportationInfo,
+            transportAccompaniedBy: response.transportAccompaniedBy,
+            transportAccomByNo: response.transportAccomByNo,
+            topNeed1: response.topNeed1,
+            topNeed1Other: response.topNeed1Other,
+            topNeed2: response.topNeed2,
+            topNeed2Other: response.topNeed2Other,
+            topNeed3: response.topNeed3,
+            topNeed3Other: response.topNeed3Other,
+            intendToDo: response.intendToDo,
+            intendToReturnToHostReason: response.intendToReturnToHostReason,
+            professionInHostCountry: response.professionInHostCountry,
+            professionInHostCountryOther: response.professionInHostCountryOther,
+            hoHCanReadWrite: response.hoHCanReadWrite,
+            hoHEducationLevel: response.hoHEducationLevel,
+            hoHEducationLevelOther: response.hoHEducationLevelOther,
+            numHHHaveTaskira: response.numHHHaveTaskira,
+            numHHHavePassport: response.numHHHavePassport,
+            numHHHaveDocOther: response.numHHHaveDocOther,
+            doHaveSecureLivelihood: response.doHaveSecureLivelihood,
+            didChildrenGoToSchoole: response.didChildrenGoToSchoole,
+            numChildrenAttendedSchoole: response.numChildrenAttendedSchoole,
+            isSubmitted: response.isSubmitted,
+            isCardIssued: response.isCardIssued,
+            photo: response.photo
           }, {onlySelf: true});
-          console.log(JSON.stringify(this.beneficiaryForm.get('benefitedFromOrgs').value));
+
           const originProvince = this.beneficiaryForm.get('originProvince').value;
           if (originProvince){
             this.lookupService.getDistrictLookups(originProvince).subscribe((response: Lookup[]) => {
@@ -321,8 +387,8 @@ export class BeneficiaryFormComponent implements OnInit {
               }
             }
           }
-          console.log("reason are >>>>>>>>>> " + JSON.stringify(this.returnReason));
           this.loadHostCountryProvinces(response.countryOfExile);
+          this.loadHostCountryDistrict(response.beforReturnProvince);
           // update the list with beneficiary data
           this.determinations = this.createDeterminationsForView(this.initialLooupsData.determinations);
           for (const determination of this.beneficiary.determinations) {
@@ -388,7 +454,7 @@ export class BeneficiaryFormComponent implements OnInit {
               }
             }
           }
-          console.log("schoools are >>>>>>>" + JSON.stringify(this.hostCountrySchools));
+          console.log('schoools are >>>>>>>' + JSON.stringify(this.hostCountrySchools));
 
           this.hostCountrySchools = this.createCheckboxList(this.initialLooupsData.hostCountrySchools);
           for (const schoool of this.beneficiary.hostCountrySchools) {
@@ -399,7 +465,7 @@ export class BeneficiaryFormComponent implements OnInit {
             }
           }
           if (this.beneficiary.haveFamilyBenefited && this.beneficiary.benefitedFromOrgs){
-            console.log("benefica y benefited >>>>>>>>");
+            console.log('benefica y benefited >>>>>>>>');
             if (this.beneficiary.benefitedFromOrgs[0] && this.beneficiary.benefitedFromOrgs[0].provinceCode){
                  this.getDistrictBenefitedIn(this.beneficiary.benefitedFromOrgs[0].provinceCode, 0);
             }
@@ -407,9 +473,24 @@ export class BeneficiaryFormComponent implements OnInit {
                this.getDistrictBenefitedIn(this.beneficiary.benefitedFromOrgs[1].provinceCode, 1);
           }
           }
-          console.log("org infor are >>>>>>>>>>> "+ JSON.stringify(this.beneficiaryForm.get('benefitedFromOrgs').value));
+          console.log('org infor are >>>>>>>>>>> '+ JSON.stringify(this.beneficiaryForm.get('benefitedFromOrgs').value));
           // this.photoPath = "data:image/png;base64,"+ response.photo;
-          console.log('photo is >>>>>>>>>>>' + response.photo);
+          
+          this.beneficiary.postArrivalNeeds.forEach(beneficiaryNeed=>{
+          this.postArrivalNeeds.controls.forEach(allNeed=>{
+            if (beneficiaryNeed.lookupCode === allNeed.get('lookupCode').value){
+              allNeed.patchValue({
+                id: beneficiaryNeed.id,
+                isProvided: beneficiaryNeed.isProvided,
+                lookupCode: beneficiaryNeed.lookupCode,
+                lookupName: beneficiaryNeed.lookupCode,
+                providedDate: beneficiaryNeed.providedDate,
+                comment: beneficiaryNeed.comment
+              } )
+            }
+          })
+         })
+          //console.log('photo is >>>>>>>>>>>' + response.photo);
           if (response.photo){
             this.photoPath = this._sanitizer.bypassSecurityTrustResourceUrl(`data:image/png;base64, ${response.photo}`);
           }else{
@@ -422,6 +503,24 @@ export class BeneficiaryFormComponent implements OnInit {
           console.log('can not lood beneficar ');
         });
       }
+  }
+  
+  setPostArrivalNeedsForm() {
+    const needsArray = this.beneficiaryForm.get('postArrivalNeeds') as FormArray;
+    needsArray.reset;
+    this.postArrivalNeedsList.forEach((need)=>{
+      needsArray.push(this.setPostArrivalNeedsFormArray(need))
+    })
+  }
+  private setPostArrivalNeedsFormArray(need:PostArrivalNeedForView){
+    return this.fb.group({
+      id:[need.id],
+      lookupName: [need.lookupName],
+      lookupCode: [need.lookupCode],
+      isProvided:[need.isProvided],
+      providedDate: [need.providedDate],
+      comment:[need.comment],
+    });
   }
   newBenefitedFromOrg(): FormGroup{
     return this.fb.group({
@@ -441,8 +540,10 @@ export class BeneficiaryFormComponent implements OnInit {
   get benefitedFromOrgs() {
     return this.beneficiaryForm.get('benefitedFromOrgs') as FormArray;
   }
+  get postArrivalNeeds(): FormArray {
+    return this.beneficiaryForm.get('postArrivalNeeds') as FormArray;
+  }
   getDistrictBenefitedIn(provinceCode:string, index:number){
-    console.log(`province ${provinceCode} and and idex is ${index}`);
     if (provinceCode){
       this.lookupService.getDistrictLookups(provinceCode).subscribe((response: Lookup[]) => {
         if (index === 0){
@@ -453,7 +554,7 @@ export class BeneficiaryFormComponent implements OnInit {
         }
 
       }, (error) => {
-        this.alertifyService.error("Can load district for benefited in orgs");
+        this.alertifyService.error('Can load district for benefited in orgs');
         return [];
       })
     }else{
@@ -496,6 +597,22 @@ export class BeneficiaryFormComponent implements OnInit {
   }
   return createdList;
 }
+createPostArrivalNeedsList(lookupList: Lookup[]){
+  let createdList: PostArrivalNeedForView[] = [];
+  for (const item of lookupList){
+    let option: PostArrivalNeedForView;
+    option = {
+      id: 0,
+      isProvided: false,
+      lookupCode: item.lookupCode,
+      lookupName: item.lookupName,
+      providedDate:'',
+      comment:''
+    };
+    createdList.push(option);
+  }
+  return createdList;
+}
   // get individuals() {
   //   return this.beneficiaryForm.get('individuals') as FormArray;
   // }
@@ -527,11 +644,22 @@ export class BeneficiaryFormComponent implements OnInit {
       this.hostCountryProvinces = response;
     }, (error) => {
       console.log('erro is >>>>>>' + JSON.stringify(error));
-      this.alertifyService.error('Unable to load origin districts.');
+      this.alertifyService.error('Unable to load country of exile provinces.');
     });
     }else{
       this.hostCountryProvinces = [];
       this.hostCountryDistricts = [];
+    }
+  }
+  loadHostCountryDistrict(provinceID: number) {
+    this.hostCountryDistricts = [];
+    if (provinceID){
+      this.lookupService.getHostCountryDistricts(provinceID).subscribe((response: HostCountryDistrict[]) => {
+      this.hostCountryDistricts = response;
+    }, (error) => {
+      console.log('erro is >>>>>>' + JSON.stringify(error));
+      this.alertifyService.error('Unable to load country of exile districts.');
+    });
     }
   }
   hostCountryChanged(event: any){

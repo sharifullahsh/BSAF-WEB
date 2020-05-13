@@ -18,8 +18,6 @@ namespace BSAFWebApi.Dtos
 
         public string BorderPoint { get; set; }
 
-        public string BeneficiaryCardNo { get; set; }
-
         public string BeneficiaryType { get; set; }
 
         public string ReturnStatus { get; set; }

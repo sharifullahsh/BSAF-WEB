@@ -42,5 +42,17 @@ namespace BSAFWebApi.Dtos
 
         public string Other { get; set; }
     }
+    public class PostArrivalNeedsDto
+    {
+        public int ID { get; set; }
+
+        public string LookupCode { get; set; }
+
+        public bool? IsProvided { get; set; }
+
+        public DateTime? ProvidedDate { get; set; }
+
+        public string Comment { get; set; }
+    }
 
 }

@@ -1,8 +1,15 @@
 export interface PostArrivalNeed{
     id:number;
-    beneficiaryID:number;
-    needCode:string;
-    provided:boolean;
-    ProvidedDate: string;
-    Comment:string;
+    lookupCode:string;
+    isProvided:boolean;
+    providedDate: string;
+    comment:string;
+}
+export interface PostArrivalNeedForView{
+    id:number;
+    lookupName: string;
+    lookupCode: string;
+    isProvided:boolean;
+    providedDate?: string;
+    comment?:string;
 }
