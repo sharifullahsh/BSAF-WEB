@@ -1,4 +1,4 @@
-import { Determination } from './Determination';
+import { DeterminationLookup } from './Determination';
 import { Individual } from './Individual';
 import { PostArrivalNeed } from './PostArrivalNeeds';
 import { BenefitedFromOrg } from './BenefitedFromOrg';
@@ -136,7 +136,7 @@ export interface Beneficiary{
 
        returnReasons: SelectOption[];
 
-        determinations: Determination[];
+        determinations: DeterminationLookup[];
 
         moneySources: SelectOption[]
 

@@ -1,3 +1,4 @@
+import { DeterminationLookup } from './Determination';
 import { Lookup } from './Lookup';
 export interface InitialLookups{
     provinces: Lookup[];

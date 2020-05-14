@@ -1,4 +1,4 @@
-export interface Determination{
+export interface DeterminationLookup{
     id: number;
     lookupCode: string;
     answerCode: string;

@@ -1,5 +1,5 @@
 import { PostArrivalNeedForView } from './../../models/PostArrivalNeeds';
-import { DeterminationForView } from './../../models/Determination';
+import { DeterminationForView, DeterminationLookup } from './../../models/Determination';
 import { CheckboxForView } from '../../models/CheckboxForView';
 import { AlertifyService } from './../../_services/alertify.service';
 import { Lookup, HostCountryProvince, HostCountryDistrict } from './../../models/Lookup';
@@ -28,12 +28,12 @@ export class BeneficiaryFormComponent implements OnInit {
   originDistricts: Lookup[];
   returnDistricts: Lookup[];
   psnList: CheckboxForView[] = [];
-  returnReason: CheckboxForView[] = [];
+  returnReasonList: CheckboxForView[] = [];
   initialLooupsData: InitialLookups;
   photoPath: any;
   hostCountryProvinces: HostCountryProvince[];
   hostCountryDistricts: HostCountryDistrict[];
-  determinations: DeterminationForView[] = [];
+  determinationsList: DeterminationForView[] = [];
   moneySources: CheckboxForView[] = [];
   broughtItems: CheckboxForView[] = [];
   transportations: CheckboxForView[] = [];
@@ -120,6 +120,8 @@ export class BeneficiaryFormComponent implements OnInit {
     benefitedFromOrgs: this.fb.array([]),
     postArrivalNeeds: this.fb.array([]),
     psns: this.fb.array([]),
+    returnReasons: this.fb.array([]),
+    determinations: this.fb.array([]),
     // psns: ,
     //  returnReasons: this.fb.array([
     //   this.fb.group({
@@ -287,6 +289,10 @@ export class BeneficiaryFormComponent implements OnInit {
         this.setPostArrivalNeedsForm();
         this.psnList = this.createCheckboxListForView(this.initialLooupsData.psns);
         this.setPSNForm();
+        this.returnReasonList = this.createCheckboxListForView(this.initialLooupsData.returnReasons);
+        this.setReturnReasonForm();
+        this.determinationsList = this.createDeterminationListForView(this.initialLooupsData.determinations);
+        this.setDeterminationForm();
       });
     // this.heroes$ = this.route.paramMap.pipe(
     //   switchMap(params => {
@@ -417,37 +423,9 @@ export class BeneficiaryFormComponent implements OnInit {
               this.alertifyService.error('Unable to load origin districts.');
             });
           }
-          // this.psnList = this.createCheckboxListForView(this.initialLooupsData.psns);
-          // for (const bPsn of this.beneficiary.psNs) {
-          //   for (const i in this.psnList) {
-          //     if (bPsn.lookupCode === this.psnList[i].lookupCode){
-          //       this.psnList[i].isSelected = true;
-          //       this.psnList[i].other = bPsn.other;
-          //     }
-          //   }
-          // }
-          // console.log("return reason are >>>>>>>"+JSON.stringify(this.initialLooupsData.returnReasons));
-          this.returnReason = this.createCheckboxListForView(this.initialLooupsData.returnReasons);
-          for (const reason of this.beneficiary.returnReasons) {
-            for (const i in this.returnReason) {
-              if (reason.lookupCode === this.returnReason[i].lookupCode){
-                this.returnReason[i].isSelected = true;
-                this.returnReason[i].other = reason.other;
-              }
-            }
-          }
           this.loadHostCountryProvinces(response.countryOfExile);
           this.loadHostCountryDistrict(response.beforReturnProvince);
-          // update the list with beneficiary data
-          this.determinations = this.createDeterminationsForView(this.initialLooupsData.determinations);
-          for (const determination of this.beneficiary.determinations) {
-            for (const i in this.determinations) {
-              if (determination.lookupCode === this.determinations[i].lookupCode){
-                this.determinations[i].answerCode = determination.answerCode;
-                this.determinations[i].other = determination.other;
-              }
-            }
-          }
+
           this.moneySources = this.createCheckboxListForView(this.initialLooupsData.moneySources);
           for (const source of this.beneficiary.moneySources) {
             for (const i in this.moneySources) {
@@ -536,7 +514,17 @@ export class BeneficiaryFormComponent implements OnInit {
               }
             });
            });
-
+          this.beneficiary.returnReasons.forEach(beneficiryReason => {
+            this.returnReasons.controls.forEach(allreason => {
+              if (beneficiryReason.lookupCode === allreason.get('lookupCode').value){
+                allreason.patchValue({
+                  isSelected: true,
+                  lookupCode: beneficiryReason.lookupCode,
+                  other: beneficiryReason.other
+                } );
+              }
+            });
+           });
           this.beneficiary.postArrivalNeeds.forEach(beneficiaryNeed => {
           this.postArrivalNeeds.controls.forEach(allNeed => {
             if (beneficiaryNeed.lookupCode === allNeed.get('lookupCode').value){
@@ -547,6 +535,16 @@ export class BeneficiaryFormComponent implements OnInit {
                 lookupName: beneficiaryNeed.lookupCode,
                 providedDate: beneficiaryNeed.providedDate,
                 comment: beneficiaryNeed.comment
+              } );
+            }
+          });
+         });
+          this.beneficiary.determinations.forEach(beneficiaryDeter => {
+          this.determinations.controls.forEach(allDeter => {
+            if (beneficiaryDeter.lookupCode === allDeter.get('lookupCode').value){
+              allDeter.patchValue({
+                answerCode: beneficiaryDeter.answerCode,
+                other: beneficiaryDeter.other
               } );
             }
           });
@@ -565,6 +563,38 @@ export class BeneficiaryFormComponent implements OnInit {
         });
       }
   }
+  setDeterminationForm() {
+    const determinationsArray = this.beneficiaryForm.get('determinations') as FormArray;
+    this.determinationsList.forEach((determination) => {
+      determinationsArray.push(this.setDeterminationsFormArray(determination));
+    });
+  }
+  setDeterminationsFormArray(determination: DeterminationForView){
+    return this.fb.group({
+      lookupName: [determination.lookupName],
+      lookupCode: [determination.lookupCode],
+      other: [determination.other],
+      answerCode: [determination.answerCode]
+    });
+  }
+  createDeterminationListForView(lookupList: Lookup[]): DeterminationForView[] {
+    const createdList: DeterminationForView[] = [];
+    for (const lookup of lookupList){
+    let option: DeterminationForView;
+    option = {
+      lookupCode: lookup.lookupCode,
+      lookupName: lookup.lookupName,
+      other: null,
+      answerCode: null
+    };
+    if (option.lookupName !== 'Other'){
+     createdList.unshift(option);
+   }else{
+    createdList.push(option);
+   }
+  }
+    return createdList;
+  }
 
   setPostArrivalNeedsForm() {
     const needsArray = this.beneficiaryForm.get('postArrivalNeeds') as FormArray;
@@ -575,7 +605,13 @@ export class BeneficiaryFormComponent implements OnInit {
   setPSNForm() {
     const psnsArray = this.beneficiaryForm.get('psns') as FormArray;
     this.psnList.forEach((psn) => {
-      psnsArray.push(this.setCheckboxOptionFormArray(psn));
+    psnsArray.push(this.setCheckboxOptionFormArray(psn));
+    });
+  }
+  setReturnReasonForm() {
+    const returnReasonArray = this.beneficiaryForm.get('returnReasons') as FormArray;
+    this.returnReasonList.forEach((reason) => {
+      returnReasonArray.push(this.setCheckboxOptionFormArray(reason));
     });
   }
   private setCheckboxOptionFormArray(option: CheckboxForView){
@@ -614,6 +650,12 @@ export class BeneficiaryFormComponent implements OnInit {
   get psns(): FormArray {
     return this.beneficiaryForm.get('psns') as FormArray;
   }
+  get returnReasons(): FormArray {
+    return this.beneficiaryForm.get('returnReasons') as FormArray;
+  }
+  get determinations(): FormArray {
+    return this.beneficiaryForm.get('determinations') as FormArray;
+  }
   get benefitedFromOrgs() {
     return this.beneficiaryForm.get('benefitedFromOrgs') as FormArray;
   }
@@ -641,24 +683,24 @@ export class BeneficiaryFormComponent implements OnInit {
       return [];
     }
   }
-  createDeterminationsForView(lookupList: Lookup[]): DeterminationForView[] {
-    const createdList: DeterminationForView[] = [];
-    for (const item of lookupList){
-    let option: DeterminationForView;
-    option = {
-      lookupCode: item.lookupCode,
-      lookupName: item.lookupName,
-      other: null,
-      answerCode: null
-    };
-    if (option.lookupName !== 'Other'){
-     createdList.unshift(option);
-   }else{
-    createdList.push(option);
-   }
-  }
-    return createdList;
-  }
+  // createDeterminationsForView(lookupList: Lookup[]): DeterminationForView[] {
+  //   const createdList: DeterminationForView[] = [];
+  //   for (const item of lookupList){
+  //   let option: DeterminationForView;
+  //   option = {
+  //     lookupCode: item.lookupCode,
+  //     lookupName: item.lookupName,
+  //     other: null,
+  //     answerCode: null
+  //   };
+  //   if (option.lookupName !== 'Other'){
+  //    createdList.unshift(option);
+  //  }else{
+  //   createdList.push(option);
+  //  }
+  // }
+  //   return createdList;
+  // }
  createCheckboxListForView(lookupList: Lookup[]){
   const createdList: CheckboxForView[] = [];
   for (const item of lookupList){
@@ -677,6 +719,7 @@ export class BeneficiaryFormComponent implements OnInit {
   }
   return createdList;
 }
+
 createPostArrivalNeedsList(lookupList: Lookup[]){
   const createdList: PostArrivalNeedForView[] = [];
   for (const item of lookupList){

@@ -387,29 +387,30 @@
                     </div>
                     <h4>7. What are the main reasons behind your return to Afghanistan?</h4>
                     <div fxLayout="row wrap" fxLayout.lt-sm="column" fxLayoutGap="32px" fxLayoutAlign="flex-start">
-                        <ng-container *ngFor="let reason of returnReason; let i=index;">
+                        <ng-container formArrayName="returnReasons" *ngFor="let reason of returnReasons.controls; let i=index;">
                             <div fxFlex="0 1 calc(33.3% - 32px)" fxFlex.lt-md="0 1 calc(50% - 32px)" fxFlex.lt-sm="100%">
-                                <div fxLayout="row" fxLayoutGap="20px">
-                                    <mat-checkbox value="{{reason.lookupCode}}" [checked]="reason.isSelected">{{reason.lookupName}}</mat-checkbox>
-                                    <input matInput placeholder="Reason other" value="{{reason.other}}" *ngIf="reason.lookupName == 'Other'">
+                                <div [formGroupName]="i" fxLayout="row" fxLayoutGap="20px">
+                                    <mat-checkbox formControlName="isSelected" value="{{reason.controls.lookupCode.value}}">{{reason.controls.lookupName.value}}</mat-checkbox>
+                                    <input matInput placeholder="Reason other" value="{{reason.controls.other.value}}" *ngIf="reason.controls.isSelected.value == true && reason.controls.lookupName.value == 'Other'">
                                 </div>
                             </div>
                         </ng-container>
                     </div>
                     <h4 class="mt20">8. Rank which of these options is the most important for you to determine your destination in Afghanistan</h4>
-                    <div [ngClass]="{'borderButtom': !last}" class="pt10" fxLayout="row wrap" *ngFor="let determination of determinations; last as last" fxLayoutAlign="space-between start">
-                        <div fxFlex="0 1 calc(40% - 32px)" fxLayoutAlign="space-between start">
-                            <mat-label style=" margin-right: 20px;">{{determination.lookupName}}</mat-label>
-                            <input *ngIf="determination.lookupCode == 'RankImpOther'" value="{{determination.other}}" fxFlex="100%" matInput placeholder="Determination other">
-                        </div>
-                        <mat-radio-group fxFlex="0 1 calc(60% - 32px)" [value]="determination.answerCode" fxLayoutAlign="space-between start" fxLayout.lt-sm="column" aria-label="Select an option">
-                            <mat-radio-button value="NAAIMP">Not at all Important</mat-radio-button>
-                            <mat-radio-button value="SIMP">Slightly Important</mat-radio-button>
-                            <mat-radio-button value="IMP">Important</mat-radio-button>
-                            <mat-radio-button value="VIMP">Very Important</mat-radio-button>
-                        </mat-radio-group>
+                    <div formArrayName="determinations" *ngFor="let determination of determinations.controls;let i=index; last as last;" [ngClass]="{'borderButtom': !last}" class="pt10" fxLayout="row wrap" fxLayoutAlign="space-between start">
+                        <ng-container [formGroupName]="i">
+                            <div fxFlex="0 1 calc(40% - 32px)" fxLayoutAlign="space-between start">
+                                <mat-label style=" margin-right: 20px;">{{determination.controls.lookupName.value}}</mat-label>
+                                <input formControlName="other" *ngIf="determination.controls.lookupName.value == 'Other'" fxFlex="100%" matInput placeholder="Determination other">
+                            </div>
+                            <mat-radio-group formControlName="answerCode" fxFlex="0 1 calc(60% - 32px)" fxLayoutAlign="space-between start" fxLayout.lt-sm="column" aria-label="Select an option">
+                                <mat-radio-button value="NAAIMP">Not at all Important</mat-radio-button>
+                                <mat-radio-button value="SIMP">Slightly Important</mat-radio-button>
+                                <mat-radio-button value="IMP">Important</mat-radio-button>
+                                <mat-radio-button value="VIMP">Very Important</mat-radio-button>
+                            </mat-radio-group>
+                        </ng-container>
                     </div>
-
                     <mat-divider style="background-color: #3f51b5; height: 1px;">
                     </mat-divider>
                     <div class="mt20" fxLayout="row wrap" fxLayoutAlign="space-between start" fxLayoutGap="20px">
