@@ -92,55 +92,55 @@
                                         <th style="width: 5%; text-align: right;">ولد</th>
                                         <th style="width: 5%;"></th>
                                     </tr>
-                                    <tr>
+                                    <tr [formGroup]="individualForm">
                                         <td>
-                                            <input matInput placeholder="Name">
+                                            <input formControlName="name" matInput placeholder="Name">
                                         </td>
                                         <td>
-                                            <input matInput placeholder="Faher Name">
+                                            <input formControlName="fName" matInput placeholder="Faher Name">
                                         </td>
                                         <td>
-                                            <mat-select placeholder="Gender">
+                                            <mat-select formControlName="genderCode" placeholder="Gender">
                                                 <mat-option *ngFor="let gender of initialLooupsData?.gender" [value]="gender.lookupCode">
                                                     {{ gender.lookupName }}
                                                 </mat-option>
                                             </mat-select>
                                         </td>
                                         <td>
-                                            <mat-select placeholder="Marital Status">
+                                            <mat-select formControlName="maritalStatusCode" placeholder="Marital Status">
                                                 <mat-option *ngFor="let mStatus of initialLooupsData?.maritalStatus" [value]="mStatus.lookupCode">
                                                     {{ mStatus.lookupName }}
                                                 </mat-option>
                                             </mat-select>
                                         </td>
                                         <td>
-                                            <input matInput placeholder="Age">
+                                            <input formControlName="age" matInput placeholder="Age">
                                         </td>
                                         <td>
-                                            <mat-select placeholder="ID Type">
+                                            <mat-select formControlName="idTypeCode" placeholder="ID Type">
                                                 <mat-option *ngFor="let idType of initialLooupsData?.idTypes" [value]="idType.lookupCode">
                                                     {{ idType.lookupName }}
                                                 </mat-option>
                                             </mat-select>
                                         </td>
                                         <td>
-                                            <input matInput placeholder="idNo">
+                                            <input formControlName="idNo" matInput placeholder="idNo">
                                         </td>
                                         <td>
-                                            <mat-select placeholder="Relationship">
+                                            <mat-select formControlName="relationshipCode" placeholder="Relationship">
                                                 <mat-option *ngFor="let relationship of initialLooupsData?.relationships" [value]="relationship.lookupCode">
                                                     {{ relationship.lookupName }}
                                                 </mat-option>
                                             </mat-select>
                                         </td>
                                         <td>
-                                            <input matInput placeholder="Contact No">
+                                            <input formControlName="contactNumber" matInput placeholder="Contact No">
                                         </td>
                                         <td>
-                                            <input matInput placeholder="نوم/نام" style="text-align: right;">
+                                            <input formControlName="drName" matInput placeholder="نوم/نام" style="text-align: right;">
                                         </td>
                                         <td>
-                                            <input matInput placeholder="ولد" style="text-align: right;">
+                                            <input formControlName="drFName" matInput placeholder="ولد" style="text-align: right;">
                                         </td>
                                         <td fxLayout="row" fxLayoutAlign="end center">
                                             <button mat-raised-button color="primary" title="Add new user" aria-label="Add user">
@@ -152,26 +152,107 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr *ngFor="let ind of individuals; let i=index">
-                                        <td>{{ind?.name}}</td>
-                                        <td>{{ind?.fName}}</td>
-                                        <td>{{ind?.gender}}</td>
-                                        <td>{{ind?.maritalStatus}}</td>
-                                        <td>{{ind?.age}}</td>
-                                        <td>{{ind?.idType}}</td>
-                                        <td>{{ind?.idNo}}</td>
-                                        <td>{{ind?.relationship}}</td>
-                                        <td>{{ind?.contactNumber}}</td>
-                                        <td>{{ind?.drName}}</td>
-                                        <td>{{ind?.drFName}}</td>
-                                        <td fxLayout="row" fxLayoutGap="10px" fxLayoutAlign="space-around start">
-                                            <button mat-icon-button mat-mini-fab color="primary" title="Edite member" aria-label="Edite member">
-                                                <mat-icon>edit</mat-icon>
-                                            </button>
-                                            <button mat-icon-button mat-mini-fab color="warn" title="Delete member" aria-label="Delete member">
-                                                <mat-icon>delete</mat-icon>
-                                            </button>
-                                        </td>
+                                    <tr formArrayName="individuals" *ngFor="let ind of individualsArray.controls; let i=index">
+                                        <ng-container [formGroupName]="i">
+                                            <td>
+                                                <ng-container *ngIf="individualEditRowIndex != i">
+                                                    {{ind.get('name').value}}
+                                                </ng-container>
+                                                <input matInput *ngIf="individualEditRowIndex == i" formControlName="name" placeholder="Name">
+                                            </td>
+                                            <td>
+                                                <ng-container *ngIf="individualEditRowIndex != i">
+                                                    {{ind.get('fName').value}}
+                                                </ng-container>
+                                                <input *ngIf="individualEditRowIndex == i" formControlName="fName" matInput placeholder="Faher Name">
+                                            </td>
+                                            <td>
+                                                <ng-container *ngIf="individualEditRowIndex != i">
+                                                    {{ind.get('gender').value}}
+                                                </ng-container>
+                                                <mat-select *ngIf="individualEditRowIndex == i" formControlName="genderCode" placeholder="Gender">
+                                                    <mat-option *ngFor="let gender of initialLooupsData?.gender" [value]="gender.lookupCode">
+                                                        {{ gender.lookupName }}
+                                                    </mat-option>
+                                                </mat-select>
+                                            </td>
+                                            <td>
+                                                <ng-container *ngIf="individualEditRowIndex != i">
+                                                    {{ind.get('maritalStatus').value}}
+                                                </ng-container>
+                                                <mat-select *ngIf="individualEditRowIndex == i" formControlName="maritalStatusCode" placeholder="Marital Status">
+                                                    <mat-option *ngFor="let mStatus of initialLooupsData?.maritalStatus" [value]="mStatus.lookupCode">
+                                                        {{ mStatus.lookupName }}
+                                                    </mat-option>
+                                                </mat-select>
+                                            </td>
+                                            <td>
+                                                <ng-container *ngIf="individualEditRowIndex != i">
+                                                    {{ind.get('age').value}}
+                                                </ng-container>
+                                                <input *ngIf="individualEditRowIndex == i" formControlName="age" matInput placeholder="Faher Name">
+                                            </td>
+                                            <td>
+                                                <ng-container *ngIf="individualEditRowIndex != i">
+                                                    {{ind.get('idType').value}}
+                                                </ng-container>
+                                                <mat-select *ngIf="individualEditRowIndex == i" formControlName="idTypeCode" placeholder="ID Type">
+                                                    <mat-option *ngFor="let idType of initialLooupsData?.idTypes" [value]="idType.lookupCode">
+                                                        {{ idType.lookupName }}
+                                                    </mat-option>
+                                                </mat-select>
+                                            </td>
+                                            <td>
+                                                <ng-container *ngIf="individualEditRowIndex != i">
+                                                    {{ind.get('idNo').value}}
+                                                </ng-container>
+                                                <input *ngIf="individualEditRowIndex == i" formControlName="idNo" matInput placeholder="Faher Name">
+                                            </td>
+                                            <td>
+                                                <ng-container *ngIf="individualEditRowIndex != i">
+                                                    {{ind.get('relationship').value}}
+                                                </ng-container>
+                                                <mat-select *ngIf="individualEditRowIndex == i" formControlName="relationshipCode" placeholder="Relationship">
+                                                    <mat-option *ngFor="let relationship of initialLooupsData?.relationships" [value]="relationship.lookupCode">
+                                                        {{ relationship.lookupName }}
+                                                    </mat-option>
+                                                </mat-select>
+                                            </td>
+                                            <td>
+                                                <ng-container *ngIf="individualEditRowIndex != i">
+                                                    {{ind.get('contactNumber').value}}
+                                                </ng-container>
+                                                <input *ngIf="individualEditRowIndex == i" formControlName="contactNumber" matInput placeholder="Contact No">
+                                            </td>
+                                            <td>
+                                                <ng-container *ngIf="individualEditRowIndex != i">
+                                                    {{ind.get('drName').value}}
+                                                </ng-container>
+                                                <input *ngIf="individualEditRowIndex == i" formControlName="drName" matInput placeholder="نوم/نام" style="text-align: right;">
+                                            </td>
+                                            <td>
+                                                <ng-container *ngIf="individualEditRowIndex != i">
+                                                    {{ind.get('drFName').value}}
+                                                </ng-container>
+                                                <input *ngIf="individualEditRowIndex == i" formControlName="drFName" matInput placeholder="ولد" style="text-align: right;">
+                                            </td>
+                                            <td>
+                                                <div *ngIf="individualEditRowIndex == i" fxLayout="row" fxLayoutGap="10px" fxLayoutAlign="space-around start">
+                                                    <button mat-raised-button color="default" title="Add new user" aria-label="Add user">
+                                                        <mat-icon>save</mat-icon>
+                                                        Save
+                                                    </button>
+                                                </div>
+                                                <div *ngIf="individualEditRowIndex != i" fxLayout="row" fxLayoutGap="10px" fxLayoutAlign="space-around start">
+                                                    <button mat-icon-button mat-mini-fab color="primary" title="Edite member" aria-label="Edite member">
+                                                        <mat-icon>edit</mat-icon>
+                                                    </button>
+                                                    <button mat-icon-button mat-mini-fab color="warn" title="Delete member" aria-label="Delete member">
+                                                        <mat-icon>delete</mat-icon>
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </ng-container>
                                     </tr>
                                 </tbody>
                             </table>
@@ -242,12 +323,12 @@
                 </mat-tab>
                 <mat-tab label="Protection">
                     <h4 class="mt20">5. Does this case have person with specific needs(PSN)</h4>
-                    <div fxLayout="row wrap" fxLayout.lt-sm="column" fxLayoutGap="32px" fxLayoutAlign="flex-start">
-                        <ng-container *ngFor="let psn of psn; let i=index;">
+                    <div formArrayName="psns" fxLayout="row wrap" fxLayout.lt-sm="column" fxLayoutGap="32px" fxLayoutAlign="flex-start">
+                        <ng-container *ngFor="let psn of psns.controls; let i=index;">
                             <div fxFlex="0 1 calc(33.3% - 32px)" fxFlex.lt-md="0 1 calc(50% - 32px)" fxFlex.lt-sm="100%">
-                                <div fxLayout="row" fxLayoutGap="20px">
-                                    <mat-checkbox value="{{psn.lookupCode}}" [checked]="psn.isSelected">{{psn.lookupName}}</mat-checkbox>
-                                    <input matInput placeholder="PSN other" value="{{psn.other}}" *ngIf="psn.lookupName == 'Other'">
+                                <div [formGroupName]="i" fxLayout="row" fxLayoutGap="20px">
+                                    <mat-checkbox formControlName="isSelected" value="{{psn.controls.lookupCode.value}}">{{psn.controls.lookupName.value}}</mat-checkbox>
+                                    <input matInput formControlName="other" placeholder="PSN other" value="{{psn.controls.lookupName.other}}" *ngIf="psn.controls.isSelected.value == true && psn.controls.lookupName.value == 'Other'">
                                 </div>
                             </div>
                         </ng-container>
