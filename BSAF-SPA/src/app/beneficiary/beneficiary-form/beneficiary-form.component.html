@@ -442,12 +442,12 @@
                         </mat-radio-group>
                     </div>
                     <h4>12. How would you find the money for rental payments?</h4>
-                    <div fxLayout="row wrap" fxLayout.lt-sm="column" fxLayoutGap="32px" fxLayoutAlign="flex-start">
-                        <ng-container *ngFor="let source of moneySources; let i=index;">
-                            <div fxFlex="0 1 calc(33.3% - 32px)" fxFlex.lt-md="0 1 calc(50% - 32px)" fxFlex.lt-sm="100%">
+                    <div formArrayName="moneySources" fxLayout="row wrap" fxLayout.lt-sm="column" fxLayoutGap="32px" fxLayoutAlign="flex-start">
+                        <ng-container *ngFor="let source of moneySources.controls; let i=index;">
+                            <div [formGroupName]="i" fxFlex="0 1 calc(33.3% - 32px)" fxFlex.lt-md="0 1 calc(50% - 32px)" fxFlex.lt-sm="100%">
                                 <div fxLayout="row" fxLayoutGap="20px">
-                                    <mat-checkbox value="{{source.lookupCode}}" [checked]="source.isSelected">{{source.lookupName}}</mat-checkbox>
-                                    <input matInput placeholder="Money source other" value="{{source.other}}" *ngIf="source.lookupName == 'Other'">
+                                    <mat-checkbox formControlName="isSelected" value="{{source.controls.lookupCode.value}}">{{source.controls.lookupName.value}}</mat-checkbox>
+                                    <input formControlName="other" matInput placeholder="Money source other" *ngIf="source.controls.isSelected.value==true && source.controls.lookupName.value == 'Other'">
                                 </div>
                             </div>
                         </ng-container>
@@ -525,12 +525,12 @@
                         </mat-form-field>
                     </div>
                     <h4>17. Items brought from host country</h4>
-                    <div fxLayout="row wrap" fxLayout.lt-sm="column" fxLayoutGap="32px" fxLayoutAlign="flex-start">
-                        <ng-container *ngFor="let item of broughtItems; let i=index;">
-                            <div fxFlex="0 1 calc(33.3% - 32px)" fxFlex.lt-md="0 1 calc(50% - 32px)" fxFlex.lt-sm="100%">
-                                <div fxLayout="row" fxLayoutGap="20px">
-                                    <mat-checkbox value="{{item.lookupCode}}" [checked]="item.isSelected">{{item.lookupName}}</mat-checkbox>
-                                    <input matInput placeholder="Item brought other" value="{{item.other}}" *ngIf="item.lookupName == 'Other'">
+                    <div formArrayName="broughtItems" fxLayout="row wrap" fxLayout.lt-sm="column" fxLayoutGap="32px" fxLayoutAlign="flex-start">
+                        <ng-container *ngFor="let item of broughtItems.controls; let i=index;">
+                            <div fxFlex="0 1 calc(33.3% - 32px)" fxFlex.lt-md="0 1 calc(30% - 32px)" fxFlex.lt-sm="100%">
+                                <div [formGroupName]="i" fxLayout="row" fxLayoutGap="20px">
+                                    <mat-checkbox formControlName="isSelected" value="{{item.controls.lookupCode.value}}">{{item.controls.lookupName.value}}</mat-checkbox>
+                                    <input matInput formControlName="other" placeholder="Item brought other" *ngIf="item.controls.isSelected.value == true && item.controls.lookupName.value == 'Other'">
                                 </div>
                             </div>
                         </ng-container>
@@ -656,12 +656,12 @@
                             </mat-form-field>
                         </div>
                     </div>
-                    <div fxLayout="row wrap" fxLayout.lt-sm="column" fxLayoutGap="32px" fxLayoutAlign="flex-start">
-                        <ng-container *ngFor="let transport of transportations; let i=index;">
+                    <div formArrayName="transportations" fxLayout="row wrap" fxLayout.lt-sm="column" fxLayoutGap="32px" fxLayoutAlign="flex-start">
+                        <ng-container *ngFor="let transport of transportations.controls; let i=index;">
                             <div fxFlex="0 1 calc(50% - 32px)" fxFlex.lt-md="0 1 calc(50% - 32px)" fxFlex.lt-sm="100%">
-                                <div fxLayout="row" fxLayoutGap="20px">
-                                    <mat-checkbox value="{{transport.lookupCode}}" [checked]="transport.isSelected">{{transport.lookupName}}</mat-checkbox>
-                                    <input matInput placeholder="Other transportation difficulties" value="{{transport.other}}" *ngIf="transport.lookupName == 'Other'">
+                                <div [formGroupName]="i" fxLayout="row" fxLayoutGap="20px">
+                                    <mat-checkbox formControlName="isSelected" value="{{transport.controls.lookupCode.value}}">{{transport.controls.lookupName.value}}</mat-checkbox>
+                                    <input formControlName="other" matInput placeholder="Other transportation difficulties" *ngIf="transport.controls.isSelected.value == true && transport.controls.lookupName.value == 'Other'">
                                 </div>
                             </div>
                         </ng-container>
@@ -770,17 +770,21 @@
                         </div>
                     </div>
                     <h4 class="mt20" fxFlex="0 1 calc(40% - 20px)">25. What can help you obtain livelihood opportunities or employment in Afghanistan?</h4>
-                    <div fxLayout="row wrap" fxLayoutAlign="space-between" fxLayoutGap="20px">
-                        <mat-checkbox fxFlex *ngFor="let help of livelihoodEmpNeeds" value="{{help.lookupCode}" [checked]="help.isSelected">{{help.lookupName}}</mat-checkbox>
+                    <div formArrayName="livelihoodEmpNeeds" fxLayout="row wrap" fxLayoutGap="40px">
+                        <div fxFlex="0 1 calc(40% - 40px)" *ngFor="let help of livelihoodEmpNeeds.controls; let i=index;">
+                            <ng-container [formGroupName]="i">
+                                <mat-checkbox formControlName="isSelected" value="{{help.controls.lookupCode.value}">{{help.controls.lookupName.value}}</mat-checkbox>
+                            </ng-container>
+                        </div>
                     </div>
                     <fieldset>
                         <legend>Tools</legend>
-                        <div fxLayout="row wrap" fxLayout.lt-sm="column" fxLayoutGap="32px" fxLayoutAlign="flex-start">
-                            <ng-container *ngFor="let tool of needTools; let i=index;">
-                                <div fxFlex="0 1 calc(33.3% - 32px)" fxFlex.lt-md="0 1 calc(50% - 32px)" fxFlex.lt-sm="100%">
+                        <div formArrayName="needTools" fxLayout="row wrap" fxLayout.lt-sm="column" fxLayoutGap="32px" fxLayoutAlign="flex-start">
+                            <ng-container *ngFor="let tool of needTools.controls; let i=index;">
+                                <div [formGroupName]="i" fxFlex="0 1 calc(33.3% - 32px)" fxFlex.lt-md="0 1 calc(50% - 32px)" fxFlex.lt-sm="100%">
                                     <div fxLayout="row" fxLayoutGap="20px">
-                                        <mat-checkbox value="{{tool.lookupCode}}" [checked]="tool.isSelected">{{tool.lookupName}}</mat-checkbox>
-                                        <input matInput placeholder="Need tool other" value="{{tool.other}}" *ngIf="tool.lookupName == 'Other'">
+                                        <mat-checkbox formControlName="isSelected" value="{{tool.controls.lookupCode.value}}">{{tool.controls.lookupName.value}}</mat-checkbox>
+                                        <input formControlName="other" matInput placeholder="Need tool other" *ngIf="tool.controls.isSelected.value == true && tool.controls.lookupName.value == 'Other'">
                                     </div>
                                 </div>
                             </ng-container>
@@ -815,12 +819,12 @@
                     <h4>28. What are your main concerns in Afghanistan?</h4>
                     <fieldset>
                         <legend>Main concerns</legend>
-                        <div fxLayout="row wrap" fxLayout.lt-sm="column" fxLayoutGap="32px" fxLayoutAlign="flex-start">
-                            <ng-container *ngFor="let concern of mainConcerns; let i=index;">
-                                <div fxFlex="0 1 calc(33.3% - 32px)" fxFlex.lt-md="0 1 calc(50% - 32px)" fxFlex.lt-sm="100%">
+                        <div formArrayName="mainConcerns" fxLayout="row wrap" fxLayout.lt-sm="column" fxLayoutGap="32px" fxLayoutAlign="flex-start">
+                            <ng-container *ngFor="let concern of mainConcerns.controls; let i=index;">
+                                <div [formGroupName]="i" fxFlex="0 1 calc(33.3% - 32px)" fxFlex.lt-md="0 1 calc(50% - 32px)" fxFlex.lt-sm="100%">
                                     <div fxLayout="row" fxLayoutGap="20px">
-                                        <mat-checkbox value="{{concern.lookupCode}}" [checked]="concern.isSelected">{{concern.lookupName}}</mat-checkbox>
-                                        <input matInput placeholder="Concern other" [value]="concern.other" *ngIf="concern.lookupName == 'Other'">
+                                        <mat-checkbox formControlName="isSelected" value="{{concern.controls.lookupCode.value}}">{{concern.controls.lookupName.value}}</mat-checkbox>
+                                        <input matInput formControlName="other" placeholder="Concern other" *ngIf="concern.controls.isSelected.value == true && concern.controls.lookupName.value == 'Other'">
                                     </div>
                                 </div>
                             </ng-container>
@@ -877,11 +881,20 @@
                     </div>
                     <fieldset>
                         <legend>if Yes, specify</legend>
-                        <div fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="30px">
-                            <mat-checkbox *ngFor="let school of hostCountrySchools" value="{{school.lookupCode}}" [checked]="school.isSelected" class="mt20">{{school.lookupName}}</mat-checkbox>
-                            <mat-form-field class="full-width">
-                                <input matInput formControlName="numChildrenAttendedSchoole" placeholder="How many of your children attended school? ">
-                            </mat-form-field>
+                        <div fxLayout="row" fxLayoutGap="40px">
+                            <div formArrayName="hostCountrySchools" fxFlex="0 1 calc(50% - 40px)" fxLayout="row wrap" fxLayoutGap="50px" class="mt20">
+                                <div *ngFor="let school of hostCountrySchools.controls; let i=index;">
+                                    <ng-container [formGroupName]="i">
+                                        <mat-checkbox formControlName="isSelected" value="{{school.controls.lookupCode.value}}">{{school.controls.lookupName.value}}</mat-checkbox>
+                                    </ng-container>
+                                </div>
+                            </div>
+                            <div fxFlex="0 1 calc(50% - 40px)">
+                                <mat-form-field class="full-width">
+                                    <input matInput formControlName="numChildrenAttendedSchoole" placeholder="How many of your children attended school? ">
+                                </mat-form-field>
+                            </div>
+
                         </div>
                     </fieldset>
                 </mat-tab>

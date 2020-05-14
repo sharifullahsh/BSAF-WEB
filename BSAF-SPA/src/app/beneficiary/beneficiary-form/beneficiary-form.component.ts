@@ -34,14 +34,14 @@ export class BeneficiaryFormComponent implements OnInit {
   hostCountryProvinces: HostCountryProvince[];
   hostCountryDistricts: HostCountryDistrict[];
   determinationsList: DeterminationForView[] = [];
-  moneySources: CheckboxForView[] = [];
-  broughtItems: CheckboxForView[] = [];
-  transportations: CheckboxForView[] = [];
-  livelihoodEmpNeeds: CheckboxForView[] = [];
-  needTools: CheckboxForView[] = [];
+  moneySourcesList: CheckboxForView[] = [];
+  broughtItemsList: CheckboxForView[] = [];
+  transportationsList: CheckboxForView[] = [];
+  livelihoodEmpNeedsList: CheckboxForView[] = [];
+  needToolsList: CheckboxForView[] = [];
   postArrivalNeedsList: PostArrivalNeedForView[] = [];
-  mainConcerns: CheckboxForView[] = [];
-  hostCountrySchools: CheckboxForView[] = [];
+  mainConcernsList: CheckboxForView[] = [];
+  hostCountrySchoolsList: CheckboxForView[] = [];
   benefitedIndistrictList1: Lookup[] = [];
   benefitedIndistrictList2: Lookup[] = [];
   benefitedFromOrgsInDistrict = {
@@ -122,6 +122,13 @@ export class BeneficiaryFormComponent implements OnInit {
     psns: this.fb.array([]),
     returnReasons: this.fb.array([]),
     determinations: this.fb.array([]),
+    moneySources: this.fb.array([]),
+    broughtItems: this.fb.array([]),
+    transportations: this.fb.array([]),
+    livelihoodEmpNeeds: this.fb.array([]),
+    needTools: this.fb.array([]),
+    mainConcerns: this.fb.array([]),
+    hostCountrySchools: this.fb.array([]),
     // psns: ,
     //  returnReasons: this.fb.array([
     //   this.fb.group({
@@ -293,6 +300,20 @@ export class BeneficiaryFormComponent implements OnInit {
         this.setReturnReasonForm();
         this.determinationsList = this.createDeterminationListForView(this.initialLooupsData.determinations);
         this.setDeterminationForm();
+        this.moneySourcesList = this.createCheckboxListForView(this.initialLooupsData.moneySources);
+        this.setMoneySourceForm();
+        this.broughtItemsList = this.createCheckboxListForView(this.initialLooupsData.broughtItems);
+        this.setBroughtItemsForm();
+        this.transportationsList = this.createCheckboxListForView(this.initialLooupsData.transportations);
+        this.setTransportationForm();
+        this.livelihoodEmpNeedsList = this.createCheckboxListForView(this.initialLooupsData.obtainLivelihoodHelps);
+        this.setLivelihoodEmpNeedsForm();
+        this.needToolsList = this.createCheckboxListForView(this.initialLooupsData.tools);
+        this.setNeedToolsForm();
+        this.mainConcernsList = this.createCheckboxListForView(this.initialLooupsData.mainConcerns);
+        this.setMainConcernsForm();
+        this.hostCountrySchoolsList = this.createCheckboxListForView(this.initialLooupsData.hostCountrySchools);
+        this.setHostCountrySchoolsForm();
       });
     // this.heroes$ = this.route.paramMap.pipe(
     //   switchMap(params => {
@@ -384,7 +405,6 @@ export class BeneficiaryFormComponent implements OnInit {
 
           for (const member of this.beneficiary.individuals) {
             const indForm: FormGroup =  this.newIndividual();
-            console.log('name is >>>>>>>>> '+ member.name);
             indForm.patchValue({
               name: member.name,
               fName: member.fName,
@@ -426,71 +446,6 @@ export class BeneficiaryFormComponent implements OnInit {
           this.loadHostCountryProvinces(response.countryOfExile);
           this.loadHostCountryDistrict(response.beforReturnProvince);
 
-          this.moneySources = this.createCheckboxListForView(this.initialLooupsData.moneySources);
-          for (const source of this.beneficiary.moneySources) {
-            for (const i in this.moneySources) {
-              if (source.lookupCode === this.moneySources[i].lookupCode){
-                this.moneySources[i].isSelected = true;
-                this.moneySources[i].other = source.other;
-              }
-            }
-          }
-          this.broughtItems = this.createCheckboxListForView(this.initialLooupsData.broughtItems);
-          for (const item of this.beneficiary.broughtItems) {
-            for (const i in this.broughtItems) {
-              if (item.lookupCode === this.broughtItems[i].lookupCode){
-                this.broughtItems[i].isSelected = true;
-                this.broughtItems[i].other = item.other;
-              }
-            }
-          }
-
-          this.transportations = this.createCheckboxListForView(this.initialLooupsData.transportations);
-          for (const trans of this.beneficiary.transportations) {
-            for (const i in this.transportations) {
-              if (trans.lookupCode === this.transportations[i].lookupCode){
-                this.transportations[i].isSelected = true;
-                this.transportations[i].other = trans.other;
-              }
-            }
-          }
-          this.livelihoodEmpNeeds = this.createCheckboxListForView(this.initialLooupsData.obtainLivelihoodHelps);
-          for (const need of this.beneficiary.livelihoodEmpNeeds) {
-            for (const i in this.livelihoodEmpNeeds) {
-              if (need.lookupCode === this.livelihoodEmpNeeds[i].lookupCode){
-                this.livelihoodEmpNeeds[i].isSelected = true;
-                this.livelihoodEmpNeeds[i].other = need.other;
-              }
-            }
-          }
-          this.needTools = this.createCheckboxListForView(this.initialLooupsData.tools);
-          for (const tool of this.beneficiary.needTools) {
-            for (const i in this.needTools) {
-              if (tool.lookupCode === this.needTools[i].lookupCode){
-                this.needTools[i].isSelected = true;
-                this.needTools[i].other = tool.other;
-              }
-            }
-          }
-          this.mainConcerns = this.createCheckboxListForView(this.initialLooupsData.mainConcerns);
-          for (const concern of this.beneficiary.mainConcerns) {
-            for (const i in this.mainConcerns) {
-              if (concern.lookupCode === this.mainConcerns[i].lookupCode){
-                this.mainConcerns[i].isSelected = true;
-                this.mainConcerns[i].other = concern.other;
-              }
-            }
-          }
-          console.log('schoools are >>>>>>>' + JSON.stringify(this.hostCountrySchools));
-
-          this.hostCountrySchools = this.createCheckboxListForView(this.initialLooupsData.hostCountrySchools);
-          for (const schoool of this.beneficiary.hostCountrySchools) {
-            for (const i in this.hostCountrySchools) {
-              if (schoool.lookupCode === this.hostCountrySchools[i].lookupCode){
-                this.hostCountrySchools[i].isSelected = true;
-              }
-            }
-          }
           if (this.beneficiary.haveFamilyBenefited && this.beneficiary.benefitedFromOrgs){
             console.log('benefica y benefited >>>>>>>>');
             if (this.beneficiary.benefitedFromOrgs[0] && this.beneficiary.benefitedFromOrgs[0].provinceCode){
@@ -500,7 +455,6 @@ export class BeneficiaryFormComponent implements OnInit {
                this.getDistrictBenefitedIn(this.beneficiary.benefitedFromOrgs[1].provinceCode, 1);
           }
           }
-          console.log('org infor are >>>>>>>>>>> ' + JSON.stringify(this.beneficiaryForm.get('benefitedFromOrgs').value));
           // this.photoPath = "data:image/png;base64,"+ response.photo;
 
           this.beneficiary.psNs.forEach(beneficiaryPSN => {
@@ -549,6 +503,81 @@ export class BeneficiaryFormComponent implements OnInit {
             }
           });
          });
+          this.beneficiary.moneySources.forEach(beneficiarySource => {
+          this.moneySources.controls.forEach(allSource => {
+            if (beneficiarySource.lookupCode === allSource.get('lookupCode').value){
+              allSource.patchValue({
+                isSelected: true,
+                lookupCode: beneficiarySource.lookupCode,
+                other: beneficiarySource.other
+              } );
+            }
+          });
+         });
+          this.beneficiary.broughtItems.forEach(beneficiaryItem => {
+          this.broughtItems.controls.forEach(allItem => {
+            if (beneficiaryItem.lookupCode === allItem.get('lookupCode').value){
+              allItem.patchValue({
+                isSelected: true,
+                lookupCode: beneficiaryItem.lookupCode,
+                other: beneficiaryItem.other
+              } );
+            }
+          });
+         });
+          this.beneficiary.transportations.forEach(beneficiaryTrans => {
+          this.transportations.controls.forEach(allTrans => {
+            if (beneficiaryTrans.lookupCode === allTrans.get('lookupCode').value){
+              allTrans.patchValue({
+                isSelected: true,
+                lookupCode: beneficiaryTrans.lookupCode,
+                other: beneficiaryTrans.other
+              } );
+            }
+          });
+         });
+          this.beneficiary.livelihoodEmpNeeds.forEach(beneficiaryNeed => {
+          this.livelihoodEmpNeeds.controls.forEach(allNeed => {
+            if (beneficiaryNeed.lookupCode === allNeed.get('lookupCode').value){
+              allNeed.patchValue({
+                isSelected: true,
+                lookupCode: beneficiaryNeed.lookupCode
+              } );
+            }
+          });
+         });
+          this.beneficiary.needTools.forEach(beneficiaryTool => {
+          this.needTools.controls.forEach(allTool => {
+            if (beneficiaryTool.lookupCode === allTool.get('lookupCode').value){
+              allTool.patchValue({
+                isSelected: true,
+                lookupCode: beneficiaryTool.lookupCode,
+                other: beneficiaryTool.other
+              } );
+            }
+          });
+         });
+          this.beneficiary.mainConcerns.forEach(beneficiaryConcern => {
+          this.mainConcerns.controls.forEach(allConcern => {
+            if (beneficiaryConcern.lookupCode === allConcern.get('lookupCode').value){
+              allConcern.patchValue({
+                isSelected: true,
+                lookupCode: beneficiaryConcern.lookupCode,
+                other: beneficiaryConcern.other
+              } );
+            }
+          });
+         });
+          this.beneficiary.hostCountrySchools.forEach(beneficiarySchool => {
+          this.hostCountrySchools.controls.forEach(allSchool => {
+            if (beneficiarySchool.lookupCode === allSchool.get('lookupCode').value){
+              allSchool.patchValue({
+                isSelected: true,
+                lookupCode: beneficiarySchool.lookupCode,
+              } );
+            }
+          });
+         });
           // console.log('photo is >>>>>>>>>>>' + response.photo);
           if (response.photo){
             this.photoPath = this._sanitizer.bypassSecurityTrustResourceUrl(`data:image/png;base64, ${response.photo}`);
@@ -562,6 +591,48 @@ export class BeneficiaryFormComponent implements OnInit {
           console.log('can not lood beneficar ');
         });
       }
+  }
+  setHostCountrySchoolsForm() {
+    const hostCountrySchoolsArray = this.beneficiaryForm.get('hostCountrySchools') as FormArray;
+    this.hostCountrySchoolsList.forEach((school) => {
+      hostCountrySchoolsArray.push(this.setCheckboxOptionFormArray(school));
+    });
+  }
+  setMainConcernsForm() {
+    const mainConcernsArray = this.beneficiaryForm.get('mainConcerns') as FormArray;
+    this.mainConcernsList.forEach((concern) => {
+      mainConcernsArray.push(this.setCheckboxOptionFormArray(concern));
+    });
+  }
+  setNeedToolsForm() {
+    const needToolsArray = this.beneficiaryForm.get('needTools') as FormArray;
+    this.needToolsList.forEach((tool) => {
+      needToolsArray.push(this.setCheckboxOptionFormArray(tool));
+    });
+  }
+  setLivelihoodEmpNeedsForm() {
+    const livelihoodEmpNeedsArray = this.beneficiaryForm.get('livelihoodEmpNeeds') as FormArray;
+    this.livelihoodEmpNeedsList.forEach((need) => {
+      livelihoodEmpNeedsArray.push(this.setCheckboxOptionFormArray(need));
+    });
+  }
+  setTransportationForm() {
+    const transportationArray = this.beneficiaryForm.get('transportations') as FormArray;
+    this.transportationsList.forEach((item) => {
+      transportationArray.push(this.setCheckboxOptionFormArray(item));
+    });
+  }
+  setBroughtItemsForm() {
+    const broughtItemseArray = this.beneficiaryForm.get('broughtItems') as FormArray;
+    this.broughtItemsList.forEach((item) => {
+      broughtItemseArray.push(this.setCheckboxOptionFormArray(item));
+    });
+  }
+  setMoneySourceForm() {
+    const moneySourceArray = this.beneficiaryForm.get('moneySources') as FormArray;
+    this.moneySourcesList.forEach((reason) => {
+      moneySourceArray.push(this.setCheckboxOptionFormArray(reason));
+    });
   }
   setDeterminationForm() {
     const determinationsArray = this.beneficiaryForm.get('determinations') as FormArray;
@@ -656,11 +727,32 @@ export class BeneficiaryFormComponent implements OnInit {
   get determinations(): FormArray {
     return this.beneficiaryForm.get('determinations') as FormArray;
   }
+  get moneySources(): FormArray {
+    return this.beneficiaryForm.get('moneySources') as FormArray;
+  }
+  get broughtItems(): FormArray {
+    return this.beneficiaryForm.get('broughtItems') as FormArray;
+  }
+  get transportations(): FormArray {
+    return this.beneficiaryForm.get('transportations') as FormArray;
+  }
+  get livelihoodEmpNeeds(): FormArray {
+    return this.beneficiaryForm.get('livelihoodEmpNeeds') as FormArray;
+  }
   get benefitedFromOrgs() {
     return this.beneficiaryForm.get('benefitedFromOrgs') as FormArray;
   }
   get postArrivalNeeds(): FormArray {
     return this.beneficiaryForm.get('postArrivalNeeds') as FormArray;
+  }
+  get needTools(): FormArray {
+    return this.beneficiaryForm.get('needTools') as FormArray;
+  }
+  get mainConcerns(): FormArray {
+    return this.beneficiaryForm.get('mainConcerns') as FormArray;
+  }
+  get hostCountrySchools(): FormArray {
+    return this.beneficiaryForm.get('hostCountrySchools') as FormArray;
   }
   get individualsArray(): FormArray {
     return (this.beneficiaryForm.get('individuals') as FormArray);
