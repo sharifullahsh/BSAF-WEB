@@ -118,7 +118,6 @@ namespace BSAFWebApi.Controllers
                     new IndividualDto
                     {
                         IndividualID = i.IndividualID,
-                        BeneficiaryID = i.BeneficiaryID,
                         Name = i.Name,
                         DrName = i.DrName,
                         FName = i.FName,

@@ -94,58 +94,58 @@
                                     </tr>
                                     <tr [formGroup]="individualForm">
                                         <td>
-                                            <input formControlName="name" matInput placeholder="Name">
+                                            <input formControlName="name" class="form-control" matInput placeholder="Name">
                                         </td>
                                         <td>
-                                            <input formControlName="fName" matInput placeholder="Faher Name">
+                                            <input formControlName="fName" class="form-control" matInput placeholder="Faher Name">
                                         </td>
                                         <td>
-                                            <mat-select formControlName="genderCode" placeholder="Gender">
+                                            <mat-select formControlName="genderCode" class="form-control" placeholder="Gender">
                                                 <mat-option *ngFor="let gender of initialLooupsData?.gender" [value]="gender.lookupCode">
                                                     {{ gender.lookupName }}
                                                 </mat-option>
                                             </mat-select>
                                         </td>
                                         <td>
-                                            <mat-select formControlName="maritalStatusCode" placeholder="Marital Status">
+                                            <mat-select formControlName="maritalStatusCode" class="form-control" placeholder="Marital Status">
                                                 <mat-option *ngFor="let mStatus of initialLooupsData?.maritalStatus" [value]="mStatus.lookupCode">
                                                     {{ mStatus.lookupName }}
                                                 </mat-option>
                                             </mat-select>
                                         </td>
                                         <td>
-                                            <input formControlName="age" matInput placeholder="Age">
+                                            <input formControlName="age" class="form-control" matInput placeholder="Age">
                                         </td>
                                         <td>
-                                            <mat-select formControlName="idTypeCode" placeholder="ID Type">
+                                            <mat-select formControlName="idTypeCode" class="form-control" placeholder="ID Type">
                                                 <mat-option *ngFor="let idType of initialLooupsData?.idTypes" [value]="idType.lookupCode">
                                                     {{ idType.lookupName }}
                                                 </mat-option>
                                             </mat-select>
                                         </td>
                                         <td>
-                                            <input formControlName="idNo" matInput placeholder="idNo">
+                                            <input formControlName="idNo" class="form-control" matInput placeholder="idNo">
                                         </td>
                                         <td>
-                                            <mat-select formControlName="relationshipCode" placeholder="Relationship">
+                                            <mat-select formControlName="relationshipCode" class="form-control" placeholder="Relationship">
                                                 <mat-option *ngFor="let relationship of initialLooupsData?.relationships" [value]="relationship.lookupCode">
                                                     {{ relationship.lookupName }}
                                                 </mat-option>
                                             </mat-select>
                                         </td>
                                         <td>
-                                            <input formControlName="contactNumber" matInput placeholder="Contact No">
+                                            <input formControlName="contactNumber" class="form-control" matInput placeholder="Contact No">
                                         </td>
                                         <td>
-                                            <input formControlName="drName" matInput placeholder="نوم/نام" style="text-align: right;">
+                                            <input formControlName="drName" class="form-control" matInput placeholder="نوم/نام" style="text-align: right;">
                                         </td>
                                         <td>
-                                            <input formControlName="drFName" matInput placeholder="ولد" style="text-align: right;">
+                                            <input formControlName="drFName" class="form-control" matInput placeholder="ولد" style="text-align: right;">
                                         </td>
                                         <td fxLayout="row" fxLayoutAlign="end center">
-                                            <button mat-raised-button color="primary" title="Add new user" aria-label="Add user">
+                                            <button mat-raised-button class="m5 btn-add-ind" color="primary" (click)="addIndividual()" title="Add new user" aria-label="Add user">
                                                 <mat-icon>person_add</mat-icon>
-                                                Save
+                                                Add
                                             </button>
                                             <!-- <button mat-raised-button color="primary">Save</button> -->
                                         </td>
@@ -238,16 +238,16 @@
                                             </td>
                                             <td>
                                                 <div *ngIf="individualEditRowIndex == i" fxLayout="row" fxLayoutGap="10px" fxLayoutAlign="space-around start">
-                                                    <button mat-raised-button color="default" title="Add new user" aria-label="Add user">
+                                                    <button mat-raised-button (click)="saveIndividual()" color="default" class="m5" title="Add new user" aria-label="Add user">
                                                         <mat-icon>save</mat-icon>
                                                         Save
                                                     </button>
                                                 </div>
                                                 <div *ngIf="individualEditRowIndex != i" fxLayout="row" fxLayoutGap="10px" fxLayoutAlign="space-around start">
-                                                    <button mat-icon-button mat-mini-fab color="primary" title="Edite member" aria-label="Edite member">
+                                                    <button class="m5" mat-mini-fab (click)="editIndividual(i)" color="primary" title="Edite member" aria-label="Edite member">
                                                         <mat-icon>edit</mat-icon>
                                                     </button>
-                                                    <button mat-icon-button mat-mini-fab color="warn" title="Delete member" aria-label="Delete member">
+                                                    <button class="m5" (click)="deleteIndividual(i)" mat-mini-fab color="warn" title="Delete member" aria-label="Delete member">
                                                         <mat-icon>delete</mat-icon>
                                                     </button>
                                                 </div>
@@ -582,16 +582,26 @@
                 <mat-tab label="Assistance Needs 2">
                     <div class="mt20" fxLayout="row wrap" fxLayoutAlign="space-between start" fxLayoutGap="20px">
                         <h4 fxFelx>20. Have you or your family benefited from UNHCR or IOM programming in the past? </h4>
-                        <mat-radio-group formControlName="haveFamilyBenefited" fxFlex fxLayoutGap="20px" fxLayout.lt-sm="column" aria-label="Select an option">
+                        <mat-radio-group (change)="benefitedFromOrgsChange($event)" formControlName="haveFamilyBenefited" fxFlex fxLayoutGap="20px" fxLayout.lt-sm="column" aria-label="Select an option">
                             <mat-radio-button [value]="true">Yes</mat-radio-button>
                             <mat-radio-button [value]="false">No</mat-radio-button>
                         </mat-radio-group>
                     </div>
                     <div fxLayout="column" *ngIf="beneficiaryForm.get('haveFamilyBenefited').value">
-                        <p>If yes, when and where</p>
+                        <div fxLayout="row" fxLayoutAlign="end" fxLayoutAlign="space-between start">
+                            <p>If yes, when and where</p>
+                            <button *ngIf="benefitedFromOrgs.controls.length < 2" mat-raised-button (click)="addOtherOrg()" color="primary" title="Add other organization" aria-label="Add other organization">
+                                <mat-icon>add</mat-icon>
+                                Add Organization
+                            </button>
+                        </div>
                         <div formArrayName="benefitedFromOrgs" *ngFor="let org of benefitedFromOrgs.controls;let i = index;">
                             <div [formGroupName]="i">
-                                <p>element </p>{{org.controls.village.value}}
+                                <div fxLayout="row" fxLayoutAlign="end start">
+                                    <button *ngIf="benefitedFromOrgs.controls.length > 1" mat-icon-button (click)="benefitedFromOrgs.removeAt(i)" color="primary" title="Add organization" aria-label="Add organization">
+                                        <mat-icon>cancel</mat-icon>
+                                    </button>
+                                </div>
                                 <fieldset>
                                     <legend>Organization {{i+1}} Information</legend>
                                     <div fxLayout="row wrap" fxLayoutAlign="space-between start" fxLayoutGap="10px">
@@ -668,7 +678,7 @@
                     </div>
                     <div fxLayout="column">
                         <mat-form-field class="full-width">
-                            <input matInput formControlName="transportationInfo" placeholder="Additional information">
+                            <input matInput formControlName="transportationInfo" placeholder="additional information">
                         </mat-form-field>
                     </div>
                     <div fxLayout="row" fxLayoutGap="30px" fxLayoutAlign="space-between start">

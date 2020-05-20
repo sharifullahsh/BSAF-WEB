@@ -24,6 +24,18 @@ import { UserManagementComponent } from './user-management/user-management.compo
 import { HasRoleDirective } from './_directives/has-role.directive';
 import { IndividualsComponent } from './beneficiary/individuals/individuals.component';
 import { IndividualDialogComponent } from './beneficiary/individual-dialog/individual-dialog.component';
+import { TestFormComponent } from './test-form/test-form.component';
+import { LayoutModule } from '@angular/cdk/layout';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatButtonModule } from '@angular/material/button';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatIconModule } from '@angular/material/icon';
+import { MatListModule } from '@angular/material/list';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
+import { MatRadioModule } from '@angular/material/radio';
+import { MatCardModule } from '@angular/material/card';
+import { ReactiveFormsModule } from '@angular/forms';
 
 export function tokenGetter() {
   return localStorage.getItem('token');
@@ -42,6 +54,7 @@ export function tokenGetter() {
     HasRoleDirective,
     IndividualsComponent,
     IndividualDialogComponent,
+    TestFormComponent,
   ],
   imports: [
     BrowserModule,
@@ -57,6 +70,17 @@ export function tokenGetter() {
         blacklistedRoutes: ['localhost:5000/api/auth']
       }
     }),
+    LayoutModule,
+    MatToolbarModule,
+    MatButtonModule,
+    MatSidenavModule,
+    MatIconModule,
+    MatListModule,
+    MatInputModule,
+    MatSelectModule,
+    MatRadioModule,
+    MatCardModule,
+    ReactiveFormsModule,
 
   ],
   providers: [AuthService, AdminService, AuthGuard, HttpInterceptorService, LookupService],

@@ -18,7 +18,8 @@ import { image } from 'src/app/models/image';
 @Component({
   selector: 'app-beneficiary-form',
   templateUrl: './beneficiary-form.component.html',
-  styleUrls: ['./beneficiary-form.component.css']
+  styleUrls: ['./beneficiary-form.component.css'],
+  providers:[]
 })
 export class BeneficiaryFormComponent implements OnInit {
   postArrivalNeedTbleColumns: string[] = ['NeedAssistance', 'IsProvided', 'ProvidedDate', 'Comments'];
@@ -48,186 +49,17 @@ export class BeneficiaryFormComponent implements OnInit {
     0: this.benefitedIndistrictList1,
     1: this.benefitedIndistrictList2,
   };
-  individualEditRowIndex = 0;
-  beneficiaryForm: FormGroup = this.fb.group({
-    cardID: null,
-    screeningDate: null,
-    provinceBCP: null,
-    borderPoint: null,
-    beneficiaryType: [null],
-    returnStatus: [null],
-    originProvince: [null],
-    originDistrict: [null],
-    originVillage: [null],
-    returnProvince: [null],
-    returnDistrict: [null],
-    returnVillage: [null],
-    leavingReason1: [null],
-    leavingReason1Other: [null],
-    leavingReason2: [null],
-    leavingReason2Other: [null],
-    leavingReason3: [null],
-    leavingReason3Other: [null],
-    ownHouse: [null],
-    whereWillLive: [null],
-    rentPayForAccom: [null],
-    rentPayCurrency: [null],
-    allowForJob: [null],
-    countryOfExile: [null],
-    countryOfExilOther: [null],
-    beforReturnProvince: [null],
-    beforReturnDistrictID: [null],
-    beforReturnRemarks: [null],
-    familyMemStayedBehind: [null],
-    familyMemStayedBehindNo: [null],
-    lengthOfStayYears: [null],
-    lengthOfStayMonths: [null],
-    lengthOfStayDays: [null],
-    wouldYouReturn: [null],
-    haveFamilyBenefited: [null],
-    transportationDate: [null],
-    transportationInfo: [null],
-    transportAccompaniedBy: [null],
-    transportAccomByNo: [null],
-    topNeed1: [null],
-    topNeed1Other: [null],
-    topNeed2: [null],
-    topNeed2Other: [null],
-    topNeed3: [null],
-    topNeed3Other: [null],
-    intendToDo: [null],
-    intendToReturnToHostReason: [null],
-    professionInHostCountry: [null],
-    professionInHostCountryOther: [null],
-    hoHCanReadWrite: [null],
-    hoHEducationLevel: [null],
-    hoHEducationLevelOther: [null],
-    numHHHaveTaskira: [null],
-    numHHHavePassport: [null],
-    numHHHaveDocOther: [null],
-    doHaveSecureLivelihood: [null],
-    didChildrenGoToSchoole: [null],
-    numChildrenAttendedSchoole: [null],
-    isActive: [null],
-    isSubmitted: [null],
-    isCardIssued: [null],
-    photo: [null],
-    insertedBy: [null],
-    insertedDate: [null],
-    lastUpdatedBy: [null],
-    lastUpdatedDate: [null],
-    individuals: this.fb.array([]),
-    benefitedFromOrgs: this.fb.array([]),
-    postArrivalNeeds: this.fb.array([]),
-    psns: this.fb.array([]),
-    returnReasons: this.fb.array([]),
-    determinations: this.fb.array([]),
-    moneySources: this.fb.array([]),
-    broughtItems: this.fb.array([]),
-    transportations: this.fb.array([]),
-    livelihoodEmpNeeds: this.fb.array([]),
-    needTools: this.fb.array([]),
-    mainConcerns: this.fb.array([]),
-    hostCountrySchools: this.fb.array([]),
-    // psns: ,
-    //  returnReasons: this.fb.array([
-    //   this.fb.group({
-    //    id: [null],
-    //    beneficiaryID: [null],
-    //    reasonCode: [null],
-    //    other: [null],
-    //   })
-    //  ]),
-    //  determinations: this.fb.array([
-    //   this.fb.group({
-    //    id: [null],
-    //    beneficiaryID: [null],
-    //    determinationCode: [null],
-    //    answerCode: [null],
-    //    other: [null],
-    //   })
-    //  ]),
-    //  moneySources: this.fb.array([
-    //   this.fb.group({
-    //    id: [null],
-    //    beneficiaryID: [null],
-    //    moneySourceCode: [null],
-    //    moneySourceOther: [null],
-    //   })
-    //  ]),
-    //  broughtItems: this.fb.array([
-    //   this.fb.group({
-    //    id: [null],
-    //    beneficiaryID: [null],
-    //    itemCode: [null],
-    //    itemOther: [null],
-    //   })
-    //  ]),
-    //  postArrivalNeeds: this.fb.array([
-    //   this.fb.group({
-    //    id: [null],
-    //    beneficiaryID: [null],
-    //    needCode: [null],
-    //    provided: [null],
-    //    ProvidedDate: [null],
-    //    Comment: [null],
-    //   })
-    //  ]),
-    //  benefitedFromOrgs: this.fb.array([
-    //   this.fb.group({
-    //    id: [null],
-    //    beneficiaryID: [null],
-    //    date: [null],
-    //   provinceCode: [null],
-    //   districtID: [null],
-    //   village: [null],
-    //   orgCode: [null],
-    //   assistanceProvided: [null]
-    //   })
-    //  ]),
-    //  transportations: this.fb.array([
-    //   this.fb.group({
-    //    id: [null],
-    //    beneficiaryID: [null],
-    //    typedCode: [null],
-    //    other: [null],
-    //   })
-    //  ]),
-    //  livelihoodEmpNeeds: this.fb.array([
-    //   this.fb.group({
-    //    id: [null],
-    //    beneficiaryID: [null],
-    //    needCode: [null]
-    //   })
-    //  ]),
-    //  needTools: this.fb.array([
-    //   this.fb.group({
-    //    id: [null],
-    //    beneficiaryID: [null],
-    //    toolCode: [null],
-    //    other: [null]
-    //   })
-    //  ]),
-    //  mainConcerns: this.fb.array([
-    //   this.fb.group({
-    //    id: [null],
-    //    beneficiaryID: [null],
-    //    concernCode: [null],
-    //    other: [null]
-    //   })
-    //  ]),
-    //  hostCountrySchools: this.fb.array([
-    //   this.fb.group({
-    //    id: [null],
-    //    beneficiaryID: [null],
-    //    schoolTypeCode: [null]
-    //   })
-    //  ]),
-    // postalCode: [null, Validators.compose([
-    //   Validators.required, Validators.minLength(5), Validators.maxLength(5)])
-    // ],
-  });
-  individualForm = this.fb.group({
+  individualEditRowIndex = -1;
+  submitted = false;
+
+constructor(private fb: FormBuilder, private lookupService: LookupService,
+            private route: ActivatedRoute, private beneficiaryService: BeneficiaryService,
+            private alertifyService: AlertifyService,
+            private _sanitizer: DomSanitizer) {}
+beneficiaryForm: FormGroup = this.beneficiaryService.beneficiaryForm;
+individualForm: FormGroup = this.beneficiaryService.individualForm;
+newIndividual(): FormGroup{
+  return this.fb.group({
     individualID: [null],
     beneficiaryID: [null],
     name: [null],
@@ -246,49 +78,9 @@ export class BeneficiaryFormComponent implements OnInit {
     relationship: [null],
     contactNumber: [null],
   });
+}
 
-  newIndividual(): FormGroup{
-    return this.fb.group({
-      individualID: [null],
-      beneficiaryID: [null],
-      name: [null],
-      drName: [null],
-      fName: [null],
-      drFName: [null],
-      genderCode: [null],
-      gender: [null],
-      maritalStatusCode: [null],
-      maritalStatus: [null],
-      age: [null],
-      idTypeCode: [null],
-      idType: [null],
-      idNo: [null],
-      relationshipCode: [null],
-      relationship: [null],
-      contactNumber: [null],
-    });
-  }
-  // psn = this.fb.array([
-  //   this.fb.group({
-  //    id: [null],
-  //    beneficiaryID: [null],
-  //    isSelected:[false],
-  //    lookupName:[''],
-  //    lookupCode: [null],
-  //    psnOther: [null],
-  //   })
-  //  ]);
-
-
-  constructor(private fb: FormBuilder, private lookupService: LookupService,
-              private route: ActivatedRoute, private beneficiaryService: BeneficiaryService,
-              private alertifyService: AlertifyService,
-              private _sanitizer: DomSanitizer) {}
-
-  // get psn() {
-  //   return this.beneficiaryForm.get('psns') as FormArray;
-  // }
-  ngOnInit(): void {
+ngOnInit(): void {
       this.route.data.subscribe((data: {initialLookups: InitialLookups}) => {
         this.initialLooupsData = data.initialLookups;
         console.log('data is >>>>>>> ' + JSON.stringify(this.initialLooupsData));
@@ -592,55 +384,55 @@ export class BeneficiaryFormComponent implements OnInit {
         });
       }
   }
-  setHostCountrySchoolsForm() {
+setHostCountrySchoolsForm() {
     const hostCountrySchoolsArray = this.beneficiaryForm.get('hostCountrySchools') as FormArray;
     this.hostCountrySchoolsList.forEach((school) => {
       hostCountrySchoolsArray.push(this.setCheckboxOptionFormArray(school));
     });
   }
-  setMainConcernsForm() {
+setMainConcernsForm() {
     const mainConcernsArray = this.beneficiaryForm.get('mainConcerns') as FormArray;
     this.mainConcernsList.forEach((concern) => {
       mainConcernsArray.push(this.setCheckboxOptionFormArray(concern));
     });
   }
-  setNeedToolsForm() {
+setNeedToolsForm() {
     const needToolsArray = this.beneficiaryForm.get('needTools') as FormArray;
     this.needToolsList.forEach((tool) => {
       needToolsArray.push(this.setCheckboxOptionFormArray(tool));
     });
   }
-  setLivelihoodEmpNeedsForm() {
+setLivelihoodEmpNeedsForm() {
     const livelihoodEmpNeedsArray = this.beneficiaryForm.get('livelihoodEmpNeeds') as FormArray;
     this.livelihoodEmpNeedsList.forEach((need) => {
       livelihoodEmpNeedsArray.push(this.setCheckboxOptionFormArray(need));
     });
   }
-  setTransportationForm() {
+setTransportationForm() {
     const transportationArray = this.beneficiaryForm.get('transportations') as FormArray;
     this.transportationsList.forEach((item) => {
       transportationArray.push(this.setCheckboxOptionFormArray(item));
     });
   }
-  setBroughtItemsForm() {
+setBroughtItemsForm() {
     const broughtItemseArray = this.beneficiaryForm.get('broughtItems') as FormArray;
     this.broughtItemsList.forEach((item) => {
       broughtItemseArray.push(this.setCheckboxOptionFormArray(item));
     });
   }
-  setMoneySourceForm() {
+setMoneySourceForm() {
     const moneySourceArray = this.beneficiaryForm.get('moneySources') as FormArray;
     this.moneySourcesList.forEach((reason) => {
       moneySourceArray.push(this.setCheckboxOptionFormArray(reason));
     });
   }
-  setDeterminationForm() {
+setDeterminationForm() {
     const determinationsArray = this.beneficiaryForm.get('determinations') as FormArray;
     this.determinationsList.forEach((determination) => {
       determinationsArray.push(this.setDeterminationsFormArray(determination));
     });
   }
-  setDeterminationsFormArray(determination: DeterminationForView){
+setDeterminationsFormArray(determination: DeterminationForView){
     return this.fb.group({
       lookupName: [determination.lookupName],
       lookupCode: [determination.lookupCode],
@@ -648,7 +440,7 @@ export class BeneficiaryFormComponent implements OnInit {
       answerCode: [determination.answerCode]
     });
   }
-  createDeterminationListForView(lookupList: Lookup[]): DeterminationForView[] {
+createDeterminationListForView(lookupList: Lookup[]): DeterminationForView[] {
     const createdList: DeterminationForView[] = [];
     for (const lookup of lookupList){
     let option: DeterminationForView;
@@ -667,19 +459,19 @@ export class BeneficiaryFormComponent implements OnInit {
     return createdList;
   }
 
-  setPostArrivalNeedsForm() {
+setPostArrivalNeedsForm() {
     const needsArray = this.beneficiaryForm.get('postArrivalNeeds') as FormArray;
     this.postArrivalNeedsList.forEach((need) => {
       needsArray.push(this.setPostArrivalNeedsFormArray(need));
     });
   }
-  setPSNForm() {
+setPSNForm() {
     const psnsArray = this.beneficiaryForm.get('psns') as FormArray;
     this.psnList.forEach((psn) => {
     psnsArray.push(this.setCheckboxOptionFormArray(psn));
     });
   }
-  setReturnReasonForm() {
+setReturnReasonForm() {
     const returnReasonArray = this.beneficiaryForm.get('returnReasons') as FormArray;
     this.returnReasonList.forEach((reason) => {
       returnReasonArray.push(this.setCheckboxOptionFormArray(reason));
@@ -703,7 +495,7 @@ export class BeneficiaryFormComponent implements OnInit {
       comment: [need.comment],
     });
   }
-  newBenefitedFromOrg(): FormGroup{
+newBenefitedFromOrg(): FormGroup{
     return this.fb.group({
       id: [null],
       beneficiaryID: [null],
@@ -715,49 +507,52 @@ export class BeneficiaryFormComponent implements OnInit {
       assistanceProvided: [null]
     });
   }
-  addBenefitedFromOrg(){
+addBenefitedFromOrg(){
     this.benefitedFromOrgs.push(this.newBenefitedFromOrg());
   }
-  get psns(): FormArray {
+get bf() { return this.beneficiaryForm.controls; }
+get if() { return this.individualForm.controls; }
+
+get psns(): FormArray {
     return this.beneficiaryForm.get('psns') as FormArray;
   }
-  get returnReasons(): FormArray {
+get returnReasons(): FormArray {
     return this.beneficiaryForm.get('returnReasons') as FormArray;
   }
-  get determinations(): FormArray {
+get determinations(): FormArray {
     return this.beneficiaryForm.get('determinations') as FormArray;
   }
-  get moneySources(): FormArray {
+get moneySources(): FormArray {
     return this.beneficiaryForm.get('moneySources') as FormArray;
   }
-  get broughtItems(): FormArray {
+get broughtItems(): FormArray {
     return this.beneficiaryForm.get('broughtItems') as FormArray;
   }
-  get transportations(): FormArray {
+get transportations(): FormArray {
     return this.beneficiaryForm.get('transportations') as FormArray;
   }
-  get livelihoodEmpNeeds(): FormArray {
+get livelihoodEmpNeeds(): FormArray {
     return this.beneficiaryForm.get('livelihoodEmpNeeds') as FormArray;
   }
-  get benefitedFromOrgs() {
+get benefitedFromOrgs() {
     return this.beneficiaryForm.get('benefitedFromOrgs') as FormArray;
   }
-  get postArrivalNeeds(): FormArray {
+get postArrivalNeeds(): FormArray {
     return this.beneficiaryForm.get('postArrivalNeeds') as FormArray;
   }
-  get needTools(): FormArray {
+get needTools(): FormArray {
     return this.beneficiaryForm.get('needTools') as FormArray;
   }
-  get mainConcerns(): FormArray {
+get mainConcerns(): FormArray {
     return this.beneficiaryForm.get('mainConcerns') as FormArray;
   }
-  get hostCountrySchools(): FormArray {
+get hostCountrySchools(): FormArray {
     return this.beneficiaryForm.get('hostCountrySchools') as FormArray;
   }
-  get individualsArray(): FormArray {
+get individualsArray(): FormArray {
     return (this.beneficiaryForm.get('individuals') as FormArray);
   }
-  getDistrictBenefitedIn(provinceCode: string, index: number){
+getDistrictBenefitedIn(provinceCode: string, index: number){
     if (provinceCode){
       this.lookupService.getDistrictLookups(provinceCode).subscribe((response: Lookup[]) => {
         if (index === 0){
@@ -775,25 +570,8 @@ export class BeneficiaryFormComponent implements OnInit {
       return [];
     }
   }
-  // createDeterminationsForView(lookupList: Lookup[]): DeterminationForView[] {
-  //   const createdList: DeterminationForView[] = [];
-  //   for (const item of lookupList){
-  //   let option: DeterminationForView;
-  //   option = {
-  //     lookupCode: item.lookupCode,
-  //     lookupName: item.lookupName,
-  //     other: null,
-  //     answerCode: null
-  //   };
-  //   if (option.lookupName !== 'Other'){
-  //    createdList.unshift(option);
-  //  }else{
-  //   createdList.push(option);
-  //  }
-  // }
-  //   return createdList;
-  // }
- createCheckboxListForView(lookupList: Lookup[]){
+
+createCheckboxListForView(lookupList: Lookup[]){
   const createdList: CheckboxForView[] = [];
   for (const item of lookupList){
     let option: CheckboxForView;
@@ -828,10 +606,8 @@ createPostArrivalNeedsList(lookupList: Lookup[]){
   }
   return createdList;
 }
-  // get individuals() {
-  //   return this.beneficiaryForm.get('individuals') as FormArray;
-  // }
-  originProvinceChanged(event: any){
+
+originProvinceChanged(event: any){
     if (event.value){
       this.lookupService.getDistrictLookups(event.value).subscribe((response: Lookup[]) => {
         this.originDistricts = response;
@@ -841,7 +617,7 @@ createPostArrivalNeedsList(lookupList: Lookup[]){
       });
     }
   }
-  hostCountryProvinceChanged(event: any){
+hostCountryProvinceChanged(event: any){
     if (event.value){
       this.lookupService.getHostCountryDistricts(event.value).subscribe((response: HostCountryDistrict[]) => {
         this.hostCountryDistricts = response;
@@ -851,7 +627,7 @@ createPostArrivalNeedsList(lookupList: Lookup[]){
       });
     }
   }
-  loadHostCountryProvinces(country: string){
+loadHostCountryProvinces(country: string){
     this.hostCountryDistricts = [];
     if (country && (country == 'Iran' || country == 'Pakistan')){
       const ountryCode = country == 'Iran' ? 'IRN' : 'PAK';
@@ -866,7 +642,7 @@ createPostArrivalNeedsList(lookupList: Lookup[]){
       this.hostCountryDistricts = [];
     }
   }
-  loadHostCountryDistrict(provinceID: number) {
+loadHostCountryDistrict(provinceID: number) {
     this.hostCountryDistricts = [];
     if (provinceID){
       this.lookupService.getHostCountryDistricts(provinceID).subscribe((response: HostCountryDistrict[]) => {
@@ -877,10 +653,10 @@ createPostArrivalNeedsList(lookupList: Lookup[]){
     });
     }
   }
-  hostCountryChanged(event: any){
+hostCountryChanged(event: any){
     this.loadHostCountryProvinces(event.value);
   }
-  returnProvinceChanged(event: any){
+returnProvinceChanged(event: any){
     if (event.value){
       this.lookupService.getDistrictLookups(event.value).subscribe((response: Lookup[]) => {
         this.returnDistricts = response;
@@ -890,13 +666,41 @@ createPostArrivalNeedsList(lookupList: Lookup[]){
       });
     }
   }
-  nextTab(){
+addIndividual(){
+  this.individualsArray.push(this.individualForm);
+  this.individualForm.reset();
+}
+saveIndividual(){
+this.individualEditRowIndex = -1;
+}
+editIndividual(i: number){
+  this.individualEditRowIndex = i;
+}
+deleteIndividual(i: number){
+  this.individualsArray.removeAt(i);
+}
+benefitedFromOrgsChange(event: any){
+  if(event.value){
+  this.benefitedFromOrgs.push(this.newBenefitedFromOrg());
+}else{
+  this.benefitedFromOrgs.clear();
+}
+}
+addOtherOrg(){
+  this.benefitedFromOrgs.push(this.newBenefitedFromOrg());
+}
+nextTab(){
 
+}
+
+onSubmit() {
+  this.submitted = true;
+  if(this.beneficiaryForm.invalid){
+    return;
   }
-  onSubmit() {
-    alert('Thanks!');
-  }
-  ngAfterViewInit(): void {
+  alert('Success!!!');
+}
+ngAfterViewInit(): void {
     console.log('inside the view ater init >>>>>>>>>>>>>');
     const province = this.beneficiaryForm.get('originProvince').value;
     console.log('province is >>>>>>>>>>>>>' + province);

@@ -24,14 +24,14 @@
     </mat-sidenav>
     <mat-sidenav-content>
         <div>
-            <mat-toolbar color="primary" fxLayout="row">
+            <mat-toolbar color="primary" fxLayout="row" fxLayoutAlign="center center" style="font-size: 14px; font-weight: 500;">
                 <button type="button" aria-label="Toggle sidenav" mat-icon-button (click)="drawer.toggle()" *ngIf="isHandset$ | async">
                     <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
                 </button>
                 <span>BSAF-SPA</span>
 
                 <div style="margin-left: auto;" fxFlex fxLayout="row" fxLayoutAlign="end center">
-                    <h6>Welcome {{currentUser?.userName}}</h6>
+                    <p style="margin: 0px;">Welcome {{currentUser?.userName}}</p>
                     <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
                         <mat-icon>account_circle</mat-icon>
                       </button>
