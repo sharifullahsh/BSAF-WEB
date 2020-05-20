@@ -50,7 +50,8 @@ export class BeneficiaryFormComponent implements OnInit {
     1: this.benefitedIndistrictList2,
   };
   individualEditRowIndex = -1;
-  submitted = false;
+  benefSubmitted = false;
+  indSubmitted = false;
 
 constructor(private fb: FormBuilder, private lookupService: LookupService,
             private route: ActivatedRoute, private beneficiaryService: BeneficiaryService,
@@ -213,7 +214,7 @@ ngOnInit(): void {
               contactNumber: member.contactNumber,
               drName: member.drName,
               drFName: member.drFName,
-            });
+            }, {onlySelf: true});
             (this.beneficiaryForm.get('individuals') as FormArray).push(indForm);
             // this.individualForm.get('name').pa
           }
@@ -510,8 +511,8 @@ newBenefitedFromOrg(): FormGroup{
 addBenefitedFromOrg(){
     this.benefitedFromOrgs.push(this.newBenefitedFromOrg());
   }
-get bf() { return this.beneficiaryForm.controls; }
-get if() { return this.individualForm.controls; }
+get benef() { return this.beneficiaryForm.controls; }
+get indf() { return this.individualForm.controls; }
 
 get psns(): FormArray {
     return this.beneficiaryForm.get('psns') as FormArray;
@@ -667,8 +668,33 @@ returnProvinceChanged(event: any){
     }
   }
 addIndividual(){
-  this.individualsArray.push(this.individualForm);
+  this.indSubmitted = true;
+  if(this.individualForm.invalid){
+    console.log("Form is invalid");
+    return;
+  }
+  const newForm = this.newIndividual();
+  const indFormValue =  this.individualForm.value;
+  newForm.patchValue({...indFormValue}, {onlySelf: true}) ;
+  if (indFormValue.genderCode){
+    const gender = this.initialLooupsData.gender.find(l => l.lookupCode === indFormValue.genderCode).lookupName;
+    newForm.patchValue({ gender}, {onlySelf: true})
+  }
+  if (indFormValue.maritalStatusCode){
+    const maritalStatus = this.initialLooupsData.maritalStatus.find(l => l.lookupCode === indFormValue.maritalStatusCode).lookupName;
+    newForm.patchValue({ maritalStatus}, {onlySelf: true})
+  }
+  if (indFormValue.idTypeCode){
+    const idType = this.initialLooupsData.idTypes.find(l => l.lookupCode === indFormValue.idTypeCode).lookupName;
+    newForm.patchValue({ idType}, {onlySelf: true})
+  }
+  if (indFormValue.relationshipCode){
+    const relationship = this.initialLooupsData.relationships.find(l => l.lookupCode === indFormValue.relationshipCode).lookupName;
+    newForm.patchValue({ relationship}, {onlySelf: true})
+  }
+  this.individualsArray.push(newForm);
   this.individualForm.reset();
+  this.indSubmitted = false;
 }
 saveIndividual(){
 this.individualEditRowIndex = -1;
@@ -694,16 +720,13 @@ nextTab(){
 }
 
 onSubmit() {
-  this.submitted = true;
+  this.benefSubmitted = true;
   if(this.beneficiaryForm.invalid){
     return;
   }
   alert('Success!!!');
 }
 ngAfterViewInit(): void {
-    console.log('inside the view ater init >>>>>>>>>>>>>');
-    const province = this.beneficiaryForm.get('originProvince').value;
-    console.log('province is >>>>>>>>>>>>>' + province);
 
   }
 }
