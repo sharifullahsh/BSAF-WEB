@@ -36,6 +36,8 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatCardModule } from '@angular/material/card';
 import { ReactiveFormsModule } from '@angular/forms';
+import { IndividualFormDialogComponent } from './beneficiary/dialog/individual-dialog/individual-form/individual-form-dialog.component';
+import { IndividualDeleteDialogComponent } from './beneficiary/dialog/individual-dialog/individual-delete/individual-delete-dialog.component';
 
 export function tokenGetter() {
   return localStorage.getItem('token');
@@ -54,7 +56,9 @@ export function tokenGetter() {
     HasRoleDirective,
     IndividualsComponent,
     IndividualDialogComponent,
+    IndividualFormDialogComponent,
     TestFormComponent,
+    IndividualDeleteDialogComponent,
   ],
   imports: [
     BrowserModule,
@@ -84,7 +88,7 @@ export function tokenGetter() {
 
   ],
   providers: [AuthService, AdminService, AuthGuard, HttpInterceptorService, LookupService],
-  entryComponents: [IndividualDialogComponent],
+  entryComponents: [IndividualDialogComponent, IndividualFormDialogComponent, IndividualDeleteDialogComponent],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

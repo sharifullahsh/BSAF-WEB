@@ -73,194 +73,72 @@
                     <mat-divider class="mt20">
                     </mat-divider>
 
-                    <div fxLayout="row" class="mt20">
+                    <div class="mt20">
+                        <h4>3. Family members</h4>
                         <div fxLayout="column" class="individualHolder">
-                            <h4>3. Family members</h4>
-                            <form [formGroup]="individualForm" (ngSubmit)="addIndividual()">
-                                <!-- add new individual -->
-                                <table>
-                                    <thead>
-                                        <tr>
-                                            <th style="width: 10%;">Name</th>
-                                            <th style="width: 10%;">Father Name</th>
-                                            <th style="width: 5%;">Gender</th>
-                                            <th style="width: 10%;">Marital Status</th>
-                                            <th style="width: 5%;">Age</th>
-                                            <th style="width: 10%;">ID Type</th>
-                                            <th style="width: 5%;">ID No</th>
-                                            <th style="width: 10%;">Relationship</th>
-                                            <th style="width: 10%;">Contact No</th>
-                                            <th style="width: 6%; text-align: right;">نوم/نام</th>
-                                            <th style="width: 7%; text-align: right;">ولد</th>
-                                            <th style="width: 10%;"></th>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <input formControlName="name" class="form-control" matInput placeholder="Name" [ngClass]="{ 'is-invalid': indSubmitted && indf.name?.errors }">
-                                            </td>
-                                            <td>
-                                                <input formControlName="fName" class="form-control" matInput placeholder="Faher Name" [ngClass]="{ 'is-invalid': indSubmitted && indf.fName?.errors }">
-                                            </td>
-                                            <td>
-                                                <mat-select formControlName="genderCode" class="form-control" placeholder="..." [ngClass]="{ 'is-invalid': indSubmitted && indf.genderCode?.errors }">
-                                                    <mat-option *ngFor="let gender of initialLooupsData?.gender" [value]="gender.lookupCode">
-                                                        {{ gender.lookupName }}
-                                                    </mat-option>
-                                                </mat-select>
-                                            </td>
-                                            <td>
-                                                <mat-select formControlName="maritalStatusCode" class="form-control" placeholder="..." [ngClass]="{ 'is-invalid': indSubmitted && indf.maritalStatusCode?.errors }">
-                                                    <mat-option *ngFor="let mStatus of initialLooupsData?.maritalStatus" [value]="mStatus.lookupCode">
-                                                        {{ mStatus.lookupName }}
-                                                    </mat-option>
-                                                </mat-select>
-                                            </td>
-                                            <td>
-                                                <input formControlName="age" class="form-control" matInput placeholder="Age" [ngClass]="{ 'is-invalid': indSubmitted && indf.age?.errors }">
-                                            </td>
-                                            <td>
-                                                <mat-select formControlName="idTypeCode" class="form-control" placeholder="..." [ngClass]="{ 'is-invalid': indSubmitted && indf.idTypeCode?.errors }">
-                                                    <mat-option *ngFor="let idType of initialLooupsData?.idTypes" [value]="idType.lookupCode">
-                                                        {{ idType.lookupName }}
-                                                    </mat-option>
-                                                </mat-select>
-                                            </td>
-                                            <td>
-                                                <input formControlName="idNo" class="form-control" matInput placeholder="ID #" [ngClass]="{ 'is-invalid': indSubmitted && indf.idNo?.errors }">
-                                            </td>
-                                            <td>
-                                                <mat-select formControlName="relationshipCode" class="form-control" placeholder="..." [ngClass]="{ 'is-invalid': indSubmitted && indf.relationshipCode?.errors }">
-                                                    <mat-option *ngFor="let relationship of initialLooupsData?.relationships" [value]="relationship.lookupCode">
-                                                        {{ relationship.lookupName }}
-                                                    </mat-option>
-                                                </mat-select>
-                                            </td>
-                                            <td>
-                                                <input formControlName="contactNumber" class="form-control" matInput placeholder="Contact No" [ngClass]="{ 'is-invalid': indSubmitted && indf.contactNumber.errors }">
-                                            </td>
-                                            <td>
-                                                <input formControlName="drName" class="form-control" matInput placeholder="نوم/نام" style="text-align: right;" [ngClass]="{ 'is-invalid': indSubmitted && indf.drName?.errors }">
-                                            </td>
-                                            <td>
-                                                <input formControlName="drFName" class="form-control" matInput placeholder="ولد" style="text-align: right;" [ngClass]="{ 'is-invalid': indSubmitted && indf.drFName?.errors }">
-                                            </td>
-                                            <td fxLayout="row" fxLayoutAlign="end center">
-                                                <button mat-raised-button class="m5 btn-add-ind" color="primary" title="Add new user" aria-label="Add user">
-                                                    <mat-icon>person_add</mat-icon>
-                                                    Add
-                                                </button>
-                                                <!-- <button mat-raised-button color="primary">Save</button> -->
-                                            </td>
-                                        </tr>
-                                    </thead>
-                                </table>
-                            </form>
-                            <!-- For list indiviudal -->
-                            <table>
-                                <tbody>
-                                    <tr formArrayName="individuals" *ngFor="let ind of individualsArray.controls; let i=index">
-                                        <ng-container [formGroupName]="i">
-                                            <td style="width: 10%;">
-                                                <ng-container *ngIf="individualEditRowIndex != i">
-                                                    {{ind.get('name').value}}
-                                                </ng-container>
-                                                <input matInput *ngIf="individualEditRowIndex == i" formControlName="name" placeholder="Name">
-                                            </td>
-                                            <td style="width: 10%;">
-                                                <ng-container *ngIf="individualEditRowIndex != i">
-                                                    {{ind.get('fName').value}}
-                                                </ng-container>
-                                                <input *ngIf="individualEditRowIndex == i" formControlName="fName" matInput placeholder="Faher Name">
-                                            </td>
-                                            <td style="width: 5%;">
-                                                <ng-container *ngIf="individualEditRowIndex != i">
-                                                    {{ind.get('gender').value}}
-                                                </ng-container>
-                                                <mat-select *ngIf="individualEditRowIndex == i" formControlName="genderCode" placeholder="...">
-                                                    <mat-option *ngFor="let gender of initialLooupsData?.gender" [value]="gender.lookupCode">
-                                                        {{ gender.lookupName }}
-                                                    </mat-option>
-                                                </mat-select>
-                                            </td>
-                                            <td style="width: 10%;">
-                                                <ng-container *ngIf="individualEditRowIndex != i">
-                                                    {{ind.get('maritalStatus').value}}
-                                                </ng-container>
-                                                <mat-select *ngIf="individualEditRowIndex == i" formControlName="maritalStatusCode" placeholder="...">
-                                                    <mat-option *ngFor="let mStatus of initialLooupsData?.maritalStatus" [value]="mStatus.lookupCode">
-                                                        {{ mStatus.lookupName }}
-                                                    </mat-option>
-                                                </mat-select>
-                                            </td>
-                                            <td style="width: 5%;">
-                                                <ng-container *ngIf="individualEditRowIndex != i">
-                                                    {{ind.get('age').value}}
-                                                </ng-container>
-                                                <input *ngIf="individualEditRowIndex == i" formControlName="age" matInput placeholder="Faher Name">
-                                            </td>
-                                            <td style="width: 10%;">
-                                                <ng-container *ngIf="individualEditRowIndex != i">
-                                                    {{ind.get('idType').value}}
-                                                </ng-container>
-                                                <mat-select *ngIf="individualEditRowIndex == i" formControlName="idTypeCode" placeholder="...">
-                                                    <mat-option *ngFor="let idType of initialLooupsData?.idTypes" [value]="idType.lookupCode">
-                                                        {{ idType.lookupName }}
-                                                    </mat-option>
-                                                </mat-select>
-                                            </td>
-                                            <td style="width: 5%;">
-                                                <ng-container *ngIf="individualEditRowIndex != i">
-                                                    {{ind.get('idNo').value}}
-                                                </ng-container>
-                                                <input *ngIf="individualEditRowIndex == i" formControlName="idNo" matInput placeholder="Faher Name">
-                                            </td>
-                                            <td style="width: 10%;">
-                                                <ng-container *ngIf="individualEditRowIndex != i">
-                                                    {{ind.get('relationship').value}}
-                                                </ng-container>
-                                                <mat-select *ngIf="individualEditRowIndex == i" formControlName="relationshipCode" placeholder="...">
-                                                    <mat-option *ngFor="let relationship of initialLooupsData?.relationships" [value]="relationship.lookupCode">
-                                                        {{ relationship.lookupName }}
-                                                    </mat-option>
-                                                </mat-select>
-                                            </td>
-                                            <td style="width: 10%;">
-                                                <ng-container *ngIf="individualEditRowIndex != i">
-                                                    {{ind.get('contactNumber').value}}
-                                                </ng-container>
-                                                <input *ngIf="individualEditRowIndex == i" formControlName="contactNumber" matInput placeholder="Contact No">
-                                            </td>
-                                            <td style="width: 6%;">
-                                                <ng-container *ngIf="individualEditRowIndex != i">
-                                                    {{ind.get('drName').value}}
-                                                </ng-container>
-                                                <input *ngIf="individualEditRowIndex == i" formControlName="drName" matInput placeholder="نوم/نام" style="text-align: right;">
-                                            </td>
-                                            <td style="width: 7%;">
-                                                <ng-container *ngIf="individualEditRowIndex != i">
-                                                    {{ind.get('drFName').value}}
-                                                </ng-container>
-                                                <input *ngIf="individualEditRowIndex == i" formControlName="drFName" matInput placeholder="ولد" style="text-align: right;">
-                                            </td>
-                                            <td style="width: 10%;">
-                                                <div *ngIf="individualEditRowIndex == i" fxLayout="row" fxLayoutGap="10px" fxLayoutAlign="space-around start">
-                                                    <button mat-raised-button (click)="saveIndividual()" color="default" class="m5" title="Add new user" aria-label="Add user">
-                                                        <mat-icon>save</mat-icon>
-                                                        Save
-                                                    </button>
-                                                </div>
-                                                <div *ngIf="individualEditRowIndex != i">
-                                                    <button class="m5" mat-mini-fab (click)="editIndividual(i)" color="primary" title="Edite member" aria-label="Edite member">
-                                                        <mat-icon>edit</mat-icon>
-                                                    </button>
-                                                    <button class="m5" mat-mini-fab (click)="deleteIndividual(i)" color="warn" title="Delete member" aria-label="Delete member">
-                                                        <mat-icon>delete</mat-icon>
-                                                    </button>
-                                                </div>
-                                            </td>
-                                        </ng-container>
-                                    </tr>
-                                </tbody>
+                            <table mat-table [dataSource]="individuals" class="mat-elevation-z8">
+                                <ng-container matColumnDef="name">
+                                    <th mat-header-cell *matHeaderCellDef> Name</th>
+                                    <td mat-cell *matCellDef="let row"> {{row.name}} </td>
+                                </ng-container>
+                                <ng-container matColumnDef="fName">
+                                    <th mat-header-cell *matHeaderCellDef>Father Name</th>
+                                    <td mat-cell *matCellDef="let row"> {{row.fName}} </td>
+                                </ng-container>
+                                <ng-container matColumnDef="gender">
+                                    <th mat-header-cell *matHeaderCellDef>Gender</th>
+                                    <td mat-cell *matCellDef="let row"> {{row.gender}} </td>
+                                </ng-container>
+                                <ng-container matColumnDef="maritalStatus">
+                                    <th mat-header-cell *matHeaderCellDef>MaritalStatus</th>
+                                    <td mat-cell *matCellDef="let row"> {{row.maritalStatus}} </td>
+                                </ng-container>
+                                <ng-container matColumnDef="age">
+                                    <th mat-header-cell *matHeaderCellDef>Age</th>
+                                    <td mat-cell *matCellDef="let row"> {{row.age}} </td>
+                                </ng-container>
+                                <ng-container matColumnDef="idType">
+                                    <th mat-header-cell *matHeaderCellDef>ID Type</th>
+                                    <td mat-cell *matCellDef="let row"> {{row.idType}} </td>
+                                </ng-container>
+                                <ng-container matColumnDef="idNo">
+                                    <th mat-header-cell *matHeaderCellDef>ID No</th>
+                                    <td mat-cell *matCellDef="let row"> {{row.idNo}} </td>
+                                </ng-container>
+                                <ng-container matColumnDef="relationship">
+                                    <th mat-header-cell *matHeaderCellDef>Relationship</th>
+                                    <td mat-cell *matCellDef="let row"> {{row.relationship}} </td>
+                                </ng-container>
+                                <ng-container matColumnDef="contactNumber">
+                                    <th mat-header-cell *matHeaderCellDef>ContactNo</th>
+                                    <td mat-cell *matCellDef="let row"> {{row.contactNumber}} </td>
+                                </ng-container>
+                                <ng-container matColumnDef="drFName">
+                                    <th mat-header-cell *matHeaderCellDef>ولد</th>
+                                    <td mat-cell *matCellDef="let row"> {{row.drFName}} </td>
+                                </ng-container>
+                                <ng-container matColumnDef="drName">
+                                    <th mat-header-cell *matHeaderCellDef>نوم/نام</th>
+                                    <td mat-cell *matCellDef="let row"> {{row.drName}} </td>
+                                </ng-container>
+                                <ng-container matColumnDef="action">
+                                    <th mat-header-cell *matHeaderCellDef style="text-align: right;">
+                                        <button type="button" mat-raised-button (click)="addIndividual()" class="m5 btn-add-ind" color="primary" title="Add family memeber" aria-label="Add family memeber">
+                                            <mat-icon>person_add</mat-icon>
+                                            Add
+                                        </button>
+                                    </th>
+                                    <td mat-cell *matCellDef="let row; let i=index;" fxLayout="row" fxLayoutAlign="end none">
+                                        <button type="button" class="m5" mat-mini-fab (click)="editIndividual(i)" color="primary" title="Edite member" aria-label="Edite member">
+                                            <mat-icon>edit</mat-icon>
+                                        </button>
+                                        <button type="button" class="m5" mat-mini-fab (click)="deleteIndividual(i)" color="warn" title="Delete member" aria-label="Delete member">
+                                            <mat-icon>delete</mat-icon>
+                                        </button>
+                                    </td>
+                                </ng-container>
+                                <tr mat-header-row *matHeaderRowDef="individualsTbleColumns"></tr>
+                                <tr mat-row *matRowDef="let row; columns: individualsTbleColumns;"></tr>
                             </table>
                         </div>
                     </div>

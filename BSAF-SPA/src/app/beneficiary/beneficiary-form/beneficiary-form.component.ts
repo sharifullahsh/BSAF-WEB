@@ -1,31 +1,37 @@
+import { Individual } from './../../models/Individual';
 import { PostArrivalNeedForView } from './../../models/PostArrivalNeeds';
 import { DeterminationForView, DeterminationLookup } from './../../models/Determination';
 import { CheckboxForView } from '../../models/CheckboxForView';
 import { AlertifyService } from './../../_services/alertify.service';
 import { Lookup, HostCountryProvince, HostCountryDistrict } from './../../models/Lookup';
-import { Individual } from './../individuals/individuals.component';
 import { Beneficiary } from './../../models/Beneficiary';
 import { BeneficiaryService } from './../../_services/beneficiary.service';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import { LookupService } from '../../_services/lookup.service';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, Validators, FormControl, FormArray, FormGroup } from '@angular/forms';
 import { switchMap } from 'rxjs/operators';
 import { InitialLookups } from 'src/app/models/InitialLookups';
 import { DomSanitizer } from '@angular/platform-browser';
 import { image } from 'src/app/models/image';
+import { IndividualFormDialogComponent } from '../dialog/individual-dialog/individual-form/individual-form-dialog.component';
+import { MatDialog } from '@angular/material/dialog';
+import { MatTable } from '@angular/material/table';
+import { IndividualDeleteDialogComponent } from '../dialog/individual-dialog/individual-delete/individual-delete-dialog.component';
 
 @Component({
   selector: 'app-beneficiary-form',
   templateUrl: './beneficiary-form.component.html',
   styleUrls: ['./beneficiary-form.component.css'],
-  providers:[]
+  providers: []
 })
 export class BeneficiaryFormComponent implements OnInit {
   postArrivalNeedTbleColumns: string[] = ['NeedAssistance', 'IsProvided', 'ProvidedDate', 'Comments'];
+  individualsTbleColumns: string[] = ['name', 'fName', 'gender', 'maritalStatus', 'age', 'idType', 'idNo', 'relationship', 'contactNumber', 'drFName', 'drName', 'action'];
+  @ViewChild(MatTable) individualTable: MatTable<any>;
   selectedTab = new FormControl(0);
   beneficiary: Beneficiary;
-  individuals: Individual[];
+  individuals: Individual[] = [];
   originDistricts: Lookup[];
   returnDistricts: Lookup[];
   psnList: CheckboxForView[] = [];
@@ -49,14 +55,14 @@ export class BeneficiaryFormComponent implements OnInit {
     0: this.benefitedIndistrictList1,
     1: this.benefitedIndistrictList2,
   };
-  individualEditRowIndex = -1;
   benefSubmitted = false;
   indSubmitted = false;
 
 constructor(private fb: FormBuilder, private lookupService: LookupService,
             private route: ActivatedRoute, private beneficiaryService: BeneficiaryService,
             private alertifyService: AlertifyService,
-            private _sanitizer: DomSanitizer) {}
+            private _sanitizer: DomSanitizer,
+            public dialog: MatDialog) {}
 beneficiaryForm: FormGroup = this.beneficiaryService.beneficiaryForm;
 individualForm: FormGroup = this.beneficiaryService.individualForm;
 newIndividual(): FormGroup{
@@ -84,6 +90,8 @@ newIndividual(): FormGroup{
 ngOnInit(): void {
       this.route.data.subscribe((data: {initialLookups: InitialLookups}) => {
         this.initialLooupsData = data.initialLookups;
+        // for using in anywhere
+        this.beneficiaryService.initialLooupsData = this.initialLooupsData;
         console.log('data is >>>>>>> ' + JSON.stringify(this.initialLooupsData));
         this.postArrivalNeedsList = this.createPostArrivalNeedsList(this.initialLooupsData.postArrivalNeeds);
         this.setPostArrivalNeedsForm();
@@ -667,46 +675,92 @@ returnProvinceChanged(event: any){
       });
     }
   }
-addIndividual(){
-  this.indSubmitted = true;
-  if(this.individualForm.invalid){
-    console.log("Form is invalid");
-    return;
-  }
-  const newForm = this.newIndividual();
-  const indFormValue =  this.individualForm.value;
-  newForm.patchValue({...indFormValue}, {onlySelf: true}) ;
-  if (indFormValue.genderCode){
-    const gender = this.initialLooupsData.gender.find(l => l.lookupCode === indFormValue.genderCode).lookupName;
-    newForm.patchValue({ gender}, {onlySelf: true})
-  }
-  if (indFormValue.maritalStatusCode){
-    const maritalStatus = this.initialLooupsData.maritalStatus.find(l => l.lookupCode === indFormValue.maritalStatusCode).lookupName;
-    newForm.patchValue({ maritalStatus}, {onlySelf: true})
-  }
-  if (indFormValue.idTypeCode){
-    const idType = this.initialLooupsData.idTypes.find(l => l.lookupCode === indFormValue.idTypeCode).lookupName;
-    newForm.patchValue({ idType}, {onlySelf: true})
-  }
-  if (indFormValue.relationshipCode){
-    const relationship = this.initialLooupsData.relationships.find(l => l.lookupCode === indFormValue.relationshipCode).lookupName;
-    newForm.patchValue({ relationship}, {onlySelf: true})
-  }
-  this.individualsArray.push(newForm);
-  this.individualForm.reset();
-  this.indSubmitted = false;
-}
-saveIndividual(){
-this.individualEditRowIndex = -1;
-}
+// addIndividual(){
+//   this.indSubmitted = true;
+//   if(this.individualForm.invalid){
+//     console.log("Form is invalid");
+//     return;
+//   }
+//   const newForm = this.newIndividual();
+//   const indFormValue =  this.individualForm.value;
+//   newForm.patchValue({...indFormValue}, {onlySelf: true}) ;
+//   if (indFormValue.genderCode){
+//     const gender = this.initialLooupsData.gender.find(l => l.lookupCode === indFormValue.genderCode).lookupName;
+//     newForm.patchValue({ gender}, {onlySelf: true})
+//   }
+//   if (indFormValue.maritalStatusCode){
+//     const maritalStatus = this.initialLooupsData.maritalStatus.find(l => l.lookupCode === indFormValue.maritalStatusCode).lookupName;
+//     newForm.patchValue({ maritalStatus}, {onlySelf: true})
+//   }
+//   if (indFormValue.idTypeCode){
+//     const idType = this.initialLooupsData.idTypes.find(l => l.lookupCode === indFormValue.idTypeCode).lookupName;
+//     newForm.patchValue({ idType}, {onlySelf: true})
+//   }
+//   if (indFormValue.relationshipCode){
+//     const relationship = this.initialLooupsData.relationships.find(l => l.lookupCode === indFormValue.relationshipCode).lookupName;
+//     newForm.patchValue({ relationship}, {onlySelf: true})
+//   }
+//   this.individualsArray.push(newForm);
+//   this.individualForm.reset();
+//   this.indSubmitted = false;
+// }
+
 editIndividual(i: number){
-  this.individualEditRowIndex = i;
+ window.alert(i);
+ this.beneficiaryService.individualForm.patchValue({
+   ...this.individuals[i]
+ },{onlySelf:true});
+ const dialogRef = this.dialog.open(IndividualFormDialogComponent, {
+  width: '60%',
+  data: {}
+});
+
+ dialogRef.afterClosed().subscribe(result => {
+  if (result === 1){
+    const indFormValue =  this.individualForm.value;
+    const newIndividual: Individual = {
+    ...indFormValue
+  };
+    if (indFormValue.genderCode){
+  const gender = this.initialLooupsData.gender.find(l => l.lookupCode === indFormValue.genderCode).lookupName;
+  newIndividual.gender = gender;
+  }
+    if (indFormValue.maritalStatusCode){
+  const maritalStatus = this.initialLooupsData.maritalStatus.find(l => l.lookupCode === indFormValue.maritalStatusCode).lookupName;
+  newIndividual.maritalStatus = maritalStatus;
+  }
+    if (indFormValue.idTypeCode){
+  const idType = this.initialLooupsData.idTypes.find(l => l.lookupCode === indFormValue.idTypeCode).lookupName;
+  newIndividual.idType = idType;
+}
+    if (indFormValue.relationshipCode){
+  const relationship = this.initialLooupsData.relationships.find(l => l.lookupCode === indFormValue.relationshipCode).lookupName;
+  newIndividual.relationship = relationship;
+}
+    this.individuals[i] = newIndividual;
+    this.individualForm.reset();
+    this.individualTable.renderRows();
+  }
+});
 }
 deleteIndividual(i: number){
-  this.individualsArray.removeAt(i);
+  // window.alert(i);
+  const dialogRef = this.dialog.open(IndividualDeleteDialogComponent, {
+    width: '300px',
+    // data: {}
+  });
+
+  dialogRef.afterClosed().subscribe(result => {
+    if (result){
+      console.log("result is >>>>>>>>>>>>");
+      this.individuals.splice(i, 1);
+      this.individualTable.renderRows();
+    }
+  });
+ 
 }
 benefitedFromOrgsChange(event: any){
-  if(event.value){
+  if (event.value){
   this.benefitedFromOrgs.push(this.newBenefitedFromOrg());
 }else{
   this.benefitedFromOrgs.clear();
@@ -718,10 +772,43 @@ addOtherOrg(){
 nextTab(){
 
 }
+addIndividual(){
+  const dialogRef = this.dialog.open(IndividualFormDialogComponent, {
+    width: '60%',
+    data: {}
+  });
 
+  dialogRef.afterClosed().subscribe(result => {
+    if (result === 1){
+      const indFormValue =  this.individualForm.value;
+      const newIndividual: Individual = {
+      ...indFormValue
+    };
+      if (indFormValue.genderCode){
+    const gender = this.initialLooupsData.gender.find(l => l.lookupCode === indFormValue.genderCode).lookupName;
+    newIndividual.gender = gender;
+    }
+      if (indFormValue.maritalStatusCode){
+    const maritalStatus = this.initialLooupsData.maritalStatus.find(l => l.lookupCode === indFormValue.maritalStatusCode).lookupName;
+    newIndividual.maritalStatus = maritalStatus;
+    }
+      if (indFormValue.idTypeCode){
+    const idType = this.initialLooupsData.idTypes.find(l => l.lookupCode === indFormValue.idTypeCode).lookupName;
+    newIndividual.idType = idType;
+  }
+      if (indFormValue.relationshipCode){
+    const relationship = this.initialLooupsData.relationships.find(l => l.lookupCode === indFormValue.relationshipCode).lookupName;
+    newIndividual.relationship = relationship;
+  }
+      this.individuals.push(newIndividual);
+      this.individualForm.reset();
+      this.individualTable.renderRows();
+    }
+  });
+}
 onSubmit() {
   this.benefSubmitted = true;
-  if(this.beneficiaryForm.invalid){
+  if (this.beneficiaryForm.invalid){
     return;
   }
   alert('Success!!!');

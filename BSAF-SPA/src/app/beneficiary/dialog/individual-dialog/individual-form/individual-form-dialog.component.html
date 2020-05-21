@@ -1,0 +1,72 @@
+<!-- [mat-dialog-close]="data.animal" -->
+<form [formGroup]="individualForm" novalidate (ngSubmit)="addIndividual()">
+    <h1 mat-dialog-title>Add Family Memeber</h1>
+    <input type="hidden" formControlName="individualID">
+    <div mat-dialog-content>
+        <div fxLayout="row" fxLayoutGap="32px">
+            <mat-form-field class="full-width" fxFlex="0 1 calc(50% - 32px)">
+                <input formControlName="name" matInput placeholder="Name">
+            </mat-form-field>
+            <mat-form-field class="full-width" fxFlex="0 1 calc( 50% - 32px)">
+                <input formControlName="fName" matInput placeholder="Faher Name">
+            </mat-form-field>
+        </div>
+        <div fxLayout="row" fxLayoutGap="32px">
+            <mat-form-field class="full-width" fxFlex="0 1 calc( 50% - 32px)">
+                <mat-select formControlName="genderCode" placeholder="Gender">
+                    <mat-option *ngFor="let gender of initialLooupsData?.gender" [value]="gender.lookupCode">
+                        {{ gender.lookupName }}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+            <mat-form-field class="full-width" fxFlex="0 1 calc( 50% - 32px)">
+                <mat-select formControlName="maritalStatusCode" placeholder="Marital Status">
+                    <mat-option *ngFor="let mStatus of initialLooupsData?.maritalStatus" [value]="mStatus.lookupCode">
+                        {{ mStatus.lookupName }}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+        <div fxLayout="row" fxLayoutGap="32px">
+            <mat-form-field class="full-width" fxFlex="0 1 calc( 50% - 32px)">
+                <input formControlName="age" matInput placeholder="Age">
+            </mat-form-field>
+            <mat-form-field class="full-width" fxFlex="0 1 calc( 50% - 32px)">
+                <mat-select formControlName="relationshipCode" placeholder="Relationship">
+                    <mat-option *ngFor="let relationship of initialLooupsData?.relationships" [value]="relationship.lookupCode">
+                        {{ relationship.lookupName }}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+        <div fxLayout="row" fxLayoutGap="32px">
+            <mat-form-field class="full-width" fxFlex="0 1 calc( 50% - 32px)">
+                <mat-select formControlName="idTypeCode" placeholder="ID Type">
+                    <mat-option *ngFor="let idType of initialLooupsData?.idTypes" [value]="idType.lookupCode">
+                        {{ idType.lookupName }}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+            <mat-form-field class="full-width" fxFlex="0 1 calc( 50% - 32px)">
+                <input formControlName="idNo" matInput placeholder="ID #">
+            </mat-form-field>
+        </div>
+        <div fxLayout="row">
+            <mat-form-field class="full-width" fxFlex="0 1 calc( 100% - 0px)">
+                <input formControlName="contactNumber" matInput placeholder="Contact No">
+            </mat-form-field>
+        </div>
+        <div fxLayout="row" style="text-align: right;" fxLayoutGap="32px">
+            <mat-form-field class="full-width" fxFlex="0 1 calc( 50% - 32px)">
+                <input style="text-align: right;" formControlName="drName" matInput placeholder="نوم/نام" style="text-align: right;">
+            </mat-form-field>
+            <mat-form-field style="text-align: right;" class="full-width" fxFlex="0 1 calc( 50% - 32px)">
+                <input formControlName="drFName" matInput placeholder="ولد" style="text-align: right;">
+            </mat-form-field>
+        </div>
+    </div>
+    <div mat-dialog-actions align="end">
+        <button mat-button type="button" (click)="onNoClick()">Cancle</button>
+        <button mat-button mat-raised-button color="primary" cdkFocusInitial>Save</button>
+    </div>
+</form>

@@ -4,6 +4,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import { Observable } from 'rxjs';
+import { InitialLookups } from '../models/InitialLookups';
 
 const httpOptions = {
   headers: new HttpHeaders({'Content-Type': 'application/json'})
@@ -12,6 +13,7 @@ const httpOptions = {
   providedIn: 'root'
 })
 export class BeneficiaryService {
+  initialLooupsData: InitialLookups;
   baseUrl = environment.apiUrl;
   constructor(private fb: FormBuilder, private http: HttpClient) { }
   beneficiaryForm: FormGroup = this.fb.group({
