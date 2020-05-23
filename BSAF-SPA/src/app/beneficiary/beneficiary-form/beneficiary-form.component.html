@@ -11,16 +11,20 @@
                         <div fxFlex="0 1 calc(25% - 32px)">
                             <mat-form-field fxFlex="100%">
                                 <mat-label>Card ID</mat-label>
-                                <input matInput formControlName="cardID">
+                                <input matInput [attr.disabled]="true" formControlName="cardID">
                             </mat-form-field>
                         </div>
                         <div fxFlex="0 1 calc(25% - 32px)">
                             <mat-form-field fxFlex="100%">
                                 <mat-label>Screening Date</mat-label>
-                                <input matInput [matDatepicker]="screeningDate" formControlName="screeningDate">
+                                <input matInput [matDatepicker]="screeningDate" formControlName="screeningDate" (click)="screeningDate.open()">
                                 <mat-datepicker-toggle matSuffix [for]="screeningDate"></mat-datepicker-toggle>
                                 <mat-datepicker #screeningDate></mat-datepicker>
+                                <mat-error *ngIf="benefSubmitted && benef.screeningDate.hasError('required')">
+                                    Screening date is <strong>required</strong>
+                                </mat-error>
                             </mat-form-field>
+
                         </div>
                         <div fxFlex="0 1 calc(25% - 32px)">
                             <mat-form-field class="full-width">
@@ -29,8 +33,8 @@
                                         {{ provicne.lookupName }}
                                     </mat-option>
                                 </mat-select>
-                                <mat-error *ngIf="beneficiaryForm.controls['provinceBCP'].hasError('required')">
-                                    State is <strong>required</strong>
+                                <mat-error *ngIf="benefSubmitted &&  benef.provinceBCP.hasError('required')">
+                                    Border crossing province is <strong>required</strong>
                                 </mat-error>
                             </mat-form-field>
                         </div>
@@ -41,8 +45,8 @@
                                         {{ bPoint.lookupName }}
                                     </mat-option>
                                 </mat-select>
-                                <mat-error *ngIf="beneficiaryForm.controls['borderPoint'].hasError('required')">
-                                    State is <strong>required</strong>
+                                <mat-error *ngIf="benefSubmitted && benef.borderPoint.hasError('required')">
+                                    Border point is <strong>required</strong>
                                 </mat-error>
                             </mat-form-field>
                         </div>
@@ -56,8 +60,10 @@
                                 <mat-radio-button value="Family">Family</mat-radio-button>
                                 <mat-radio-button value="Individual">Individual</mat-radio-button>
                             </mat-radio-group>
+                            <mat-error *ngIf="benefSubmitted && benef.beneficiaryType.hasError('required')">
+                                Beneficiary type is <strong>required</strong>
+                            </mat-error>
                             <!-- </div> -->
-
                         </div>
                         <div fxLayout="column" fxFlex="0 1 calc(60.3% - 32px)">
                             <!-- <div fxLayout="row" fxLayoutAlign="space-between start"> -->
@@ -67,12 +73,14 @@
                                 <mat-radio-button value="DC">Document claimant</mat-radio-button>
                                 <mat-radio-button value="SR">Spontaneous returnee</mat-radio-button>
                             </mat-radio-group>
+                            <mat-error *ngIf="benefSubmitted && benef.returnStatus.hasError('required')">
+                                Return status is <strong>required</strong>
+                            </mat-error>
                             <!-- </div> -->
                         </div>
                     </div>
                     <mat-divider class="mt20">
                     </mat-divider>
-
                     <div class="mt20">
                         <h4>3. Family members</h4>
                         <div fxLayout="column" class="individualHolder">
@@ -141,16 +149,22 @@
                                 <tr mat-row *matRowDef="let row; columns: individualsTbleColumns;"></tr>
                             </table>
                         </div>
+                        <mat-error *ngIf="benefSubmitted && individuals.length == 0">
+                            Family member <strong>required</strong>
+                        </mat-error>
                     </div>
                     <h4 class="mt10">4. Please indicate the place of origin and intended place of return </h4>
                     <div fxLayout="row wrap" fxLayoutAlign="space-between center">
                         <div fxLayout="column" fxFlex="0 1 calc(40% - 32px)">
                             <mat-form-field class="full-width">
-                                <mat-select placeholder="Origin Province" (selectionChange)="originProvinceChanged($event)" formControlName="originProvince">
+                                <mat-select formControlName="originProvince" placeholder="Origin Province" (selectionChange)="originProvinceChanged($event)">
                                     <mat-option *ngFor="let provicne of initialLooupsData?.provinces" [value]="provicne.lookupCode">
                                         {{ provicne.lookupName }}
                                     </mat-option>
                                 </mat-select>
+                                <mat-error *ngIf="benefSubmitted && benef.originProvince.hasError('required')">
+                                    Origin province is <strong>required</strong>
+                                </mat-error>
                             </mat-form-field>
                         </div>
                         <div fxLayout="column" fxFlex="0 1 calc(20% - 32px)" fxLayoutAlign="center center">
@@ -158,11 +172,14 @@
                         </div>
                         <div fxLayout="column" fxFlex="0 1 calc(40.3% - 32px)">
                             <mat-form-field class="full-width">
-                                <mat-select placeholder="Return Province" (selectionChange)="returnProvinceChanged($event)" formControlName="returnProvince">
+                                <mat-select formControlName="returnProvince" placeholder="Return Province" (selectionChange)="returnProvinceChanged($event)">
                                     <mat-option *ngFor="let provicne of initialLooupsData?.provinces" [value]="provicne.lookupCode">
                                         {{ provicne.lookupName }}
                                     </mat-option>
                                 </mat-select>
+                                <mat-error *ngIf="benefSubmitted && benef.returnProvince.hasError('required')">
+                                    Return province is <strong>required</strong>
+                                </mat-error>
                             </mat-form-field>
                         </div>
                     </div>
@@ -174,6 +191,9 @@
                                         {{ district.lookupName }}
                                     </mat-option>
                                 </mat-select>
+                                <mat-error *ngIf="benefSubmitted && benef.originDistrict.hasError('required')">
+                                    Origin district is <strong>required</strong>
+                                </mat-error>
                             </mat-form-field>
                         </div>
                         <div fxLayout="column" fxFlex="0 1 calc(20% - 32px)" fxLayoutAlign="center center">
@@ -186,6 +206,9 @@
                                         {{ district.lookupName }}
                                     </mat-option>
                                 </mat-select>
+                                <mat-error *ngIf="benefSubmitted && benef.returnDistrict.hasError('required')">
+                                    Return district is <strong>required</strong>
+                                </mat-error>
                             </mat-form-field>
                         </div>
                     </div>
@@ -193,6 +216,9 @@
                         <div fxLayout="column" fxFlex="0 1 calc(40% - 32px)">
                             <mat-form-field class="full-width">
                                 <input matInput placeholder="Origin Village" formControlName="originVillage">
+                                <mat-error *ngIf="benefSubmitted && benef.originVillage.hasError('required')">
+                                    Origin village is <strong>required</strong>
+                                </mat-error>
                             </mat-form-field>
                         </div>
                         <div fxLayout="column" fxFlex="0 1 calc(20% - 32px)" fxLayoutAlign="center center">
@@ -202,6 +228,9 @@
                             <mat-form-field class="full-width">
                                 <input matInput placeholder="Village" formControlName="returnVillage">
                             </mat-form-field>
+                            <mat-error *ngIf="benefSubmitted && benef.returnVillage.hasError('required')">
+                                Return village is <strong>required</strong>
+                            </mat-error>
                         </div>
                     </div>
                 </mat-tab>
@@ -212,26 +241,41 @@
                             <div fxFlex="0 1 calc(33.3% - 32px)" fxFlex.lt-md="0 1 calc(50% - 32px)" fxFlex.lt-sm="100%">
                                 <div [formGroupName]="i" fxLayout="row" fxLayoutGap="20px">
                                     <mat-checkbox formControlName="isSelected" value="{{psn.controls.lookupCode.value}}">{{psn.controls.lookupName.value}}</mat-checkbox>
-                                    <input matInput formControlName="other" placeholder="PSN other" value="{{psn.controls.lookupName.other}}" *ngIf="psn.controls.isSelected.value == true && psn.controls.lookupName.value == 'Other'">
+                                    <div fxLayout="column" *ngIf="psn.controls.isSelected.value == true && psn.controls.lookupName.value == 'Other'">
+                                        <input matInput formControlName="other" placeholder="PSN other">
+                                        <mat-error *ngIf="benefSubmitted &&  psn.hasError('otherRequired')">
+                                            PSN other is <strong>required</strong>
+                                        </mat-error>
+                                    </div>
                                 </div>
                             </div>
                         </ng-container>
                     </div>
+                    <!-- <mat-error *ngIf="benefSubmitted && individuals.length == 0">
+                        Family member <strong>required</strong>
+                    </mat-error> -->
                     <h4>6. What were the three main reasons for leaving Afghanistan?</h4>
                     <div fxLayout="row wrap" fxLayoutAlign="space-between">
                         <div fxFlex="0 1 calc(40% - 32px)">
                             <mat-form-field class="full-width">
                                 <mat-select placeholder="First Reason" formControlName="leavingReason1">
+                                    <mat-option>--Select Leaving Reason--</mat-option>
                                     <mat-option *ngFor="let reason of initialLooupsData?.leavingReasons" [value]="reason.lookupCode">
                                         {{ reason.lookupName }}
                                     </mat-option>
                                 </mat-select>
+                                <mat-error *ngIf="benefSubmitted && benef.returnVillage.hasError('required')">
+                                    Leaving reason is <strong>required</strong>
+                                </mat-error>
                             </mat-form-field>
                         </div>
-                        <div fxFlex="0 1 calc(60% - 32px)">
+                        <div fxFlex="0 1 calc(60% - 32px)" *ngIf="benef.leavingReason1.value == 'LROther'">
                             <mat-form-field fxFlex="100%">
                                 <mat-label>First Reason Other</mat-label>
                                 <input matInput formControlName="leavingReason1Other" placeholder="First Reason Other">
+                                <mat-error *ngIf="benefSubmitted">
+                                    First reason other is <strong>required</strong>
+                                </mat-error>
                             </mat-form-field>
                         </div>
                     </div>
@@ -239,16 +283,20 @@
                         <div fxFlex="0 1 calc(40% - 32px)">
                             <mat-form-field class="full-width">
                                 <mat-select placeholder="Second Reason" formControlName="leavingReason2">
+                                    <mat-option>--Select Leaving Reason--</mat-option>
                                     <mat-option *ngFor="let reason of initialLooupsData?.leavingReasons" [value]="reason.lookupCode">
                                         {{ reason.lookupName }}
                                     </mat-option>
                                 </mat-select>
                             </mat-form-field>
                         </div>
-                        <div fxFlex="0 1 calc(60% - 32px)">
+                        <div fxFlex="0 1 calc(60% - 32px)" *ngIf="benef.leavingReason2.value == 'LROther'">
                             <mat-form-field fxFlex="100%">
                                 <mat-label>Second Reason Other</mat-label>
                                 <input matInput formControlName="leavingReason2Other" placeholder="Second Reason Other">
+                                <mat-error *ngIf="benefSubmitted">
+                                    Second reason other is <strong>required</strong>
+                                </mat-error>
                             </mat-form-field>
                         </div>
                     </div>
@@ -256,16 +304,20 @@
                         <div fxFlex="0 1 calc(40% - 32px)">
                             <mat-form-field class="full-width">
                                 <mat-select placeholder="Third Reason" formControlName="leavingReason3">
+                                    <mat-option>--Select Leaving Reason--</mat-option>
                                     <mat-option *ngFor="let reason of initialLooupsData?.leavingReasons" [value]="reason.lookupCode">
                                         {{ reason.lookupName }}
                                     </mat-option>
                                 </mat-select>
                             </mat-form-field>
                         </div>
-                        <div fxFlex="0 1 calc(60% - 32px)">
+                        <div fxFlex="0 1 calc(60% - 32px)" *ngIf="benef.leavingReason3.value == 'LROther'">
                             <mat-form-field fxFlex="100%">
                                 <mat-label>Third Reason Other</mat-label>
                                 <input matInput formControlName="leavingReason3Other" placeholder="Third Reason Other">
+                                <mat-error *ngIf="benefSubmitted">
+                                    Third reason other is <strong>required</strong>
+                                </mat-error>
                             </mat-form-field>
                         </div>
                     </div>
@@ -275,7 +327,12 @@
                             <div fxFlex="0 1 calc(33.3% - 32px)" fxFlex.lt-md="0 1 calc(50% - 32px)" fxFlex.lt-sm="100%">
                                 <div [formGroupName]="i" fxLayout="row" fxLayoutGap="20px">
                                     <mat-checkbox formControlName="isSelected" value="{{reason.controls.lookupCode.value}}">{{reason.controls.lookupName.value}}</mat-checkbox>
-                                    <input matInput placeholder="Reason other" value="{{reason.controls.other.value}}" *ngIf="reason.controls.isSelected.value == true && reason.controls.lookupName.value == 'Other'">
+                                    <div fxLayout="column" *ngIf="reason.controls.isSelected.value == true && reason.controls.lookupName.value == 'Other'">
+                                        <input matInput formControlName="other" placeholder="Reason other">
+                                        <mat-error *ngIf="benefSubmitted &&  reason.hasError('otherRequired')">
+                                            Reason other is <strong>required</strong>
+                                        </mat-error>
+                                    </div>
                                 </div>
                             </div>
                         </ng-container>
@@ -304,6 +361,9 @@
                             <mat-radio-button [value]="false">No</mat-radio-button>
                         </mat-radio-group>
                     </div>
+                    <mat-error *ngIf="benefSubmitted && benef.ownHouse.hasError('required')">
+                        9 qeustion is <strong>required</strong>
+                    </mat-error>
                     <div fxLayout="row wrap" fxLayoutAlign="space-between start" fxLayoutAlign="start center" fxLayoutGap="20px">
                         <h4 fxFelx style="text-align: center;">10. Where will you live?</h4>
                         <mat-form-field fxFlex="0 1 40%" fxLayout.lt-sm="column" floatLabel="never">
@@ -312,29 +372,46 @@
                                     {{ reason.lookupName }}
                                 </mat-option>
                             </mat-select>
+                            <mat-hint>Question 11 and 12 related to rental house</mat-hint>
+                            <mat-error *ngIf="benefSubmitted && benef.whereWillLive.hasError('required')">
+                                Where will you live is <strong>required</strong>
+                            </mat-error>
                         </mat-form-field>
                     </div>
-                    <div class="mt20" fxLayout="row wrap" fxLayoutAlign="space-between start" fxLayoutGap="20px">
-                        <h4 fxFelx class="pt20">11. How much rent would you pay per month for accommodation?</h4>
+                    <div *ngIf="benef.whereWillLive.value == 'RH'">
+                        <div class="mt20" fxLayout="row wrap" fxLayoutAlign="space-between start" fxLayoutGap="20px">
+                            <h4 fxFelx class="pt20">11. How much rent would you pay per month for accommodation?</h4>
 
-                        <mat-form-field fxFlexAlign="start" fxFlex floatLabel="never">
-                            <input matInput formControlName="rentPayForAccom" placeholder="Rent amont">
-                        </mat-form-field>
-                        <mat-radio-group class="pt20" formControlName="rentPayCurrency" fxFlex fxLayoutGap="20px" fxLayout.lt-sm="column" aria-label="Select an option">
-                            <mat-radio-button value="USD">USD</mat-radio-button>
-                            <mat-radio-button value="AFG">AFG</mat-radio-button>
-                        </mat-radio-group>
-                    </div>
-                    <h4>12. How would you find the money for rental payments?</h4>
-                    <div formArrayName="moneySources" fxLayout="row wrap" fxLayout.lt-sm="column" fxLayoutGap="32px" fxLayoutAlign="flex-start">
-                        <ng-container *ngFor="let source of moneySources.controls; let i=index;">
-                            <div [formGroupName]="i" fxFlex="0 1 calc(33.3% - 32px)" fxFlex.lt-md="0 1 calc(50% - 32px)" fxFlex.lt-sm="100%">
-                                <div fxLayout="row" fxLayoutGap="20px">
-                                    <mat-checkbox formControlName="isSelected" value="{{source.controls.lookupCode.value}}">{{source.controls.lookupName.value}}</mat-checkbox>
-                                    <input formControlName="other" matInput placeholder="Money source other" *ngIf="source.controls.isSelected.value==true && source.controls.lookupName.value == 'Other'">
+                            <mat-form-field fxFlexAlign="start" fxFlex floatLabel="never">
+                                <input matInput type="number" formControlName="rentPayForAccom" placeholder="Rent amont">
+                                <mat-error *ngIf="benefSubmitted && benef.rentPayForAccom.hasError('required')">
+                                    Rent amount is <strong>required</strong>
+                                </mat-error>
+                            </mat-form-field>
+                            <mat-radio-group class="pt20" formControlName="rentPayCurrency" fxFlex fxLayoutGap="20px" fxLayout.lt-sm="column" aria-label="Select an option">
+                                <mat-radio-button value="USD">USD</mat-radio-button>
+                                <mat-radio-button value="AFG">AFG</mat-radio-button>
+                            </mat-radio-group>
+                            <mat-error *ngIf="benefSubmitted && benef.rentPayCurrency.hasError('required')">
+                                Rent amount is <strong>required</strong>
+                            </mat-error>
+                        </div>
+                        <h4>12. How would you find the money for rental payments?</h4>
+                        <div formArrayName="moneySources" fxLayout="row wrap" fxLayout.lt-sm="column" fxLayoutGap="32px" fxLayoutAlign="flex-start">
+                            <ng-container *ngFor="let source of moneySources.controls; let i=index;">
+                                <div [formGroupName]="i" fxFlex="0 1 calc(33.3% - 32px)" fxFlex.lt-md="0 1 calc(50% - 32px)" fxFlex.lt-sm="100%">
+                                    <div fxLayout="row" fxLayoutGap="20px">
+                                        <mat-checkbox formControlName="isSelected" value="{{source.controls.lookupCode.value}}">{{source.controls.lookupName.value}}</mat-checkbox>
+                                        <div fxLayout="column" *ngIf="source.controls.isSelected.value==true && source.controls.lookupName.value == 'Other'">
+                                            <input formControlName="other" matInput placeholder="Money source other">
+                                            <mat-error *ngIf="benefSubmitted &&  source.hasError('otherRequired')">
+                                                Source other is <strong>required</strong>
+                                            </mat-error>
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
-                        </ng-container>
+                            </ng-container>
+                        </div>
                     </div>
                     <div class="mt20" fxLayout="row wrap" fxLayoutAlign="space-between start" fxLayoutGap="20px">
                         <h4 fxFelx>13. If there was a job opening for your wife, sister, daughter or adult female family member, would you allow her to work? </h4>
@@ -343,19 +420,28 @@
                             <mat-radio-button [value]="false">No</mat-radio-button>
                         </mat-radio-group>
                     </div>
+                    <mat-error *ngIf="benefSubmitted && benef.allowForJob.hasError('required')">
+                        13 question is <strong>required</strong>
+                    </mat-error>
                 </mat-tab>
                 <mat-tab label="Host Country">
-                    <div class="mt20" fxLayout="row wrap" fxLayoutAlign="space-between start">
+                    <div class="mt20" fxLayout="row wrap" fxLayoutGap="32px">
                         <h4 fxFlex="0 1 calc(20% - 32px)" class="pt20">14. Country of Exile</h4>
-                        <mat-radio-group (change)="hostCountryChanged($event)" fxFlex="0 1 calc(30% - 32px)" class="pt20" formControlName="countryOfExile" fxLayoutAlign="space-between start" fxLayoutGap="30px" fxLayout.lt-sm="column" aria-label="Select an option">
+                        <mat-radio-group formControlName="countryOfExile" (change)="hostCountryChanged($event)" fxFlex="0 1 calc(30% - 32px)" class="pt20" fxLayoutAlign="space-between start" fxLayoutGap="30px" fxLayout.lt-sm="column" aria-label="Select an option">
                             <mat-radio-button value="Iran">Iran</mat-radio-button>
                             <mat-radio-button value="Pakistan">Pakistan</mat-radio-button>
                             <mat-radio-button value="COther">Other</mat-radio-button>
                         </mat-radio-group>
-                        <mat-form-field fxFlex="0 1 calc(50% - 32px)">
+                        <mat-form-field *ngIf="benef.countryOfExile.value == 'COther'" fxFlex="0 1 calc(50% - 32px)">
                             <input matInput formControlName="countryOfExilOther" placeholder="Other Country">
+                            <mat-error *ngIf="benefSubmitted && benef.countryOfExilOther.hasError('required')">
+                                13 question is <strong>required</strong>
+                            </mat-error>
                         </mat-form-field>
                     </div>
+                    <mat-error *ngIf="benefSubmitted && benef.countryOfExile.hasError('required')">
+                        Host country is <strong>required</strong>
+                    </mat-error>
                     <h4>15. Place of residence before return/deportation</h4>
                     <div fxLayout="row wrap" fxLayoutAlign="space-between">
                         <div fxFlex="0 1 calc(33.3% - 32px)">
@@ -364,6 +450,9 @@
                                     <mat-option *ngFor="let provicne of hostCountryProvinces" [value]="provicne.id">
                                         {{ provicne.name }}
                                     </mat-option>
+                                    <mat-error *ngIf="benefSubmitted && benef.beforReturnProvince.hasError('required')">
+                                        Province is <strong>required</strong>
+                                    </mat-error>
                                 </mat-select>
                             </mat-form-field>
                         </div>
@@ -374,6 +463,9 @@
                                         {{ district.name }}
                                     </mat-option>
                                 </mat-select>
+                                <mat-error *ngIf="benefSubmitted && benef.beforReturnDistrictID.hasError('required')">
+                                    District is <strong>required</strong>
+                                </mat-error>
                             </mat-form-field>
                         </div>
                         <div fxFlex="0 1 calc(33.3% - 32px)">
@@ -393,19 +485,32 @@
                             <input matInput formControlName="familyMemStayedBehindNo" placeholder="Number of member stayed behind">
                         </mat-form-field>
                     </div>
+                    <mat-error *ngIf="benefSubmitted && benef.familyMemStayedBehind.hasError('required')">
+                        Question "Do you have family members who stayed behind?" <strong>required</strong>
+                    </mat-error>
+
                     <div class="mt20" fxLayout="row wrap" fxLayoutAlign="space-between start" fxLayoutGap="20px">
                         <h4 fxFelex class="pt20">16. Length of stay in host country </h4>
                         <mat-form-field fxFlex>
                             <mat-label>Years</mat-label>
                             <input matInput formControlName="lengthOfStayYears" type="number">
+                            <mat-error *ngIf="benefSubmitted && benef.lengthOfStayYears.hasError('required')">
+                                length of stay years is <strong>required</strong>
+                            </mat-error>
                         </mat-form-field>
                         <mat-form-field fxFlex>
                             <mat-label>Months</mat-label>
                             <input matInput formControlName="lengthOfStayMonths" type="number">
+                            <mat-error *ngIf="benefSubmitted && benef.lengthOfStayMonths.hasError('required')">
+                                length of stay months is <strong>required</strong>
+                            </mat-error>
                         </mat-form-field>
                         <mat-form-field fxFlex>
                             <mat-label>Days</mat-label>
                             <input matInput formControlName="lengthOfStayDays" type="number">
+                            <mat-error *ngIf="benefSubmitted && benef.lengthOfStayDays.hasError('required')">
+                                length of stay days is <strong>required</strong>
+                            </mat-error>
                         </mat-form-field>
                     </div>
                     <h4>17. Items brought from host country</h4>
@@ -414,7 +519,12 @@
                             <div fxFlex="0 1 calc(33.3% - 32px)" fxFlex.lt-md="0 1 calc(30% - 32px)" fxFlex.lt-sm="100%">
                                 <div [formGroupName]="i" fxLayout="row" fxLayoutGap="20px">
                                     <mat-checkbox formControlName="isSelected" value="{{item.controls.lookupCode.value}}">{{item.controls.lookupName.value}}</mat-checkbox>
-                                    <input matInput formControlName="other" placeholder="Item brought other" *ngIf="item.controls.isSelected.value == true && item.controls.lookupName.value == 'Other'">
+                                    <div fxLayout="column" *ngIf="item.controls.isSelected.value == true && item.controls.lookupName.value == 'Other'">
+                                        <input matInput formControlName="other" placeholder="Item brought other">
+                                        <mat-error *ngIf="benefSubmitted &&  item.hasError('otherRequired')">
+                                            Item other is <strong>required</strong>
+                                        </mat-error>
+                                    </div>
                                 </div>
                             </div>
                         </ng-container>
@@ -426,10 +536,13 @@
                             <mat-radio-button [value]="false">No</mat-radio-button>
                         </mat-radio-group>
                     </div>
+                    <mat-error *ngIf="benefSubmitted && benef.wouldYouReturn.hasError('required')">
+                        Question 18 is <strong>required</strong>
+                    </mat-error>
                 </mat-tab>
                 <mat-tab label="Assistance Needs 1">
                     <h4 class="pt20">19. Post Arrival Humanitarian Assistance Needs</h4>
-                    <table mat-table formArrayName="postArrivalNeeds" [dataSource]="postArrivalNeedsList" class="mat-elevation-z8">
+                    <table mat-table style="width: 100%;" formArrayName="postArrivalNeeds" [dataSource]="postArrivalNeedsList" class="mat-elevation-z8">
                         <ng-container matColumnDef="NeedAssistance">
                             <th mat-header-cell *matHeaderCellDef> Need/Assistance </th>
                             <td mat-cell *matCellDef="let row; let i = index;" [formGroupName]="i"> {{row.lookupName}} </td>
@@ -445,7 +558,7 @@
                             <td mat-cell *matCellDef="let row; let i=index;" [formGroupName]="i">
                                 <mat-form-field>
                                     <!-- <mat-label>Choose a date</mat-label> -->
-                                    <input matInput [matDatepicker]="providedDate" formControlName="providedDate">
+                                    <input matInput [matDatepicker]="providedDate" formControlName="providedDate" (click)="providedDate.open()">
                                     <mat-datepicker-toggle matSuffix [for]="providedDate"></mat-datepicker-toggle>
                                     <mat-datepicker #providedDate></mat-datepicker>
                                 </mat-form-field>
@@ -466,11 +579,14 @@
                 <mat-tab label="Assistance Needs 2">
                     <div class="mt20" fxLayout="row wrap" fxLayoutAlign="space-between start" fxLayoutGap="20px">
                         <h4 fxFelx>20. Have you or your family benefited from UNHCR or IOM programming in the past? </h4>
-                        <mat-radio-group (change)="benefitedFromOrgsChange($event)" formControlName="haveFamilyBenefited" fxFlex fxLayoutGap="20px" fxLayout.lt-sm="column" aria-label="Select an option">
+                        <mat-radio-group formControlName="haveFamilyBenefited" (change)="benefitedFromOrgsChange($event)" fxFlex fxLayoutGap="20px" fxLayout.lt-sm="column" aria-label="Select an option">
                             <mat-radio-button [value]="true">Yes</mat-radio-button>
                             <mat-radio-button [value]="false">No</mat-radio-button>
                         </mat-radio-group>
                     </div>
+                    <mat-error *ngIf="benefSubmitted && benef.haveFamilyBenefited.hasError('required')">
+                        Question 20 is <strong>required</strong>
+                    </mat-error>
                     <div fxLayout="column" *ngIf="beneficiaryForm.get('haveFamilyBenefited').value">
                         <div fxLayout="row" fxLayoutAlign="end" fxLayoutAlign="space-between start">
                             <p>If yes, when and where</p>
@@ -495,6 +611,9 @@
                                                 <input formControlName="date" matInput [matDatepicker]="date">
                                                 <mat-datepicker-toggle matSuffix [for]="date"></mat-datepicker-toggle>
                                                 <mat-datepicker #date></mat-datepicker>
+                                                <mat-error *ngIf="benefSubmitted && org.controls['date'].errors?.required">
+                                                    Date is <strong>required</strong>
+                                                </mat-error>
                                             </mat-form-field>
                                         </div>
                                         <div fxFlex="15%">
@@ -504,15 +623,21 @@
                                                         {{ provicne.lookupName }}
                                                     </mat-option>
                                                 </mat-select>
+                                                <mat-error *ngIf="benefSubmitted && org.controls['provinceCode'].errors?.required">
+                                                    Province is <strong>required</strong>
+                                                </mat-error>
                                             </mat-form-field>
                                         </div>
                                         <div fxFlex="15%">
                                             <mat-form-field class="full-width">
                                                 <mat-select formControlName="districtID" placeholder="District">
-                                                    <mat-option *ngFor="let provicne of benefitedFromOrgsInDistrict[i]" [value]="provicne.lookupCode">
-                                                        {{ provicne.lookupName }}
+                                                    <mat-option *ngFor="let district of benefitedFromOrgsInDistrict[i]" [value]="district.lookupCode">
+                                                        {{ district.lookupName }}
                                                     </mat-option>
                                                 </mat-select>
+                                                <mat-error *ngIf="benefSubmitted && org.controls['districtID'].errors?.required">
+                                                    District is <strong>required</strong>
+                                                </mat-error>
                                             </mat-form-field>
                                         </div>
                                         <div fxFlex="15%">
@@ -527,11 +652,17 @@
                                                         {{ provicne.lookupName }}
                                                     </mat-option>
                                                 </mat-select>
+                                                <mat-error *ngIf="benefSubmitted && org.controls['orgCode'].errors?.required">
+                                                    Organization is <strong>required</strong>
+                                                </mat-error>
                                             </mat-form-field>
                                         </div>
                                         <div fxFlex="20%">
                                             <mat-form-field class="full-width">
                                                 <input formControlName="assistanceProvided" matInput placeholder="Assistance Provided">
+                                                <mat-error *ngIf="benefSubmitted && org.controls['assistanceProvided'].errors?.required">
+                                                    Assistance provided is <strong>required</strong>
+                                                </mat-error>
                                             </mat-form-field>
                                         </div>
                                     </div>
@@ -544,7 +675,7 @@
                         <div fxFlex="20%">
                             <mat-form-field floatLabel="never" fxFlex="100%">
                                 <mat-label>Date</mat-label>
-                                <input matInput formControlName="transportationDate" [matDatepicker]="TransportationDate">
+                                <input matInput formControlName="transportationDate" [matDatepicker]="TransportationDate" (click)="TransportationDate.open()">
                                 <mat-datepicker-toggle matSuffix [for]="TransportationDate"></mat-datepicker-toggle>
                                 <mat-datepicker #TransportationDate></mat-datepicker>
                             </mat-form-field>
@@ -555,7 +686,12 @@
                             <div fxFlex="0 1 calc(50% - 32px)" fxFlex.lt-md="0 1 calc(50% - 32px)" fxFlex.lt-sm="100%">
                                 <div [formGroupName]="i" fxLayout="row" fxLayoutGap="20px">
                                     <mat-checkbox formControlName="isSelected" value="{{transport.controls.lookupCode.value}}">{{transport.controls.lookupName.value}}</mat-checkbox>
-                                    <input formControlName="other" matInput placeholder="Other transportation difficulties" *ngIf="transport.controls.isSelected.value == true && transport.controls.lookupName.value == 'Other'">
+                                    <div fxLayout="column" *ngIf="transport.controls.isSelected.value == true && transport.controls.lookupName.value == 'Other'">
+                                        <input formControlName="other" matInput placeholder="Other transportation difficulties">
+                                        <mat-error *ngIf="benefSubmitted &&  transport.hasError('otherRequired')">
+                                            Transportation other is <strong>required</strong>
+                                        </mat-error>
+                                    </div>
                                 </div>
                             </div>
                         </ng-container>
@@ -584,6 +720,9 @@
                                         {{ need.lookupName }}
                                     </mat-option>
                                 </mat-select>
+                                <mat-error *ngIf="benefSubmitted && benef.topNeed1.hasError('required')">
+                                    First need is <strong>required</strong>
+                                </mat-error>
                             </mat-form-field>
                         </div>
                         <div fxFlex="0 1 calc(60% - 32px)">
@@ -636,6 +775,9 @@
                                         {{ toDo.lookupName }}
                                     </mat-option>
                                 </mat-select>
+                                <mat-error *ngIf="benefSubmitted && benef.intendToDo.hasError('required')">
+                                    What do you intend to do is <strong>required</strong>
+                                </mat-error>
                             </mat-form-field>
                         </div>
                         <div fxFlex="0 1 calc(30% - 20px)">
@@ -654,6 +796,9 @@
                                         {{ profession.lookupName }}
                                     </mat-option>
                                 </mat-select>
+                                <mat-error *ngIf="benefSubmitted && benef.professionInHostCountry.hasError('required')">
+                                    Profession in houst country is <strong>required</strong>
+                                </mat-error>
                             </mat-form-field>
                         </div>
                         <div fxFlex="0 1 calc(30% - 20px)">
@@ -678,7 +823,12 @@
                                 <div [formGroupName]="i" fxFlex="0 1 calc(33.3% - 32px)" fxFlex.lt-md="0 1 calc(50% - 32px)" fxFlex.lt-sm="100%">
                                     <div fxLayout="row" fxLayoutGap="20px">
                                         <mat-checkbox formControlName="isSelected" value="{{tool.controls.lookupCode.value}}">{{tool.controls.lookupName.value}}</mat-checkbox>
-                                        <input formControlName="other" matInput placeholder="Need tool other" *ngIf="tool.controls.isSelected.value == true && tool.controls.lookupName.value == 'Other'">
+                                        <div fxLayout="column" *ngIf="tool.controls.isSelected.value == true && tool.controls.lookupName.value == 'Other'">
+                                            <input formControlName="other" matInput placeholder="Need tool other">
+                                            <mat-error *ngIf="benefSubmitted &&  tool.hasError('otherRequired')">
+                                                Tool other is <strong>required</strong>
+                                            </mat-error>
+                                        </div>
                                     </div>
                                 </div>
                             </ng-container>
@@ -692,7 +842,11 @@
                             <mat-radio-button [value]="false">No</mat-radio-button>
                         </mat-radio-group>
                     </div>
-                    <div fxLayout="row wrap" fxLayoutAlign="space-between" fxLayoutGap="20px">
+                    <mat-error *ngIf="benefSubmitted && benef.hoHCanReadWrite.hasError('required')">
+                        Question 26 is <strong>required</strong>
+                    </mat-error>
+                    {{benef.hoHCanReadWrite.value}}
+                    <div *ngIf="benef.hoHCanReadWrite.value == true" fxLayout="row wrap" fxLayoutGap="20px">
                         <h4 class="mt20" fxFlex="0 1 calc(40% - 20px)">27. What is the highest education level achieved by the HoH?</h4>
                         <div fxFlex="0 1 calc(30% - 20px)">
                             <mat-form-field class="full-width" floatLabel="never">
@@ -701,12 +855,18 @@
                                         {{ education.lookupName }}
                                     </mat-option>
                                 </mat-select>
+                                <mat-error *ngIf="benefSubmitted && benef.hoHEducationLevel.hasError('required')">
+                                    Education level is <strong>required</strong>
+                                </mat-error>
                             </mat-form-field>
                         </div>
-                        <div fxFlex="0 1 calc(30% - 20px)">
+                        <div *ngIf="benef.hoHEducationLevel.value == 'EDUOther'" fxFlex="0 1 calc(30% - 20px)">
                             <mat-form-field fxFlex="100%">
                                 <mat-label>Education level Other</mat-label>
                                 <input matInput formControlName="hoHEducationLevelOther" placeholder="Education level Other">
+                                <mat-error *ngIf="benefSubmitted && benef.hoHEducationLevelOther.hasError('required')">
+                                    Education level other is <strong>required</strong>
+                                </mat-error>
                             </mat-form-field>
                         </div>
                     </div>
@@ -718,17 +878,22 @@
                                 <div [formGroupName]="i" fxFlex="0 1 calc(33.3% - 32px)" fxFlex.lt-md="0 1 calc(50% - 32px)" fxFlex.lt-sm="100%">
                                     <div fxLayout="row" fxLayoutGap="20px">
                                         <mat-checkbox formControlName="isSelected" value="{{concern.controls.lookupCode.value}}">{{concern.controls.lookupName.value}}</mat-checkbox>
-                                        <input matInput formControlName="other" placeholder="Concern other" *ngIf="concern.controls.isSelected.value == true && concern.controls.lookupName.value == 'Other'">
+                                        <div fxLayout="column" *ngIf="concern.controls.isSelected.value == true && concern.controls.lookupName.value == 'Other'">
+                                            <input matInput formControlName="other" placeholder="Concern other">
+                                            <mat-error *ngIf="benefSubmitted &&  concern.hasError('otherRequired')">
+                                                Concern other is <strong>required</strong>
+                                            </mat-error>
+                                        </div>
                                     </div>
                                 </div>
                             </ng-container>
                         </div>
                     </fieldset>
                     <h4 class="mt20">29. How many members of Household have Afghan documentation?</h4>
-                    <table>
+                    <table style="width: 100%;">
                         <thead>
                             <tr>
-                                <th>Document Type</th>
+                                <th style="width: 40%;">Document Type</th>
                                 <th>Number of household members</th>
                             </tr>
                         </thead>
@@ -737,7 +902,7 @@
                                 <td><label for="">Tazkira</label></td>
                                 <td>
                                     <mat-form-field class="full-width">
-                                        <input formControlName="numHHHaveTaskira" matInput placeholder="Number of household members have">
+                                        <input formControlName="numHHHaveTaskira" matInput placeholder="Number of household members have tazkira">
                                     </mat-form-field>
                                 </td>
                             </tr>
@@ -745,7 +910,7 @@
                                 <td><label for="">Passport</label></td>
                                 <td>
                                     <mat-form-field class="full-width">
-                                        <input formControlName="numHHHavePassport" matInput placeholder="Number of household members have Passport">
+                                        <input formControlName="numHHHavePassport" matInput placeholder="Number of household members have passport">
                                     </mat-form-field>
                                 </td>
                             </tr>
@@ -753,7 +918,7 @@
                                 <td><label for="">Other (driver’s license, marriage certificate, school certificates etc.)</label></td>
                                 <td>
                                     <mat-form-field class="full-width">
-                                        <input matInput formControlName="numHHHaveDocOther" placeholder="Number of household members have">
+                                        <input matInput formControlName="numHHHaveDocOther" placeholder="Number of household members have other document">
                                     </mat-form-field>
                                 </td>
                             </tr>
@@ -766,6 +931,9 @@
                             <mat-radio-button [value]="false">No</mat-radio-button>
                         </mat-radio-group>
                     </div>
+                    <mat-error *ngIf="benefSubmitted && benef.doHaveSecureLivelihood.hasError('required')">
+                        Question 30 is <strong>required</strong>
+                    </mat-error>
                     <div class="mt20" fxLayout="row wrap" fxLayoutAlign="space-between start" fxLayoutGap="20px">
                         <h4 fxFelx>31. Did your children go to school in host country?</h4>
                         <mat-radio-group formControlName="didChildrenGoToSchoole" fxFlex fxLayoutGap="20px" fxLayout.lt-sm="column" aria-label="Select an option">
@@ -773,7 +941,10 @@
                             <mat-radio-button [value]="false">No</mat-radio-button>
                         </mat-radio-group>
                     </div>
-                    <fieldset>
+                    <mat-error *ngIf="benefSubmitted && benef.didChildrenGoToSchoole.hasError('required')">
+                        Question 31 is <strong>required</strong>
+                    </mat-error>
+                    <fieldset *ngIf="benef.didChildrenGoToSchoole.value == true">
                         <legend>if Yes, specify</legend>
                         <div fxLayout="row" fxLayoutGap="40px">
                             <div formArrayName="hostCountrySchools" fxFlex="0 1 calc(50% - 40px)" fxLayout="row wrap" fxLayoutGap="50px" class="mt20">
@@ -782,13 +953,18 @@
                                         <mat-checkbox formControlName="isSelected" value="{{school.controls.lookupCode.value}}">{{school.controls.lookupName.value}}</mat-checkbox>
                                     </ng-container>
                                 </div>
+                                <mat-error *ngIf="benefSubmitted && benef.didChildrenGoToSchoole.value == true">
+                                    Number of children got to school is <strong>required</strong>
+                                </mat-error>
                             </div>
                             <div fxFlex="0 1 calc(50% - 40px)">
                                 <mat-form-field class="full-width">
-                                    <input matInput formControlName="numChildrenAttendedSchoole" placeholder="How many of your children attended school? ">
+                                    <input matInput type="number" formControlName="numChildrenAttendedSchoole" placeholder="How many of your children attended school? ">
+                                    <mat-error *ngIf="benefSubmitted && benef.didChildrenGoToSchoole.value == true && benef.numChildrenAttendedSchoole.hasError('required')">
+                                        Number of children got to school is <strong>required</strong>
+                                    </mat-error>
                                 </mat-form-field>
                             </div>
-
                         </div>
                     </fieldset>
                 </mat-tab>

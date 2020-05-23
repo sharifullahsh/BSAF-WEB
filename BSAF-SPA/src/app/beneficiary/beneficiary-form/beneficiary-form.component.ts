@@ -1,3 +1,4 @@
+import { returnOtherValidator } from './../../shared/customValidation';
 import { Individual } from './../../models/Individual';
 import { PostArrivalNeedForView } from './../../models/PostArrivalNeeds';
 import { DeterminationForView, DeterminationLookup } from './../../models/Determination';
@@ -18,6 +19,7 @@ import { IndividualFormDialogComponent } from '../dialog/individual-dialog/indiv
 import { MatDialog } from '@angular/material/dialog';
 import { MatTable } from '@angular/material/table';
 import { IndividualDeleteDialogComponent } from '../dialog/individual-dialog/individual-delete/individual-delete-dialog.component';
+import { chkOtherValidator } from 'src/app/shared/customValidation';
 
 @Component({
   selector: 'app-beneficiary-form',
@@ -492,7 +494,15 @@ setReturnReasonForm() {
       lookupName: [option.lookupName],
       lookupCode: [option.lookupCode],
       other: [option.other] ,
-    });
+    },{validators : chkOtherValidator});
+  }
+  private setReturnCheckboxOptionFormArray(option: CheckboxForView){
+    return this.fb.group({
+      isSelected: [option.isSelected],
+      lookupName: [option.lookupName],
+      lookupCode: [option.lookupCode],
+      other: [option.other] ,
+    },{validators : returnOtherValidator});
   }
   private setPostArrivalNeedsFormArray(need: PostArrivalNeedForView){
     return this.fb.group({
@@ -508,12 +518,12 @@ newBenefitedFromOrg(): FormGroup{
     return this.fb.group({
       id: [null],
       beneficiaryID: [null],
-      date: [''],
-      provinceCode: [null],
-      districtID: [null],
+      date: [null, Validators.required],
+      provinceCode: [null, Validators.required],
+      districtID: [null, Validators.required],
       village: [null],
-      orgCode: [null],
-      assistanceProvided: [null]
+      orgCode: [null, Validators.required],
+      assistanceProvided: [null, Validators.required]
     });
   }
 addBenefitedFromOrg(){
@@ -808,7 +818,7 @@ addIndividual(){
 }
 onSubmit() {
   this.benefSubmitted = true;
-  if (this.beneficiaryForm.invalid){
+  if (this.beneficiaryForm.invalid && this.individuals.length === 0){
     return;
   }
   alert('Success!!!');

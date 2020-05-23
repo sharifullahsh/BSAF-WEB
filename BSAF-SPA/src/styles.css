@@ -111,3 +111,9 @@ body {
     line-height: 30px !important;
     padding: 0 13px !important;
 }
+
+.error {
+    display: block;
+    color: #f44336;
+    font-size: 75%;
+}
