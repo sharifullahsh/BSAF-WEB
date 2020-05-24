@@ -258,33 +258,35 @@
                     <div fxLayout="row wrap" fxLayoutAlign="space-between">
                         <div fxFlex="0 1 calc(40% - 32px)">
                             <mat-form-field class="full-width">
-                                <mat-select placeholder="First Reason" formControlName="leavingReason1">
+                                <mat-select placeholder="First Reason" (selectionChange)="leavingReasonFirstChanged($event)" formControlName="leavingReason1">
                                     <mat-option>--Select Leaving Reason--</mat-option>
-                                    <mat-option *ngFor="let reason of initialLooupsData?.leavingReasons" [value]="reason.lookupCode">
+                                    <mat-option *ngFor="let reason of leavingReasonFirstList" [value]="reason.lookupCode">
                                         {{ reason.lookupName }}
                                     </mat-option>
                                 </mat-select>
-                                <mat-error *ngIf="benefSubmitted && benef.returnVillage.hasError('required')">
+                                <mat-error *ngIf="benefSubmitted && benef.leavingReason1.hasError('required')">
                                     Leaving reason is <strong>required</strong>
                                 </mat-error>
                             </mat-form-field>
                         </div>
                         <div fxFlex="0 1 calc(60% - 32px)" *ngIf="benef.leavingReason1.value == 'LROther'">
-                            <mat-form-field fxFlex="100%">
-                                <mat-label>First Reason Other</mat-label>
-                                <input matInput formControlName="leavingReason1Other" placeholder="First Reason Other">
-                                <mat-error *ngIf="benefSubmitted">
+                            <div fxFlex="100%" fxLayout="column">
+                                <mat-form-field>
+                                    <mat-label>First Reason Other</mat-label>
+                                    <input matInput formControlName="leavingReason1Other" placeholder="First Reason Other">
+                                </mat-form-field>
+                                <div *ngIf="benefSubmitted && beneficiaryForm.errors?.leavingReasonFirstOtherRequired" class="error">
                                     First reason other is <strong>required</strong>
-                                </mat-error>
-                            </mat-form-field>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div fxLayout="row wrap" fxLayoutAlign="space-between">
                         <div fxFlex="0 1 calc(40% - 32px)">
                             <mat-form-field class="full-width">
-                                <mat-select placeholder="Second Reason" formControlName="leavingReason2">
+                                <mat-select placeholder="Second Reason" formControlName="leavingReason2" (selectionChange)="leavingReasonSecondChanged($event)">
                                     <mat-option>--Select Leaving Reason--</mat-option>
-                                    <mat-option *ngFor="let reason of initialLooupsData?.leavingReasons" [value]="reason.lookupCode">
+                                    <mat-option *ngFor="let reason of leavingReasonSecondList" [value]="reason.lookupCode">
                                         {{ reason.lookupName }}
                                     </mat-option>
                                 </mat-select>
@@ -305,7 +307,7 @@
                             <mat-form-field class="full-width">
                                 <mat-select placeholder="Third Reason" formControlName="leavingReason3">
                                     <mat-option>--Select Leaving Reason--</mat-option>
-                                    <mat-option *ngFor="let reason of initialLooupsData?.leavingReasons" [value]="reason.lookupCode">
+                                    <mat-option *ngFor="let reason of leavingReasonThirdList" [value]="reason.lookupCode">
                                         {{ reason.lookupName }}
                                     </mat-option>
                                 </mat-select>
@@ -340,9 +342,14 @@
                     <h4 class="mt20">8. Rank which of these options is the most important for you to determine your destination in Afghanistan</h4>
                     <div formArrayName="determinations" *ngFor="let determination of determinations.controls;let i=index; last as last;" [ngClass]="{'borderButtom': !last}" class="pt10" fxLayout="row wrap" fxLayoutAlign="space-between start">
                         <ng-container [formGroupName]="i">
-                            <div fxFlex="0 1 calc(40% - 32px)" fxLayoutAlign="space-between start">
+                            <div fxFlex="0 1 calc(40% - 32px)" fxLayout="row">
                                 <mat-label style=" margin-right: 20px;">{{determination.controls.lookupName.value}}</mat-label>
-                                <input formControlName="other" *ngIf="determination.controls.lookupName.value == 'Other'" fxFlex="100%" matInput placeholder="Determination other">
+                                <div fxLayout="column" *ngIf="determination.controls.lookupName.value == 'Other'">
+                                    <input formControlName="other" fxFlex="100%" matInput placeholder="Determination other">
+                                    <mat-error *ngIf="benefSubmitted &&  determination.hasError('determinationOtherRequired')">
+                                        Determination other is <strong>required</strong>
+                                    </mat-error>
+                                </div>
                             </div>
                             <mat-radio-group formControlName="answerCode" fxFlex="0 1 calc(60% - 32px)" fxLayoutAlign="space-between start" fxLayout.lt-sm="column" aria-label="Select an option">
                                 <mat-radio-button value="NAAIMP">Not at all Important</mat-radio-button>
@@ -766,7 +773,7 @@
                             </mat-form-field>
                         </div>
                     </div>
-                    <div fxLayout="row wrap" fxLayoutAlign="space-between" fxLayoutGap="20px">
+                    <div fxLayout="row wrap" fxLayoutGap="20px">
                         <h4 class="mt20" fxFlex="0 1 calc(35% - 20px)">23. What do you intend to do?</h4>
                         <div fxFlex="0 1 calc(35% - 20px)">
                             <mat-form-field class="full-width" floatLabel="never">
@@ -780,14 +787,14 @@
                                 </mat-error>
                             </mat-form-field>
                         </div>
-                        <div fxFlex="0 1 calc(30% - 20px)">
+                        <div fxFlex="0 1 calc(30% - 20px)" *ngIf="benef.intendToDo.value == 'RTH'">
                             <mat-form-field fxFlex="100%">
                                 <mat-label>State Reason</mat-label>
                                 <input matInput formControlName="intendToReturnToHostReason" placeholder="State Reason">
                             </mat-form-field>
                         </div>
                     </div>
-                    <div fxLayout="row wrap" fxLayoutAlign="space-between" fxLayoutGap="20px">
+                    <div fxLayout="row wrap" fxLayoutGap="20px">
                         <h4 class="mt20" fxFlex="0 1 calc(35% - 20px)">24. What was your profession in Pakistan/Iran?</h4>
                         <div fxFlex="0 1 calc(35% - 20px)">
                             <mat-form-field class="full-width" floatLabel="never">
@@ -801,7 +808,7 @@
                                 </mat-error>
                             </mat-form-field>
                         </div>
-                        <div fxFlex="0 1 calc(30% - 20px)">
+                        <div fxFlex="0 1 calc(30% - 20px)" *ngIf="benef.professionInHostCountry.value == 'ProfOther'">
                             <mat-form-field fxFlex="100%">
                                 <mat-label>Profession Other</mat-label>
                                 <input matInput formControlName="professionInHostCountryOther" placeholder="Profession Other">

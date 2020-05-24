@@ -1,3 +1,4 @@
+import { leavingReasonFirstOtherValidator } from 'src/app/shared/customValidation';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AlertifyService } from './alertify.service';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
@@ -98,7 +99,7 @@ export class BeneficiaryService {
     // postalCode: [null, Validators.compose([
     //   Validators.required, Validators.minLength(5), Validators.maxLength(5)])
     // ],
-  });
+  }, {validators: [leavingReasonFirstOtherValidator]});
   individualForm = this.fb.group({
     individualID: [null],
     name: [null, Validators.required],

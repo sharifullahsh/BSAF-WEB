@@ -1,4 +1,3 @@
-import { returnOtherValidator } from './../../shared/customValidation';
 import { Individual } from './../../models/Individual';
 import { PostArrivalNeedForView } from './../../models/PostArrivalNeeds';
 import { DeterminationForView, DeterminationLookup } from './../../models/Determination';
@@ -19,7 +18,7 @@ import { IndividualFormDialogComponent } from '../dialog/individual-dialog/indiv
 import { MatDialog } from '@angular/material/dialog';
 import { MatTable } from '@angular/material/table';
 import { IndividualDeleteDialogComponent } from '../dialog/individual-dialog/individual-delete/individual-delete-dialog.component';
-import { chkOtherValidator } from 'src/app/shared/customValidation';
+import { chkOtherValidator, determinationOtherValidator } from 'src/app/shared/customValidation';
 
 @Component({
   selector: 'app-beneficiary-form',
@@ -57,6 +56,10 @@ export class BeneficiaryFormComponent implements OnInit {
     0: this.benefitedIndistrictList1,
     1: this.benefitedIndistrictList2,
   };
+  leavingReasonFirstList: Lookup[] = [];
+  leavingReasonSecondList: Lookup[] = [];
+  leavingReasonThirdList: Lookup[] = [];
+
   benefSubmitted = false;
   indSubmitted = false;
 
@@ -94,6 +97,7 @@ ngOnInit(): void {
         this.initialLooupsData = data.initialLookups;
         // for using in anywhere
         this.beneficiaryService.initialLooupsData = this.initialLooupsData;
+        this.leavingReasonFirstList = this.initialLooupsData.leavingReasons;
         console.log('data is >>>>>>> ' + JSON.stringify(this.initialLooupsData));
         this.postArrivalNeedsList = this.createPostArrivalNeedsList(this.initialLooupsData.postArrivalNeeds);
         this.setPostArrivalNeedsForm();
@@ -449,7 +453,7 @@ setDeterminationsFormArray(determination: DeterminationForView){
       lookupCode: [determination.lookupCode],
       other: [determination.other],
       answerCode: [determination.answerCode]
-    });
+    }, {validators : determinationOtherValidator});
   }
 createDeterminationListForView(lookupList: Lookup[]): DeterminationForView[] {
     const createdList: DeterminationForView[] = [];
@@ -494,16 +498,9 @@ setReturnReasonForm() {
       lookupName: [option.lookupName],
       lookupCode: [option.lookupCode],
       other: [option.other] ,
-    },{validators : chkOtherValidator});
+    }, {validators : chkOtherValidator});
   }
-  private setReturnCheckboxOptionFormArray(option: CheckboxForView){
-    return this.fb.group({
-      isSelected: [option.isSelected],
-      lookupName: [option.lookupName],
-      lookupCode: [option.lookupCode],
-      other: [option.other] ,
-    },{validators : returnOtherValidator});
-  }
+
   private setPostArrivalNeedsFormArray(need: PostArrivalNeedForView){
     return this.fb.group({
       id: [need.id],
@@ -778,6 +775,20 @@ benefitedFromOrgsChange(event: any){
 }
 addOtherOrg(){
   this.benefitedFromOrgs.push(this.newBenefitedFromOrg());
+} 
+leavingReasonFirstChanged(event: any){
+  if (event.value){
+    this.leavingReasonSecondList = this.leavingReasonFirstList.filter(l => l.lookupCode !== event.value);
+    this.leavingReasonThirdList = [];
+    this.benef.leavingReason2.setValue(null);
+    this.benef.leavingReason3.setValue(null);
+  }
+}
+leavingReasonSecondChanged(event: any){
+  if(event.value){
+    this.leavingReasonThirdList = this.leavingReasonSecondList.filter(l => l.lookupCode !== event.value);
+    this.benef.leavingReason3.setValue(null);
+  }
 }
 nextTab(){
 
