@@ -863,7 +863,7 @@
                             </ng-container>
                         </div>
                     </div>
-                    <fieldset>
+                    <fieldset *ngIf="beneficiaryService.showNeedTools()">
                         <legend>Tools</legend>
                         <div formArrayName="needTools" fxLayout="row wrap" fxLayout.lt-sm="column" fxLayoutGap="32px" fxLayoutAlign="flex-start">
                             <ng-container *ngFor="let tool of needTools.controls; let i=index;">

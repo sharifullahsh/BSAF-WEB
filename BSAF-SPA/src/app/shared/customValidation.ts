@@ -125,6 +125,11 @@ export const atLeastOneDeterminationValidator: ValidatorFn = (control: FormGroup
     const numbSelected =  determinations.filter(d => !!d.answerCode).length;
     return numbSelected === 0 ? { atLeastOneDeterminationRequired: true } : null;
   };
+//   export const showToolsValidator: ValidatorFn = (control: FormGroup): ValidationErrors | null => {
+//     const livelihoodEmpNeeds = control.get('livelihoodEmpNeeds').value as CheckboxForView[];
+//     const numbSelected =  determinations.filter(d => !!d.answerCode).length;
+//     return numbSelected === 0 ? { showTools: true } : null;
+//   };
 // export const rentAmountRequiredValidator: ValidatorFn = (control: FormGroup): ValidationErrors | null => {
 //     const whereWillLive = control.get('whereWillLive');
 //     const rentPayForAccom = control.get('rentPayForAccom');

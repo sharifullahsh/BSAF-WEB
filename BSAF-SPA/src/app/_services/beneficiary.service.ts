@@ -9,6 +9,7 @@ import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import { Observable } from 'rxjs';
 import { InitialLookups } from '../models/InitialLookups';
+import { CheckboxForView } from '../models/CheckboxForView';
 
 const httpOptions = {
   headers: new HttpHeaders({'Content-Type': 'application/json'})
@@ -128,6 +129,16 @@ export class BeneficiaryService {
     relationship: [null],
     contactNumber: [null],
   });
+  showNeedTools():boolean{
+    const livelihoodEmpNeeds = this.beneficiaryForm.get('livelihoodEmpNeeds').value  as CheckboxForView[];
+    const provideToolsSelected =  livelihoodEmpNeeds.filter(l => l.lookupCode === 'POT' && l.isSelected === true).length;
+    if (provideToolsSelected){
+      return true;
+    }else{
+      return false;
+    }
+    //return numbSelected === 0 ? { atLeastOneReturnReasonRequired: true } : null;
+  }
   resetBeneficiaryForm(){
     this.beneficiaryForm.reset();
   }
