@@ -572,33 +572,6 @@
                 </mat-tab>
                 <mat-tab label="Assistance Needs 1">
                     <h4 class="pt20">19. Post Arrival Humanitarian Assistance Needs</h4>
-                    <div *ngFor="let pNeed of postArrivalNeeds.controls; let i=index;" class="borderButtom" fxLayout="row wrap" formArrayName="postArrivalNeeds" fxLayoutAlign="space-between" fxLayout.lt-sm="column" fxLayoutGap="32px">
-                        <ng-container [formGroupName]="i">
-                            <div fxFlex="0 1 calc(30% - 32px)" fxLayout="row" fxLayoutAlign="start center">
-                                {{pNeed.controls.lookupName.value}}
-                            </div>
-                            <div fxFlex="0 1 calc(10% - 32px)" fxLayout="row" fxLayoutAlign="start center">
-                                <mat-checkbox formControlName="isProvided">Is Provided</mat-checkbox>
-                            </div>
-                            <div fxFlex="0 1 calc(20% - 32px)">
-                                <mat-form-field>
-                                    <input matInput [matDatepicker]="providedDate" formControlName="providedDate" (click)="providedDate.open()">
-                                    <mat-datepicker-toggle matSuffix [for]="providedDate"></mat-datepicker-toggle>
-                                    <mat-datepicker #providedDate></mat-datepicker>
-                                </mat-form-field>
-                                <mat-error *ngIf="benefSubmitted && pNeed.hasError('postArrivalNeedPDateRequired')">
-                                    Provided date is <strong>required</strong>
-                                </mat-error>
-                            </div>
-                            <div fxFlex="0 1 calc(40% - 32px)">
-                                <mat-form-field class="full-width" floatLabel="never">
-                                    <input matInput placeholder="Comments" formControlName="comment">
-                                </mat-form-field>
-                            </div>
-
-                        </ng-container>
-                    </div>
-
                     <table mat-table [dataSource]="postArrivalNeeds.controls" style="width: 100%;" formArrayName="postArrivalNeeds" class="mat-elevation-z8">
                         <ng-container matColumnDef="NeedAssistance">
                             <th mat-header-cell *matHeaderCellDef> Need/Assistance </th>
