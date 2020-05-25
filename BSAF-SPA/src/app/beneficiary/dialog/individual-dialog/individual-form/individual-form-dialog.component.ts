@@ -27,13 +27,12 @@ export class IndividualFormDialogComponent implements OnInit {
   ngOnInit(): void {
     this.initialLooupsData =  this.beneficiaryService.initialLooupsData;
   }
-  onNoClick(): void {
+  cancelClick(): void {
+    this.beneficiaryService.individualForm.reset();
     this.dialogRef.close();
   }
   addIndividual(){
-    console.log('save indi >>>>>>>>');
     if(this.individualForm.invalid){
-      console.log("Form is invalid");
       return;
     }
     this.dialogRef.close(1);

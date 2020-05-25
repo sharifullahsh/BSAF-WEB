@@ -1,4 +1,7 @@
-import { leavingReasonFirstOtherValidator } from 'src/app/shared/customValidation';
+import { familyMemStayedBehindNoValidator, intendToReturnToHostReasonValidator, professionInHostCountryOtherValidator, hoHEducationLevelValidator, hoHEducationLevelOtherValidator, numChildrenAttendedSchooleValidator, atLeastOnePSNValidator } from './../shared/customValidation';
+import { leavingReasonFirstOtherValidator, leavingReasonSecondOtherValidator,
+  leavingReasonThirdOtherValidator, countryOfExilOtherValidator, beforeReturnProvinceValidator } from 'src/app/shared/customValidation';
+import {topNeed1OtherValidator, topNeed2OtherValidator, topNeed3OtherValidator} from 'src/app/shared/customValidation';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AlertifyService } from './alertify.service';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
@@ -18,7 +21,7 @@ export class BeneficiaryService {
   baseUrl = environment.apiUrl;
   constructor(private fb: FormBuilder, private http: HttpClient) { }
   beneficiaryForm: FormGroup = this.fb.group({
-    cardID: null,
+    cardID: [{value: null, disabled: true}],
     screeningDate: [new Date(), Validators.required],
     provinceBCP: [null, Validators.required],
     borderPoint: [null, Validators.required],
@@ -74,7 +77,7 @@ export class BeneficiaryService {
     numHHHavePassport: [0],
     numHHHaveDocOther: [0],
     doHaveSecureLivelihood: [null, Validators.required],
-    didChildrenGoToSchoole: [null],
+    didChildrenGoToSchoole: [null, Validators.required],
     numChildrenAttendedSchoole: [null],
     isSubmitted: [null],
     isCardIssued: [null],
@@ -99,7 +102,13 @@ export class BeneficiaryService {
     // postalCode: [null, Validators.compose([
     //   Validators.required, Validators.minLength(5), Validators.maxLength(5)])
     // ],
-  }, {validators: [leavingReasonFirstOtherValidator]});
+  }, {validators: [leavingReasonFirstOtherValidator, leavingReasonSecondOtherValidator,
+     leavingReasonThirdOtherValidator, countryOfExilOtherValidator,
+     beforeReturnProvinceValidator, familyMemStayedBehindNoValidator,
+     topNeed1OtherValidator, topNeed2OtherValidator, topNeed3OtherValidator,
+     intendToReturnToHostReasonValidator, professionInHostCountryOtherValidator,
+     hoHEducationLevelValidator, hoHEducationLevelOtherValidator,
+     numChildrenAttendedSchooleValidator, atLeastOnePSNValidator]});
   individualForm = this.fb.group({
     individualID: [null],
     name: [null, Validators.required],
@@ -118,6 +127,12 @@ export class BeneficiaryService {
     relationship: [null],
     contactNumber: [null],
   });
+  resetBeneficiaryForm(){
+    this.beneficiaryForm.reset();
+  }
+  resetIndividualForm(){
+    this.individualForm.reset();
+  }
   getSearchedBeneficiary(searchCritria: any): Observable<any> {
     return this.http.post(this.baseUrl + 'beneficiary/listPartial', searchCritria, httpOptions);
   }

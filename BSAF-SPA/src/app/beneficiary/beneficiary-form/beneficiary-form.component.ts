@@ -60,6 +60,10 @@ export class BeneficiaryFormComponent implements OnInit {
   leavingReasonSecondList: Lookup[] = [];
   leavingReasonThirdList: Lookup[] = [];
 
+  topNeed1List: Lookup[] = [];
+  topNeed2List: Lookup[] = [];
+  topNeed3List: Lookup[] = [];
+
   benefSubmitted = false;
   indSubmitted = false;
 
@@ -69,7 +73,6 @@ constructor(private fb: FormBuilder, private lookupService: LookupService,
             private _sanitizer: DomSanitizer,
             public dialog: MatDialog) {}
 beneficiaryForm: FormGroup = this.beneficiaryService.beneficiaryForm;
-individualForm: FormGroup = this.beneficiaryService.individualForm;
 newIndividual(): FormGroup{
   return this.fb.group({
     individualID: [null],
@@ -93,35 +96,39 @@ newIndividual(): FormGroup{
 }
 
 ngOnInit(): void {
-      this.route.data.subscribe((data: {initialLookups: InitialLookups}) => {
-        this.initialLooupsData = data.initialLookups;
-        // for using in anywhere
-        this.beneficiaryService.initialLooupsData = this.initialLooupsData;
-        this.leavingReasonFirstList = this.initialLooupsData.leavingReasons;
-        console.log('data is >>>>>>> ' + JSON.stringify(this.initialLooupsData));
-        this.postArrivalNeedsList = this.createPostArrivalNeedsList(this.initialLooupsData.postArrivalNeeds);
-        this.setPostArrivalNeedsForm();
-        this.psnList = this.createCheckboxListForView(this.initialLooupsData.psns);
-        this.setPSNForm();
-        this.returnReasonList = this.createCheckboxListForView(this.initialLooupsData.returnReasons);
-        this.setReturnReasonForm();
-        this.determinationsList = this.createDeterminationListForView(this.initialLooupsData.determinations);
-        this.setDeterminationForm();
-        this.moneySourcesList = this.createCheckboxListForView(this.initialLooupsData.moneySources);
-        this.setMoneySourceForm();
-        this.broughtItemsList = this.createCheckboxListForView(this.initialLooupsData.broughtItems);
-        this.setBroughtItemsForm();
-        this.transportationsList = this.createCheckboxListForView(this.initialLooupsData.transportations);
-        this.setTransportationForm();
-        this.livelihoodEmpNeedsList = this.createCheckboxListForView(this.initialLooupsData.obtainLivelihoodHelps);
-        this.setLivelihoodEmpNeedsForm();
-        this.needToolsList = this.createCheckboxListForView(this.initialLooupsData.tools);
-        this.setNeedToolsForm();
-        this.mainConcernsList = this.createCheckboxListForView(this.initialLooupsData.mainConcerns);
-        this.setMainConcernsForm();
-        this.hostCountrySchoolsList = this.createCheckboxListForView(this.initialLooupsData.hostCountrySchools);
-        this.setHostCountrySchoolsForm();
-      });
+  this.beneficiaryService.resetBeneficiaryForm();
+  this.beneficiaryService.resetIndividualForm();
+  this.benefitedFromOrgs.clear();
+  this.route.data.subscribe((data: {initialLookups: InitialLookups}) => {
+      this.initialLooupsData = data.initialLookups;
+      // for using in anywhere
+      this.beneficiaryService.initialLooupsData = this.initialLooupsData;
+      this.leavingReasonFirstList = this.initialLooupsData.leavingReasons;
+      this.topNeed1List = this.initialLooupsData.topNeeds;
+      console.log('data is >>>>>>> ' + JSON.stringify(this.initialLooupsData));
+      this.postArrivalNeedsList = this.createPostArrivalNeedsList(this.initialLooupsData.postArrivalNeeds);
+      this.setPostArrivalNeedsForm();
+      this.psnList = this.createCheckboxListForView(this.initialLooupsData.psns);
+      this.setPSNForm();
+      this.returnReasonList = this.createCheckboxListForView(this.initialLooupsData.returnReasons);
+      this.setReturnReasonForm();
+      this.determinationsList = this.createDeterminationListForView(this.initialLooupsData.determinations);
+      this.setDeterminationForm();
+      this.moneySourcesList = this.createCheckboxListForView(this.initialLooupsData.moneySources);
+      this.setMoneySourceForm();
+      this.broughtItemsList = this.createCheckboxListForView(this.initialLooupsData.broughtItems);
+      this.setBroughtItemsForm();
+      this.transportationsList = this.createCheckboxListForView(this.initialLooupsData.transportations);
+      this.setTransportationForm();
+      this.livelihoodEmpNeedsList = this.createCheckboxListForView(this.initialLooupsData.obtainLivelihoodHelps);
+      this.setLivelihoodEmpNeedsForm();
+      this.needToolsList = this.createCheckboxListForView(this.initialLooupsData.tools);
+      this.setNeedToolsForm();
+      this.mainConcernsList = this.createCheckboxListForView(this.initialLooupsData.mainConcerns);
+      this.setMainConcernsForm();
+      this.hostCountrySchoolsList = this.createCheckboxListForView(this.initialLooupsData.hostCountrySchools);
+      this.setHostCountrySchoolsForm();
+    });
     // this.heroes$ = this.route.paramMap.pipe(
     //   switchMap(params => {
     //     // (+) before `params.get()` turns the string into a number
@@ -135,9 +142,9 @@ ngOnInit(): void {
     //   console.log("data is >>>>>>> "+ JSON.stringify(this.initialLooupsData));
     // });
 
-      const id = +this.route.snapshot.paramMap.get('id');
+  const id = +this.route.snapshot.paramMap.get('id');
       // console.log('id is >>>>>>>>>>>>>>><<<<<<<<<<<<<<< ' + id);
-      if (id){
+  if (id){
         this.beneficiaryService.getBeneficiary(id).subscribe((response: Beneficiary) => {
           console.log('beneficiary is >>>>>>>>>>>>>> ' + JSON.stringify(response));
           this.beneficiary = response;
@@ -207,9 +214,23 @@ ngOnInit(): void {
             numChildrenAttendedSchoole: response.numChildrenAttendedSchoole,
             isSubmitted: response.isSubmitted,
             isCardIssued: response.isCardIssued,
-            photo: response.photo
+            photo: response.photo,
+            benefitedFromOrgs: response.benefitedFromOrgs
           }, {onlySelf: true});
-
+          this.leavingReasonSecondList = this.initialLooupsData.leavingReasons.filter(l =>
+            l.lookupCode !== this.benef.leavingReason1.value);
+          this.leavingReasonThirdList = this.leavingReasonSecondList.filter(l =>
+              l.lookupCode !== this.benef.leavingReason2.value);
+          let topNeed2Filter = '';
+          if (this.benef.topNeed1 && this.benef.topNeed1?.value){
+            topNeed2Filter = this.benef.topNeed1?.value !== 'TNOther' ? this.benef.topNeed1?.value : '';
+            this.topNeed2List = this.initialLooupsData.topNeeds.filter(l => l.lookupCode !== topNeed2Filter);
+          }
+          if (this.benef.topNeed2 && this.benef.topNeed2?.value){
+            const topNeed3Filter = this.benef.topNeed2?.value !== 'TNOther' ? this.benef.topNeed2?.value : '';
+            this.topNeed3List = this.initialLooupsData.topNeeds.filter(l =>
+              l.lookupCode !== topNeed2Filter && l.lookupCode !== topNeed3Filter);
+          }
           for (const member of this.beneficiary.individuals) {
             const indForm: FormGroup =  this.newIndividual();
             indForm.patchValue({
@@ -254,7 +275,6 @@ ngOnInit(): void {
           this.loadHostCountryDistrict(response.beforReturnProvince);
 
           if (this.beneficiary.haveFamilyBenefited && this.beneficiary.benefitedFromOrgs){
-            console.log('benefica y benefited >>>>>>>>');
             if (this.beneficiary.benefitedFromOrgs[0] && this.beneficiary.benefitedFromOrgs[0].provinceCode){
                  this.getDistrictBenefitedIn(this.beneficiary.benefitedFromOrgs[0].provinceCode, 0);
             }
@@ -401,48 +421,56 @@ ngOnInit(): void {
   }
 setHostCountrySchoolsForm() {
     const hostCountrySchoolsArray = this.beneficiaryForm.get('hostCountrySchools') as FormArray;
+    hostCountrySchoolsArray.clear();
     this.hostCountrySchoolsList.forEach((school) => {
       hostCountrySchoolsArray.push(this.setCheckboxOptionFormArray(school));
     });
   }
 setMainConcernsForm() {
     const mainConcernsArray = this.beneficiaryForm.get('mainConcerns') as FormArray;
+    mainConcernsArray.clear();
     this.mainConcernsList.forEach((concern) => {
       mainConcernsArray.push(this.setCheckboxOptionFormArray(concern));
     });
   }
 setNeedToolsForm() {
     const needToolsArray = this.beneficiaryForm.get('needTools') as FormArray;
+    needToolsArray.clear();
     this.needToolsList.forEach((tool) => {
       needToolsArray.push(this.setCheckboxOptionFormArray(tool));
     });
   }
 setLivelihoodEmpNeedsForm() {
     const livelihoodEmpNeedsArray = this.beneficiaryForm.get('livelihoodEmpNeeds') as FormArray;
+    livelihoodEmpNeedsArray.clear();
     this.livelihoodEmpNeedsList.forEach((need) => {
       livelihoodEmpNeedsArray.push(this.setCheckboxOptionFormArray(need));
     });
   }
 setTransportationForm() {
     const transportationArray = this.beneficiaryForm.get('transportations') as FormArray;
+    transportationArray.clear();
     this.transportationsList.forEach((item) => {
       transportationArray.push(this.setCheckboxOptionFormArray(item));
     });
   }
 setBroughtItemsForm() {
     const broughtItemseArray = this.beneficiaryForm.get('broughtItems') as FormArray;
+    broughtItemseArray.clear();
     this.broughtItemsList.forEach((item) => {
       broughtItemseArray.push(this.setCheckboxOptionFormArray(item));
     });
   }
 setMoneySourceForm() {
     const moneySourceArray = this.beneficiaryForm.get('moneySources') as FormArray;
+    moneySourceArray.clear()
     this.moneySourcesList.forEach((reason) => {
       moneySourceArray.push(this.setCheckboxOptionFormArray(reason));
     });
   }
 setDeterminationForm() {
     const determinationsArray = this.beneficiaryForm.get('determinations') as FormArray;
+    determinationsArray.clear();
     this.determinationsList.forEach((determination) => {
       determinationsArray.push(this.setDeterminationsFormArray(determination));
     });
@@ -476,18 +504,21 @@ createDeterminationListForView(lookupList: Lookup[]): DeterminationForView[] {
 
 setPostArrivalNeedsForm() {
     const needsArray = this.beneficiaryForm.get('postArrivalNeeds') as FormArray;
+    needsArray.clear();
     this.postArrivalNeedsList.forEach((need) => {
       needsArray.push(this.setPostArrivalNeedsFormArray(need));
     });
   }
 setPSNForm() {
     const psnsArray = this.beneficiaryForm.get('psns') as FormArray;
+    psnsArray.clear();
     this.psnList.forEach((psn) => {
     psnsArray.push(this.setCheckboxOptionFormArray(psn));
     });
   }
 setReturnReasonForm() {
     const returnReasonArray = this.beneficiaryForm.get('returnReasons') as FormArray;
+    returnReasonArray.clear();
     this.returnReasonList.forEach((reason) => {
       returnReasonArray.push(this.setCheckboxOptionFormArray(reason));
     });
@@ -527,7 +558,6 @@ addBenefitedFromOrg(){
     this.benefitedFromOrgs.push(this.newBenefitedFromOrg());
   }
 get benef() { return this.beneficiaryForm.controls; }
-get indf() { return this.individualForm.controls; }
 
 get psns(): FormArray {
     return this.beneficiaryForm.get('psns') as FormArray;
@@ -713,7 +743,6 @@ returnProvinceChanged(event: any){
 // }
 
 editIndividual(i: number){
- window.alert(i);
  this.beneficiaryService.individualForm.patchValue({
    ...this.individuals[i]
  },{onlySelf:true});
@@ -724,7 +753,7 @@ editIndividual(i: number){
 
  dialogRef.afterClosed().subscribe(result => {
   if (result === 1){
-    const indFormValue =  this.individualForm.value;
+    const indFormValue =  this.beneficiaryService.individualForm.value;
     const newIndividual: Individual = {
     ...indFormValue
   };
@@ -745,7 +774,7 @@ editIndividual(i: number){
   newIndividual.relationship = relationship;
 }
     this.individuals[i] = newIndividual;
-    this.individualForm.reset();
+    this.beneficiaryService.resetIndividualForm();
     this.individualTable.renderRows();
   }
 });
@@ -759,7 +788,6 @@ deleteIndividual(i: number){
 
   dialogRef.afterClosed().subscribe(result => {
     if (result){
-      console.log("result is >>>>>>>>>>>>");
       this.individuals.splice(i, 1);
       this.individualTable.renderRows();
     }
@@ -790,6 +818,22 @@ leavingReasonSecondChanged(event: any){
     this.benef.leavingReason3.setValue(null);
   }
 }
+topNeedFirstChanged(event: any){
+  if (event.value){
+    const topNeedSecondFilter = event.value !== 'TNOther' ? event.value : '';
+    this.topNeed2List = this.topNeed1List.filter(l => l.lookupCode !== topNeedSecondFilter);
+    this.topNeed3List = [];
+    this.benef.topNeed2.setValue(null);
+    this.benef.topNeed3.setValue(null);
+  }
+}
+topNeedSecondChanged(event: any){
+  if (event.value){
+    const topNeedThirdFilter = event.value !== 'TNOther' ? event.value : '';
+    this.topNeed3List = this.topNeed2List.filter(l => l.lookupCode !== topNeedThirdFilter);
+    this.benef.topNeed3.setValue(null);
+  }
+}
 nextTab(){
 
 }
@@ -801,7 +845,7 @@ addIndividual(){
 
   dialogRef.afterClosed().subscribe(result => {
     if (result === 1){
-      const indFormValue =  this.individualForm.value;
+      const indFormValue =  this.beneficiaryService.individualForm.value;
       const newIndividual: Individual = {
       ...indFormValue
     };
@@ -822,7 +866,7 @@ addIndividual(){
     newIndividual.relationship = relationship;
   }
       this.individuals.push(newIndividual);
-      this.individualForm.reset();
+      this.beneficiaryService.resetIndividualForm();
       this.individualTable.renderRows();
     }
   });
