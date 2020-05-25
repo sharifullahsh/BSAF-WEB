@@ -1,11 +1,13 @@
 import { CheckboxForView } from './../models/CheckboxForView';
 import { ValidatorFn, FormGroup, ValidationErrors, FormArray } from '@angular/forms';
+import { DeterminationForView } from '../models/Determination';
 
 export const chkOtherValidator: ValidatorFn = (control: FormGroup): ValidationErrors | null => {
     const lookupName = control.get('lookupName');
     const isSelected = control.get('isSelected');
     const other = control.get('other');
-    return lookupName && lookupName.value === 'Other' && isSelected.value === true && !other.value ? { otherRequired: true } : null;
+    return lookupName && lookupName.value === 'Other' && isSelected.value === true &&
+     !other.value ? { otherRequired: true } : null;
   };
 export const determinationOtherValidator: ValidatorFn = (control: FormGroup): ValidationErrors | null => {
     const lookupName = control.get('lookupName');
@@ -13,6 +15,12 @@ export const determinationOtherValidator: ValidatorFn = (control: FormGroup): Va
     const other = control.get('other');
     return lookupName && lookupName.value === 'Other' && answerCode && answerCode.value
     && !other.value ? { determinationOtherRequired: true } : null;
+  };
+export const postArrivalNeedPDateValidator: ValidatorFn = (control: FormGroup): ValidationErrors | null => {
+    const isProvided = control.get('isProvided');
+    const providedDate = control.get('providedDate');
+    return isProvided && isProvided.value === true &&
+    !providedDate.value ? { postArrivalNeedPDateRequired: true } : null;
   };
 export const leavingReasonFirstOtherValidator: ValidatorFn = (control: FormGroup): ValidationErrors | null => {
     const firstReason = control.get('leavingReason1');
@@ -103,9 +111,19 @@ export const numChildrenAttendedSchooleValidator: ValidatorFn = (control: FormGr
      !numChildrenAttendedSchoole.value ? { numChildrenAttendedSchooleRequired: true } : null;
   };
 export const atLeastOnePSNValidator: ValidatorFn = (control: FormGroup): ValidationErrors | null => {
-    const psnArray = control.get('psns').value as CheckboxForView[];
-    const numbSelected =  psnArray.filter(psn => psn.isSelected === true).length;
+    const psns = control.get('psns').value as CheckboxForView[];
+    const numbSelected =  psns.filter(psn => psn.isSelected === true).length;
     return numbSelected === 0 ? { atLeastOnePSNRequired: true } : null;
+  };
+export const atLeastOneReturnReasonValidator: ValidatorFn = (control: FormGroup): ValidationErrors | null => {
+    const returnReasons = control.get('returnReasons').value as CheckboxForView[];
+    const numbSelected =  returnReasons.filter(r => r.isSelected === true).length;
+    return numbSelected === 0 ? { atLeastOneReturnReasonRequired: true } : null;
+  };
+export const atLeastOneDeterminationValidator: ValidatorFn = (control: FormGroup): ValidationErrors | null => {
+    const determinations = control.get('determinations').value as DeterminationForView[];
+    const numbSelected =  determinations.filter(d => !!d.answerCode).length;
+    return numbSelected === 0 ? { atLeastOneDeterminationRequired: true } : null;
   };
 // export const rentAmountRequiredValidator: ValidatorFn = (control: FormGroup): ValidationErrors | null => {
 //     const whereWillLive = control.get('whereWillLive');

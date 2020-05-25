@@ -1,4 +1,4 @@
-import { familyMemStayedBehindNoValidator, intendToReturnToHostReasonValidator, professionInHostCountryOtherValidator, hoHEducationLevelValidator, hoHEducationLevelOtherValidator, numChildrenAttendedSchooleValidator, atLeastOnePSNValidator } from './../shared/customValidation';
+import { familyMemStayedBehindNoValidator, intendToReturnToHostReasonValidator, professionInHostCountryOtherValidator, hoHEducationLevelValidator, hoHEducationLevelOtherValidator, numChildrenAttendedSchooleValidator, atLeastOnePSNValidator, atLeastOneReturnReasonValidator, atLeastOneDeterminationValidator } from './../shared/customValidation';
 import { leavingReasonFirstOtherValidator, leavingReasonSecondOtherValidator,
   leavingReasonThirdOtherValidator, countryOfExilOtherValidator, beforeReturnProvinceValidator } from 'src/app/shared/customValidation';
 import {topNeed1OtherValidator, topNeed2OtherValidator, topNeed3OtherValidator} from 'src/app/shared/customValidation';
@@ -108,7 +108,8 @@ export class BeneficiaryService {
      topNeed1OtherValidator, topNeed2OtherValidator, topNeed3OtherValidator,
      intendToReturnToHostReasonValidator, professionInHostCountryOtherValidator,
      hoHEducationLevelValidator, hoHEducationLevelOtherValidator,
-     numChildrenAttendedSchooleValidator, atLeastOnePSNValidator]});
+     numChildrenAttendedSchooleValidator, atLeastOnePSNValidator,
+     atLeastOneReturnReasonValidator,atLeastOneDeterminationValidator]});
   individualForm = this.fb.group({
     individualID: [null],
     name: [null, Validators.required],

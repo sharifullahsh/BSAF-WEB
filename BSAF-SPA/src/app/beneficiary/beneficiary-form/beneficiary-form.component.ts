@@ -18,7 +18,7 @@ import { IndividualFormDialogComponent } from '../dialog/individual-dialog/indiv
 import { MatDialog } from '@angular/material/dialog';
 import { MatTable } from '@angular/material/table';
 import { IndividualDeleteDialogComponent } from '../dialog/individual-dialog/individual-delete/individual-delete-dialog.component';
-import { chkOtherValidator, determinationOtherValidator } from 'src/app/shared/customValidation';
+import { chkOtherValidator, determinationOtherValidator, postArrivalNeedPDateValidator } from 'src/app/shared/customValidation';
 
 @Component({
   selector: 'app-beneficiary-form',
@@ -540,7 +540,7 @@ setReturnReasonForm() {
       isProvided: [need.isProvided],
       providedDate: [need.providedDate],
       comment: [need.comment],
-    });
+    }, { validators : postArrivalNeedPDateValidator});
   }
 newBenefitedFromOrg(): FormGroup{
     return this.fb.group({

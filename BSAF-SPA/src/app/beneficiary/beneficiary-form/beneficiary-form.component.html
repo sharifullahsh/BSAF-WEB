@@ -253,7 +253,7 @@
                         </ng-container>
                     </div>
                     <mat-error *ngIf="benefSubmitted &&  beneficiaryForm.errors?.atLeastOnePSNRequired">
-                        At least one psn option should be checked
+                        Please select at least one PSN option
                     </mat-error>
 
                     <h4 class="mt20">6. What were the three main reasons for leaving Afghanistan?</h4>
@@ -345,6 +345,9 @@
                             </div>
                         </ng-container>
                     </div>
+                    <mat-error *ngIf="benefSubmitted &&  beneficiaryForm.errors?.atLeastOneReturnReasonRequired">
+                        Please select at least one return reason
+                    </mat-error>
                     <h4 class="mt20">8. Rank which of these options is the most important for you to determine your destination in Afghanistan</h4>
                     <div formArrayName="determinations" *ngFor="let determination of determinations.controls;let i=index; last as last;" [ngClass]="{'borderButtom': !last}" class="pt10" fxLayout="row wrap" fxLayoutAlign="space-between start">
                         <ng-container [formGroupName]="i">
@@ -367,6 +370,9 @@
                     </div>
                     <mat-divider style="background-color: #3f51b5; height: 1px;">
                     </mat-divider>
+                    <mat-error *ngIf="benefSubmitted &&  beneficiaryForm.errors?.atLeastOneDeterminationRequired">
+                        Please select at least one option to determine your destination
+                    </mat-error>
                     <div class="mt20" fxLayout="row wrap" fxLayoutAlign="space-between start" fxLayoutGap="20px">
                         <h4 fxFelx>9. Do you own housing (house/apartment)?</h4>
                         <mat-radio-group formControlName="ownHouse" fxFlex fxLayoutGap="20px" fxLayout.lt-sm="column" aria-label="Select an option">
@@ -566,10 +572,37 @@
                 </mat-tab>
                 <mat-tab label="Assistance Needs 1">
                     <h4 class="pt20">19. Post Arrival Humanitarian Assistance Needs</h4>
-                    <table mat-table style="width: 100%;" formArrayName="postArrivalNeeds" [dataSource]="postArrivalNeedsList" class="mat-elevation-z8">
+                    <div *ngFor="let pNeed of postArrivalNeeds.controls; let i=index;" class="borderButtom" fxLayout="row wrap" formArrayName="postArrivalNeeds" fxLayoutAlign="space-between" fxLayout.lt-sm="column" fxLayoutGap="32px">
+                        <ng-container [formGroupName]="i">
+                            <div fxFlex="0 1 calc(30% - 32px)" fxLayout="row" fxLayoutAlign="start center">
+                                {{pNeed.controls.lookupName.value}}
+                            </div>
+                            <div fxFlex="0 1 calc(10% - 32px)" fxLayout="row" fxLayoutAlign="start center">
+                                <mat-checkbox formControlName="isProvided">Is Provided</mat-checkbox>
+                            </div>
+                            <div fxFlex="0 1 calc(20% - 32px)">
+                                <mat-form-field>
+                                    <input matInput [matDatepicker]="providedDate" formControlName="providedDate" (click)="providedDate.open()">
+                                    <mat-datepicker-toggle matSuffix [for]="providedDate"></mat-datepicker-toggle>
+                                    <mat-datepicker #providedDate></mat-datepicker>
+                                </mat-form-field>
+                                <mat-error *ngIf="benefSubmitted && pNeed.hasError('postArrivalNeedPDateRequired')">
+                                    Provided date is <strong>required</strong>
+                                </mat-error>
+                            </div>
+                            <div fxFlex="0 1 calc(40% - 32px)">
+                                <mat-form-field class="full-width" floatLabel="never">
+                                    <input matInput placeholder="Comments" formControlName="comment">
+                                </mat-form-field>
+                            </div>
+
+                        </ng-container>
+                    </div>
+
+                    <table mat-table [dataSource]="postArrivalNeeds.controls" style="width: 100%;" formArrayName="postArrivalNeeds" class="mat-elevation-z8">
                         <ng-container matColumnDef="NeedAssistance">
                             <th mat-header-cell *matHeaderCellDef> Need/Assistance </th>
-                            <td mat-cell *matCellDef="let row; let i = index;" [formGroupName]="i"> {{row.lookupName}} </td>
+                            <td mat-cell *matCellDef="let row; let i = index;" [formGroupName]="i"> {{row.controls.lookupName.value}} </td>
                         </ng-container>
                         <ng-container matColumnDef="IsProvided">
                             <th mat-header-cell *matHeaderCellDef> Is Provided </th>
@@ -581,11 +614,13 @@
                             <th mat-header-cell *matHeaderCellDef> Date Provided </th>
                             <td mat-cell *matCellDef="let row; let i=index;" [formGroupName]="i">
                                 <mat-form-field>
-                                    <!-- <mat-label>Choose a date</mat-label> -->
                                     <input matInput [matDatepicker]="providedDate" formControlName="providedDate" (click)="providedDate.open()">
                                     <mat-datepicker-toggle matSuffix [for]="providedDate"></mat-datepicker-toggle>
                                     <mat-datepicker #providedDate></mat-datepicker>
                                 </mat-form-field>
+                                <mat-error *ngIf="benefSubmitted && row.hasError('postArrivalNeedPDateRequired')">
+                                    Provided date is <strong>required</strong>
+                                </mat-error>
                             </td>
                         </ng-container>
                         <ng-container matColumnDef="Comments">
