@@ -622,7 +622,7 @@
                     <div fxLayout="column" *ngIf="beneficiaryForm.get('haveFamilyBenefited').value">
                         <div fxLayout="row" fxLayoutAlign="end" fxLayoutAlign="space-between start">
                             <p>If yes, when and where</p>
-                            <button *ngIf="benefitedFromOrgs.controls.length < 2" mat-raised-button (click)="addOtherOrg()" color="primary" title="Add other organization" aria-label="Add other organization">
+                            <button *ngIf="benefitedFromOrgs.controls.length < 2" mat-raised-button (click)="addBenefitedFromOrg()" color="primary" title="Add other organization" aria-label="Add other organization">
                                 <mat-icon>add</mat-icon>
                                 Add Organization
                             </button>
@@ -679,8 +679,8 @@
                                         </div>
                                         <div fxFlex="15%">
                                             <mat-form-field class="full-width">
-                                                <mat-select formControlName="orgCode" placeholder="Organization">
-                                                    <mat-option *ngFor="let provicne of initialLooupsData?.organizations" [value]="provicne.lookupCode">
+                                                <mat-select formControlName="orgCode" (selectionChange)="filterBenefitedFromOgr2List()" placeholder="Organization">
+                                                    <mat-option *ngFor="let provicne of organizationList[i]" [value]="provicne.lookupCode">
                                                         {{ provicne.lookupName }}
                                                     </mat-option>
                                                 </mat-select>
@@ -935,6 +935,9 @@
                             </ng-container>
                         </div>
                     </fieldset>
+                    <mat-error *ngIf="benefSubmitted && beneficiaryForm.errors?.mainConcernRequired">
+                        Main concerns is <strong>required</strong>
+                    </mat-error>
                     <h4 class="mt20">29. How many members of Household have Afghan documentation?</h4>
                     <table style="width: 100%;">
                         <thead>

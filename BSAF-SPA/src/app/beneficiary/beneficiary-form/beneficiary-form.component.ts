@@ -1,3 +1,4 @@
+import { BenefitedFromOrg } from './../../models/BenefitedFromOrg';
 import { Individual } from './../../models/Individual';
 import { PostArrivalNeedForView } from './../../models/PostArrivalNeeds';
 import { DeterminationForView, DeterminationLookup } from './../../models/Determination';
@@ -19,6 +20,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatTable } from '@angular/material/table';
 import { IndividualDeleteDialogComponent } from '../dialog/individual-dialog/individual-delete/individual-delete-dialog.component';
 import { chkOtherValidator, determinationOtherValidator, postArrivalNeedPDateValidator } from 'src/app/shared/customValidation';
+import { CreateBenefFormListsService } from 'src/app/_services/create-benef-form-lists.service';
 
 @Component({
   selector: 'app-beneficiary-form',
@@ -56,6 +58,12 @@ export class BeneficiaryFormComponent implements OnInit {
     0: this.benefitedIndistrictList1,
     1: this.benefitedIndistrictList2,
   };
+  orgList1: Lookup[] = [];
+  orgList2: Lookup[] = [];
+  organizationList = {
+    0: this.orgList1,
+    1: this.orgList2,
+  };
   leavingReasonFirstList: Lookup[] = [];
   leavingReasonSecondList: Lookup[] = [];
   leavingReasonThirdList: Lookup[] = [];
@@ -71,7 +79,8 @@ constructor(private fb: FormBuilder, private lookupService: LookupService,
             private route: ActivatedRoute, private beneficiaryService: BeneficiaryService,
             private alertifyService: AlertifyService,
             private _sanitizer: DomSanitizer,
-            public dialog: MatDialog) {}
+            public dialog: MatDialog,
+            public createListService: CreateBenefFormListsService) {}
 beneficiaryForm: FormGroup = this.beneficiaryService.beneficiaryForm;
 newIndividual(): FormGroup{
   return this.fb.group({
@@ -105,28 +114,29 @@ ngOnInit(): void {
       this.beneficiaryService.initialLooupsData = this.initialLooupsData;
       this.leavingReasonFirstList = this.initialLooupsData.leavingReasons;
       this.topNeed1List = this.initialLooupsData.topNeeds;
+      this.organizationList[0] = this.initialLooupsData.organizations;
       console.log('data is >>>>>>> ' + JSON.stringify(this.initialLooupsData));
-      this.postArrivalNeedsList = this.createPostArrivalNeedsList(this.initialLooupsData.postArrivalNeeds);
+      this.postArrivalNeedsList = this.createListService.createPostArrivalNeedsList(this.initialLooupsData.postArrivalNeeds);
       this.setPostArrivalNeedsForm();
-      this.psnList = this.createCheckboxListForView(this.initialLooupsData.psns);
+      this.psnList = this.createListService.createCheckboxListForView(this.initialLooupsData.psns);
       this.setPSNForm();
-      this.returnReasonList = this.createCheckboxListForView(this.initialLooupsData.returnReasons);
+      this.returnReasonList = this.createListService.createCheckboxListForView(this.initialLooupsData.returnReasons);
       this.setReturnReasonForm();
-      this.determinationsList = this.createDeterminationListForView(this.initialLooupsData.determinations);
+      this.determinationsList = this.createListService.createDeterminationListForView(this.initialLooupsData.determinations);
       this.setDeterminationForm();
-      this.moneySourcesList = this.createCheckboxListForView(this.initialLooupsData.moneySources);
+      this.moneySourcesList = this.createListService.createCheckboxListForView(this.initialLooupsData.moneySources);
       this.setMoneySourceForm();
-      this.broughtItemsList = this.createCheckboxListForView(this.initialLooupsData.broughtItems);
+      this.broughtItemsList = this.createListService.createCheckboxListForView(this.initialLooupsData.broughtItems);
       this.setBroughtItemsForm();
-      this.transportationsList = this.createCheckboxListForView(this.initialLooupsData.transportations);
+      this.transportationsList = this.createListService.createCheckboxListForView(this.initialLooupsData.transportations);
       this.setTransportationForm();
-      this.livelihoodEmpNeedsList = this.createCheckboxListForView(this.initialLooupsData.obtainLivelihoodHelps);
+      this.livelihoodEmpNeedsList = this.createListService.createCheckboxListForView(this.initialLooupsData.obtainLivelihoodHelps);
       this.setLivelihoodEmpNeedsForm();
-      this.needToolsList = this.createCheckboxListForView(this.initialLooupsData.tools);
+      this.needToolsList = this.createListService.createCheckboxListForView(this.initialLooupsData.tools);
       this.setNeedToolsForm();
-      this.mainConcernsList = this.createCheckboxListForView(this.initialLooupsData.mainConcerns);
+      this.mainConcernsList = this.createListService.createCheckboxListForView(this.initialLooupsData.mainConcerns);
       this.setMainConcernsForm();
-      this.hostCountrySchoolsList = this.createCheckboxListForView(this.initialLooupsData.hostCountrySchools);
+      this.hostCountrySchoolsList = this.createListService.createCheckboxListForView(this.initialLooupsData.hostCountrySchools);
       this.setHostCountrySchoolsForm();
     });
     // this.heroes$ = this.route.paramMap.pipe(
@@ -363,6 +373,7 @@ ngOnInit(): void {
             }
           });
          });
+          this.filterBenefitedFromOgr2List();
           this.beneficiary.livelihoodEmpNeeds.forEach(beneficiaryNeed => {
           this.livelihoodEmpNeeds.controls.forEach(allNeed => {
             if (beneficiaryNeed.lookupCode === allNeed.get('lookupCode').value){
@@ -483,24 +494,7 @@ setDeterminationsFormArray(determination: DeterminationForView){
       answerCode: [determination.answerCode]
     }, {validators : determinationOtherValidator});
   }
-createDeterminationListForView(lookupList: Lookup[]): DeterminationForView[] {
-    const createdList: DeterminationForView[] = [];
-    for (const lookup of lookupList){
-    let option: DeterminationForView;
-    option = {
-      lookupCode: lookup.lookupCode,
-      lookupName: lookup.lookupName,
-      other: null,
-      answerCode: null
-    };
-    if (option.lookupName !== 'Other'){
-     createdList.unshift(option);
-   }else{
-    createdList.push(option);
-   }
-  }
-    return createdList;
-  }
+
 
 setPostArrivalNeedsForm() {
     const needsArray = this.beneficiaryForm.get('postArrivalNeeds') as FormArray;
@@ -556,7 +550,14 @@ newBenefitedFromOrg(): FormGroup{
   }
 addBenefitedFromOrg(){
     this.benefitedFromOrgs.push(this.newBenefitedFromOrg());
+    this.filterBenefitedFromOgr2List();
   }
+filterBenefitedFromOgr2List(){
+    const orgs = (this.benef.benefitedFromOrgs as FormArray).value as BenefitedFromOrg[];
+    if (orgs.length && orgs[0] && orgs[0].orgCode){
+      this.organizationList[1] = this.initialLooupsData.organizations.filter(o => o.lookupCode !== orgs[0].orgCode);
+    }
+}
 get benef() { return this.beneficiaryForm.controls; }
 
 get psns(): FormArray {
@@ -617,42 +618,6 @@ getDistrictBenefitedIn(provinceCode: string, index: number){
     }
   }
 
-createCheckboxListForView(lookupList: Lookup[]){
-  const createdList: CheckboxForView[] = [];
-  for (const item of lookupList){
-    let option: CheckboxForView;
-    option = {
-      isSelected: false,
-      lookupCode: item.lookupCode,
-      lookupName: item.lookupName,
-      other: null,
-    };
-    if (option.lookupName !== 'Other'){
-     createdList.unshift(option);
-   }else{
-    createdList.push(option);
-   }
-  }
-  return createdList;
-}
-
-createPostArrivalNeedsList(lookupList: Lookup[]){
-  const createdList: PostArrivalNeedForView[] = [];
-  for (const item of lookupList){
-    let option: PostArrivalNeedForView;
-    option = {
-      id: 0,
-      isProvided: false,
-      lookupCode: item.lookupCode,
-      lookupName: item.lookupName,
-      providedDate: '',
-      comment: ''
-    };
-    createdList.push(option);
-  }
-  return createdList;
-}
-
 originProvinceChanged(event: any){
     if (event.value){
       this.lookupService.getDistrictLookups(event.value).subscribe((response: Lookup[]) => {
@@ -712,35 +677,6 @@ returnProvinceChanged(event: any){
       });
     }
   }
-// addIndividual(){
-//   this.indSubmitted = true;
-//   if(this.individualForm.invalid){
-//     console.log("Form is invalid");
-//     return;
-//   }
-//   const newForm = this.newIndividual();
-//   const indFormValue =  this.individualForm.value;
-//   newForm.patchValue({...indFormValue}, {onlySelf: true}) ;
-//   if (indFormValue.genderCode){
-//     const gender = this.initialLooupsData.gender.find(l => l.lookupCode === indFormValue.genderCode).lookupName;
-//     newForm.patchValue({ gender}, {onlySelf: true})
-//   }
-//   if (indFormValue.maritalStatusCode){
-//     const maritalStatus = this.initialLooupsData.maritalStatus.find(l => l.lookupCode === indFormValue.maritalStatusCode).lookupName;
-//     newForm.patchValue({ maritalStatus}, {onlySelf: true})
-//   }
-//   if (indFormValue.idTypeCode){
-//     const idType = this.initialLooupsData.idTypes.find(l => l.lookupCode === indFormValue.idTypeCode).lookupName;
-//     newForm.patchValue({ idType}, {onlySelf: true})
-//   }
-//   if (indFormValue.relationshipCode){
-//     const relationship = this.initialLooupsData.relationships.find(l => l.lookupCode === indFormValue.relationshipCode).lookupName;
-//     newForm.patchValue({ relationship}, {onlySelf: true})
-//   }
-//   this.individualsArray.push(newForm);
-//   this.individualForm.reset();
-//   this.indSubmitted = false;
-// }
 
 editIndividual(i: number){
  this.beneficiaryService.individualForm.patchValue({
@@ -792,8 +728,8 @@ deleteIndividual(i: number){
       this.individualTable.renderRows();
     }
   });
- 
 }
+
 benefitedFromOrgsChange(event: any){
   if (event.value){
   this.benefitedFromOrgs.push(this.newBenefitedFromOrg());
@@ -801,9 +737,7 @@ benefitedFromOrgsChange(event: any){
   this.benefitedFromOrgs.clear();
 }
 }
-addOtherOrg(){
-  this.benefitedFromOrgs.push(this.newBenefitedFromOrg());
-} 
+
 leavingReasonFirstChanged(event: any){
   if (event.value){
     this.leavingReasonSecondList = this.leavingReasonFirstList.filter(l => l.lookupCode !== event.value);

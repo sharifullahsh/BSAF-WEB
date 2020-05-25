@@ -1,4 +1,4 @@
-import { familyMemStayedBehindNoValidator, intendToReturnToHostReasonValidator, professionInHostCountryOtherValidator, hoHEducationLevelValidator, hoHEducationLevelOtherValidator, numChildrenAttendedSchooleValidator, atLeastOnePSNValidator, atLeastOneReturnReasonValidator, atLeastOneDeterminationValidator } from './../shared/customValidation';
+import { familyMemStayedBehindNoValidator, intendToReturnToHostReasonValidator, professionInHostCountryOtherValidator, hoHEducationLevelValidator, hoHEducationLevelOtherValidator, numChildrenAttendedSchooleValidator, atLeastOnePSNValidator, atLeastOneReturnReasonValidator, atLeastOneDeterminationValidator, mainConcernValidator } from './../shared/customValidation';
 import { leavingReasonFirstOtherValidator, leavingReasonSecondOtherValidator,
   leavingReasonThirdOtherValidator, countryOfExilOtherValidator, beforeReturnProvinceValidator } from 'src/app/shared/customValidation';
 import {topNeed1OtherValidator, topNeed2OtherValidator, topNeed3OtherValidator} from 'src/app/shared/customValidation';
@@ -22,6 +22,7 @@ export class BeneficiaryService {
   baseUrl = environment.apiUrl;
   constructor(private fb: FormBuilder, private http: HttpClient) { }
   beneficiaryForm: FormGroup = this.fb.group({
+    beneficiaryID: [null],
     cardID: [{value: null, disabled: true}],
     screeningDate: [new Date(), Validators.required],
     provinceBCP: [null, Validators.required],
@@ -110,7 +111,8 @@ export class BeneficiaryService {
      intendToReturnToHostReasonValidator, professionInHostCountryOtherValidator,
      hoHEducationLevelValidator, hoHEducationLevelOtherValidator,
      numChildrenAttendedSchooleValidator, atLeastOnePSNValidator,
-     atLeastOneReturnReasonValidator,atLeastOneDeterminationValidator]});
+     atLeastOneReturnReasonValidator,atLeastOneDeterminationValidator,
+     mainConcernValidator]});
   individualForm = this.fb.group({
     individualID: [null],
     name: [null, Validators.required],
