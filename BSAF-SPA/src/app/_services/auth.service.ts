@@ -26,41 +26,34 @@ constructor(private http: HttpClient,
         const user = respons;
         if (user){
           localStorage.setItem('token', user.token);
-          this.setUserDetails();
+          localStorage.setItem('user', JSON.stringify(user.user));
+          this.decodedToken = this.jwtHelper.decodeToken(user.token);
+          this.currentUser = user.user;
           return respons;
         }
       })
     );
-  }
-  setUserDetails() {
-    if (localStorage.getItem('token')) {
-      this.decodedToken = this.jwtHelper.decodeToken(localStorage.getItem('token'));
-      this.currentUser = {
-        id : this.decodedToken?.nameid,
-        userName: this.decodedToken?.unique_name,
-        roles: this.decodedToken?.role
-      };
-    }
   }
   register(user: User) {
     return this.http.post(this.baseUrl + 'register', user);
   }
   logout(){
     localStorage.removeItem('token');
+    localStorage.removeItem('user');
     this.router.navigate(['/login']);
-    this.currentUser = undefined;
+    this.decodedToken = null;
+    this.currentUser = null;
     this.alertifyService.success('Logged out');
   }
   loggedIn() {
     const token = localStorage.getItem('token');
-    if (!token){
-      return false;
+    if (token){
+      this.decodedToken = this.jwtHelper.decodeToken(localStorage.getItem('token'));
     }
-    return !this.jwtHelper.isTokenExpired(token);
+    return !!token;
   }
 
   roleMatch(allowedRoles): boolean {
-    this.setUserDetails();
     let isMatch = false;
     const userRoles = this.decodedToken.role as Array<string>;
     allowedRoles.forEach(element => {
@@ -75,16 +68,9 @@ constructor(private http: HttpClient,
     if (this.currentUser) {
       return this.currentUser;
     }
-    if (localStorage.getItem('token')) {
-      this.decodedToken = this.jwtHelper.decodeToken(localStorage.getItem('token'));
-      this.currentUser = {
-        id : this.decodedToken?.nameid,
-        userName: this.decodedToken?.unique_name,
-        roles: this.decodedToken?.role
-      };
-      return this.currentUser;
-    }
-    this.logout();
+    console.log(JSON.parse(localStorage.getItem('user')));
+    this.currentUser = JSON.parse(localStorage.getItem('user'));
+    return this.currentUser;
   }
   loggedInUserRole(){
     let roles  = [] as Array<string>;

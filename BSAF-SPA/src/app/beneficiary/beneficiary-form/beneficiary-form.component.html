@@ -85,50 +85,51 @@
                     <div class="mt20">
                         <h4>3. Family members</h4>
                         <div fxLayout="column" class="individualHolder">
-                            <table mat-table [dataSource]="individuals" class="mat-elevation-z8">
+                            <table mat-table [dataSource]="individualsArray.value" class="mat-elevation-z8">
                                 <ng-container matColumnDef="name">
                                     <th mat-header-cell *matHeaderCellDef> Name</th>
-                                    <td mat-cell *matCellDef="let row"> {{row.name}} </td>
+                                    <td mat-cell *matCellDef="let row">{{row.name}}
+                                    </td>
                                 </ng-container>
                                 <ng-container matColumnDef="fName">
                                     <th mat-header-cell *matHeaderCellDef>Father Name</th>
-                                    <td mat-cell *matCellDef="let row"> {{row.fName}} </td>
+                                    <td mat-cell *matCellDef="let row">{{row.fName}}</td>
                                 </ng-container>
                                 <ng-container matColumnDef="gender">
                                     <th mat-header-cell *matHeaderCellDef>Gender</th>
-                                    <td mat-cell *matCellDef="let row"> {{row.gender}} </td>
+                                    <td mat-cell *matCellDef="let row">{{row.gender}}</td>
                                 </ng-container>
                                 <ng-container matColumnDef="maritalStatus">
                                     <th mat-header-cell *matHeaderCellDef>MaritalStatus</th>
-                                    <td mat-cell *matCellDef="let row"> {{row.maritalStatus}} </td>
+                                    <td mat-cell *matCellDef="let row">{{row.maritalStatus}}</td>
                                 </ng-container>
                                 <ng-container matColumnDef="age">
                                     <th mat-header-cell *matHeaderCellDef>Age</th>
-                                    <td mat-cell *matCellDef="let row"> {{row.age}} </td>
+                                    <td mat-cell *matCellDef="let row">{{row.age}}</td>
                                 </ng-container>
                                 <ng-container matColumnDef="idType">
                                     <th mat-header-cell *matHeaderCellDef>ID Type</th>
-                                    <td mat-cell *matCellDef="let row"> {{row.idType}} </td>
+                                    <td mat-cell *matCellDef="let row">{{row.idType}}</td>
                                 </ng-container>
                                 <ng-container matColumnDef="idNo">
                                     <th mat-header-cell *matHeaderCellDef>ID No</th>
-                                    <td mat-cell *matCellDef="let row"> {{row.idNo}} </td>
+                                    <td mat-cell *matCellDef="let row">{{row.idNo}}</td>
                                 </ng-container>
                                 <ng-container matColumnDef="relationship">
                                     <th mat-header-cell *matHeaderCellDef>Relationship</th>
-                                    <td mat-cell *matCellDef="let row"> {{row.relationship}} </td>
+                                    <td mat-cell *matCellDef="let row">{{row.relationship}}</td>
                                 </ng-container>
                                 <ng-container matColumnDef="contactNumber">
                                     <th mat-header-cell *matHeaderCellDef>ContactNo</th>
-                                    <td mat-cell *matCellDef="let row"> {{row.contactNumber}} </td>
+                                    <td mat-cell *matCellDef="let row">{{row.contactNumber}}</td>
                                 </ng-container>
                                 <ng-container matColumnDef="drFName">
                                     <th mat-header-cell *matHeaderCellDef>ولد</th>
-                                    <td mat-cell *matCellDef="let row"> {{row.drFName}} </td>
+                                    <td mat-cell *matCellDef="let row">{{row.drFName}}</td>
                                 </ng-container>
                                 <ng-container matColumnDef="drName">
                                     <th mat-header-cell *matHeaderCellDef>نوم/نام</th>
-                                    <td mat-cell *matCellDef="let row"> {{row.drName}} </td>
+                                    <td mat-cell *matCellDef="let row">{{row.drName}}</td>
                                 </ng-container>
                                 <ng-container matColumnDef="action">
                                     <th mat-header-cell *matHeaderCellDef style="text-align: right;">
@@ -150,8 +151,8 @@
                                 <tr mat-row *matRowDef="let row; columns: individualsTbleColumns;"></tr>
                             </table>
                         </div>
-                        <mat-error *ngIf="benefSubmitted && individuals.length == 0">
-                            Family member <strong>required</strong>
+                        <mat-error *ngIf="benefSubmitted && beneficiaryForm.errors?.individualRequired">
+                            Family member with relationship (Head of household or Him/Her self) is <strong>required</strong>
                         </mat-error>
                     </div>
                     <h4 class="mt10">4. Please indicate the place of origin and intended place of return </h4>
@@ -241,7 +242,7 @@
                         <ng-container *ngFor="let psn of psns.controls; let i=index;">
                             <div fxFlex="0 1 calc(33.3% - 32px)" fxFlex.lt-md="0 1 calc(50% - 32px)" fxFlex.lt-sm="100%">
                                 <div [formGroupName]="i" fxLayout="row" fxLayoutGap="20px">
-                                    <mat-checkbox formControlName="isSelected" value="{{psn.controls.lookupCode.value}}">{{psn.controls.lookupName.value}}</mat-checkbox>
+                                    <mat-checkbox formControlName="isSelected" [value]="psn.controls.lookupCode.value">{{psn.controls.lookupName.value}}</mat-checkbox>
                                     <div fxLayout="column" *ngIf="psn.controls.isSelected.value == true && psn.controls.lookupName.value == 'Other'">
                                         <input matInput formControlName="other" placeholder="PSN other">
                                         <mat-error *ngIf="benefSubmitted &&  psn.hasError('otherRequired')">
@@ -334,7 +335,7 @@
                         <ng-container formArrayName="returnReasons" *ngFor="let reason of returnReasons.controls; let i=index;">
                             <div fxFlex="0 1 calc(33.3% - 32px)" fxFlex.lt-md="0 1 calc(50% - 32px)" fxFlex.lt-sm="100%">
                                 <div [formGroupName]="i" fxLayout="row" fxLayoutGap="20px">
-                                    <mat-checkbox formControlName="isSelected" value="{{reason.controls.lookupCode.value}}">{{reason.controls.lookupName.value}}</mat-checkbox>
+                                    <mat-checkbox formControlName="isSelected" [value]="reason.controls.lookupCode.value">{{reason.controls.lookupName.value}}</mat-checkbox>
                                     <div fxLayout="column" *ngIf="reason.controls.isSelected.value == true && reason.controls.lookupName.value == 'Other'">
                                         <input matInput formControlName="other" placeholder="Reason other">
                                         <mat-error *ngIf="benefSubmitted &&  reason.hasError('otherRequired')">
@@ -386,9 +387,9 @@
                     <div fxLayout="row wrap" fxLayoutAlign="space-between start" fxLayoutAlign="start center" fxLayoutGap="20px">
                         <h4 fxFelx style="text-align: center;">10. Where will you live?</h4>
                         <mat-form-field fxFlex="0 1 40%" fxLayout.lt-sm="column" floatLabel="never">
-                            <mat-select formControlName="whereWillLive" placeholder="Select where will you live?">
-                                <mat-option *ngFor="let reason of initialLooupsData?.whereWillLive" [value]="reason.lookupCode">
-                                    {{ reason.lookupName }}
+                            <mat-select formControlName="whereWillLive" (selectionChange)="whereWillYouLiveChanged($event)" placeholder="Select where will you live?">
+                                <mat-option *ngFor="let place of initialLooupsData?.whereWillLive" [value]="place.lookupCode">
+                                    {{ place.lookupName }}
                                 </mat-option>
                             </mat-select>
                             <mat-hint>Question 11 and 12 related to rental house</mat-hint>
@@ -420,7 +421,7 @@
                             <ng-container *ngFor="let source of moneySources.controls; let i=index;">
                                 <div [formGroupName]="i" fxFlex="0 1 calc(33.3% - 32px)" fxFlex.lt-md="0 1 calc(50% - 32px)" fxFlex.lt-sm="100%">
                                     <div fxLayout="row" fxLayoutGap="20px">
-                                        <mat-checkbox formControlName="isSelected" value="{{source.controls.lookupCode.value}}">{{source.controls.lookupName.value}}</mat-checkbox>
+                                        <mat-checkbox formControlName="isSelected" [value]="source.controls.lookupCode.value">{{source.controls.lookupName.value}}</mat-checkbox>
                                         <div fxLayout="column" *ngIf="source.controls.isSelected.value==true && source.controls.lookupName.value == 'Other'">
                                             <input formControlName="other" matInput placeholder="Money source other">
                                             <mat-error *ngIf="benefSubmitted &&  source.hasError('otherRequired')">
@@ -548,7 +549,7 @@
                         <ng-container *ngFor="let item of broughtItems.controls; let i=index;">
                             <div fxFlex="0 1 calc(33.3% - 20px)" fxFlex.lt-md="0 1 calc(30% - 20px)" fxFlex.lt-sm="100%">
                                 <div [formGroupName]="i" fxLayout="row" fxLayoutGap="20px">
-                                    <mat-checkbox formControlName="isSelected" value="{{item.controls.lookupCode.value}}">{{item.controls.lookupName.value}}</mat-checkbox>
+                                    <mat-checkbox formControlName="isSelected" [value]="item.controls.lookupCode.value">{{item.controls.lookupName.value}}</mat-checkbox>
                                     <div fxLayout="column" *ngIf="item.controls.isSelected.value == true && item.controls.lookupName.value == 'Other'">
                                         <input matInput formControlName="other" placeholder="Item brought other">
                                         <mat-error *ngIf="benefSubmitted &&  item.hasError('otherRequired')">
@@ -717,7 +718,7 @@
                         <ng-container *ngFor="let transport of transportations.controls; let i=index;">
                             <div fxFlex="0 1 calc(50% - 32px)" fxFlex.lt-md="0 1 calc(50% - 32px)" fxFlex.lt-sm="100%">
                                 <div [formGroupName]="i" fxLayout="row" fxLayoutGap="20px">
-                                    <mat-checkbox formControlName="isSelected" value="{{transport.controls.lookupCode.value}}">{{transport.controls.lookupName.value}}</mat-checkbox>
+                                    <mat-checkbox formControlName="isSelected" [value]="transport.controls.lookupCode.value">{{transport.controls.lookupName.value}}</mat-checkbox>
                                     <div fxLayout="column" *ngIf="transport.controls.isSelected.value == true && transport.controls.lookupName.value == 'Other'">
                                         <input formControlName="other" matInput placeholder="Other transportation difficulties">
                                         <mat-error *ngIf="benefSubmitted &&  transport.hasError('otherRequired')">
@@ -811,7 +812,7 @@
                         <h4 class="mt20" fxFlex="0 1 calc(30% - 20px)">23. What do you intend to do?</h4>
                         <div fxFlex="0 1 calc(30% - 20px)">
                             <mat-form-field class="full-width" floatLabel="never">
-                                <mat-select formControlName="intendToDo" placeholder="Select intend to do" floatLabel="never">
+                                <mat-select formControlName="intendToDo" (selectionChange)="intendToDoChanged($event)" placeholder="Select intend to do" floatLabel="never">
                                     <mat-option *ngFor="let toDo of initialLooupsData?.intendToDos" [value]="toDo.lookupCode">
                                         {{ toDo.lookupName }}
                                     </mat-option>
@@ -835,7 +836,7 @@
                         <h4 class="mt20" fxFlex="0 1 calc(30% - 20px)">24. What was your profession in Pakistan/Iran?</h4>
                         <div fxFlex="0 1 calc(30% - 20px)">
                             <mat-form-field class="full-width" floatLabel="never">
-                                <mat-select formControlName="professionInHostCountry" placeholder="Select Profession">
+                                <mat-select formControlName="professionInHostCountry" (selectionChange)="professionChanged($event)" placeholder="Select Profession">
                                     <mat-option *ngFor="let profession of initialLooupsData?.professions" [value]="profession.lookupCode">
                                         {{ profession.lookupName }}
                                     </mat-option>
@@ -859,7 +860,7 @@
                     <div formArrayName="livelihoodEmpNeeds" fxLayout="row wrap" fxLayoutGap="40px">
                         <div fxFlex="0 1 calc(40% - 40px)" *ngFor="let help of livelihoodEmpNeeds.controls; let i=index;">
                             <ng-container [formGroupName]="i">
-                                <mat-checkbox formControlName="isSelected" value="{{help.controls.lookupCode.value}">{{help.controls.lookupName.value}}</mat-checkbox>
+                                <mat-checkbox formControlName="isSelected" (change)="helpObtainlivelihoodOpt($event)" [value]="help.controls.lookupCode.value">{{help.controls.lookupName.value}}</mat-checkbox>
                             </ng-container>
                         </div>
                     </div>
@@ -869,7 +870,7 @@
                             <ng-container *ngFor="let tool of needTools.controls; let i=index;">
                                 <div [formGroupName]="i" fxFlex="0 1 calc(33.3% - 32px)" fxFlex.lt-md="0 1 calc(50% - 32px)" fxFlex.lt-sm="100%">
                                     <div fxLayout="row" fxLayoutGap="20px">
-                                        <mat-checkbox formControlName="isSelected" value="{{tool.controls.lookupCode.value}}">{{tool.controls.lookupName.value}}</mat-checkbox>
+                                        <mat-checkbox formControlName="isSelected" [value]="tool.controls.lookupCode.value">{{tool.controls.lookupName.value}}</mat-checkbox>
                                         <div fxLayout="column" *ngIf="tool.controls.isSelected.value == true && tool.controls.lookupName.value == 'Other'">
                                             <input formControlName="other" matInput placeholder="Need tool other">
                                             <mat-error *ngIf="benefSubmitted &&  tool.hasError('otherRequired')">
@@ -923,7 +924,7 @@
                             <ng-container *ngFor="let concern of mainConcerns.controls; let i=index;">
                                 <div [formGroupName]="i" fxFlex="0 1 calc(33.3% - 32px)" fxFlex.lt-md="0 1 calc(50% - 32px)" fxFlex.lt-sm="100%">
                                     <div fxLayout="row" fxLayoutGap="20px">
-                                        <mat-checkbox formControlName="isSelected" value="{{concern.controls.lookupCode.value}}">{{concern.controls.lookupName.value}}</mat-checkbox>
+                                        <mat-checkbox formControlName="isSelected" [value]="concern.controls.lookupCode.value">{{concern.controls.lookupName.value}}</mat-checkbox>
                                         <div fxLayout="column" *ngIf="concern.controls.isSelected.value == true && concern.controls.lookupName.value == 'Other'">
                                             <input matInput formControlName="other" placeholder="Concern other">
                                             <mat-error *ngIf="benefSubmitted &&  concern.hasError('otherRequired')">
@@ -1001,7 +1002,7 @@
                             <div formArrayName="hostCountrySchools" fxFlex="0 1 calc(50% - 40px)" fxLayout="row wrap" fxLayoutGap="50px" class="mt20">
                                 <div *ngFor="let school of hostCountrySchools.controls; let i=index;">
                                     <ng-container [formGroupName]="i">
-                                        <mat-checkbox formControlName="isSelected" value="{{school.controls.lookupCode.value}}">{{school.controls.lookupName.value}}</mat-checkbox>
+                                        <mat-checkbox formControlName="isSelected" [value]="school.controls.lookupCode.value">{{school.controls.lookupName.value}}</mat-checkbox>
                                     </ng-container>
                                 </div>
                             </div>
@@ -1026,10 +1027,15 @@
                 </mat-tab>
             </mat-tab-group>
         </mat-card-content>
-        <mat-card-actions fxLayout="row" fxLayoutAlign="end start">
-            <button mat-raised-button color="primary" *ngIf="selectedTab.value!=0" (click)="selectedTab.setValue((selectedTab.value)-1)" type="button">Previous</button>
-            <button mat-raised-button color="primary" (click)="selectedTab.setValue((selectedTab.value)+1)" type="button">Next</button>
-            <button mat-raised-button color="primary" type="submit">Submit</button>
+        <mat-card-actions fxLayout="row" fxLayoutAlign="space-between start">
+            <div fxFlex *appHasRole="['Admin']">
+                <button mat-raised-button color="warn" *ngIf="benef.beneficiaryID.value" (click)="deleteBeneficiary()" type="button">Delete Beneficiary</button>
+            </div>
+            <div fxFlex fxLayoutAlign="end start">
+                <button mat-raised-button color="primary" *ngIf="selectedTab.value!=0" (click)="selectedTab.setValue((selectedTab.value)-1)" type="button">Previous</button>
+                <button mat-raised-button color="primary" *ngIf="selectedTab.value!=6" (click)="selectedTab.setValue((selectedTab.value)+1)" type="button">Next</button>
+                <button mat-raised-button color="primary" *ngIf="selectedTab.value==6" type="submit">Save</button>
+            </div>
         </mat-card-actions>
     </mat-card>
 </form>

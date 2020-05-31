@@ -2,14 +2,14 @@ import { Component, OnInit, Inject } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 
 @Component({
-  selector: 'app-individual-delete-dialog',
-  templateUrl: './individual-delete-dialog.component.html',
-  styleUrls: ['./individual-delete-dialog.component.css']
+  selector: 'app-delete-dialog',
+  templateUrl: './delete-dialog.component.html',
+  styleUrls: ['./delete-dialog.component.css']
 })
-export class IndividualDeleteDialogComponent implements OnInit {
+export class DeleteDialogComponent implements OnInit {
 
   constructor(
-    public dialogRef: MatDialogRef<IndividualDeleteDialogComponent>,
+    public dialogRef: MatDialogRef<DeleteDialogComponent>,
     // @Inject(MAT_DIALOG_DATA) public data: DialogData
     ) { }
   onNoClick(): void {

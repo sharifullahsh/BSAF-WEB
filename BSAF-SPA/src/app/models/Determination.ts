@@ -7,6 +7,6 @@ export interface DeterminationLookup{
 export interface DeterminationForView{
     lookupName: string;
     lookupCode: string;
-    other?: string;
     answerCode?: string;
+    other?: string;
 }

@@ -126,10 +126,6 @@ namespace BSAFWebApi.Dtos
 
         public int? NumChildrenAttendedSchoole { get; set; }
 
-        public bool IsSubmitted { get; set; }
-
-        public bool IsCardIssued { get; set; }
-
         public byte[] Photo { get; set; }
 
         public List<IndividualDto> Individuals { get; set; }

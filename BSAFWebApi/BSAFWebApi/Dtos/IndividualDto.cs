@@ -10,6 +10,8 @@ namespace BSAFWebApi.Dtos
     {
         public int IndividualID { get; set; }
 
+        public int BeneficiaryID { get; set; }
+
         public string Name { get; set; }
 
         public string DrName { get; set; }

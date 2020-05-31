@@ -7,7 +7,7 @@ import { AlertifyService } from './../../_services/alertify.service';
 import { Lookup, HostCountryProvince, HostCountryDistrict } from './../../models/Lookup';
 import { Beneficiary } from './../../models/Beneficiary';
 import { BeneficiaryService } from './../../_services/beneficiary.service';
-import { ActivatedRoute, ParamMap } from '@angular/router';
+import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { LookupService } from '../../_services/lookup.service';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, Validators, FormControl, FormArray, FormGroup } from '@angular/forms';
@@ -15,12 +15,12 @@ import { switchMap } from 'rxjs/operators';
 import { InitialLookups } from 'src/app/models/InitialLookups';
 import { DomSanitizer } from '@angular/platform-browser';
 import { image } from 'src/app/models/image';
-import { IndividualFormDialogComponent } from '../dialog/individual-dialog/individual-form/individual-form-dialog.component';
+import { IndividualFormDialogComponent } from '../dialog/individual-form/individual-form-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTable } from '@angular/material/table';
-import { IndividualDeleteDialogComponent } from '../dialog/individual-dialog/individual-delete/individual-delete-dialog.component';
-import { chkOtherValidator, determinationOtherValidator, postArrivalNeedPDateValidator } from 'src/app/shared/customValidation';
+import { chkOtherValidator, determinationOtherValidator, postArrivalNeedPDateValidator } from 'src/app/shared/validator/customValidation';
 import { CreateBenefFormListsService } from 'src/app/_services/create-benef-form-lists.service';
+import { DeleteDialogComponent } from 'src/app/shared/dialog/delete/delete-dialog.component';
 
 @Component({
   selector: 'app-beneficiary-form',
@@ -34,7 +34,6 @@ export class BeneficiaryFormComponent implements OnInit {
   @ViewChild(MatTable) individualTable: MatTable<any>;
   selectedTab = new FormControl(0);
   beneficiary: Beneficiary;
-  individuals: Individual[] = [];
   originDistricts: Lookup[];
   returnDistricts: Lookup[];
   psnList: CheckboxForView[] = [];
@@ -76,38 +75,19 @@ export class BeneficiaryFormComponent implements OnInit {
   indSubmitted = false;
 
 constructor(private fb: FormBuilder, private lookupService: LookupService,
-            private route: ActivatedRoute, private beneficiaryService: BeneficiaryService,
+            private route: ActivatedRoute, public beneficiaryService: BeneficiaryService,
             private alertifyService: AlertifyService,
             private _sanitizer: DomSanitizer,
             public dialog: MatDialog,
-            public createListService: CreateBenefFormListsService) {}
+            public createListService: CreateBenefFormListsService,
+            public router: Router) {}
 beneficiaryForm: FormGroup = this.beneficiaryService.beneficiaryForm;
-newIndividual(): FormGroup{
-  return this.fb.group({
-    individualID: [null],
-    beneficiaryID: [null],
-    name: [null],
-    drName: [null],
-    fName: [null],
-    drFName: [null],
-    genderCode: [null],
-    gender: [null],
-    maritalStatusCode: [null],
-    maritalStatus: [null],
-    age: [null],
-    idTypeCode: [null],
-    idType: [null],
-    idNo: [null],
-    relationshipCode: [null],
-    relationship: [null],
-    contactNumber: [null],
-  });
-}
 
 ngOnInit(): void {
   this.beneficiaryService.resetBeneficiaryForm();
   this.beneficiaryService.resetIndividualForm();
   this.benefitedFromOrgs.clear();
+  this.individualsArray.clear();
   this.route.data.subscribe((data: {initialLookups: InitialLookups}) => {
       this.initialLooupsData = data.initialLookups;
       // for using in anywhere
@@ -158,7 +138,7 @@ ngOnInit(): void {
         this.beneficiaryService.getBeneficiary(id).subscribe((response: Beneficiary) => {
           console.log('beneficiary is >>>>>>>>>>>>>> ' + JSON.stringify(response));
           this.beneficiary = response;
-          this.individuals = response.individuals;
+          // this.individuals = response.individuals;
           for (const iterator of this.beneficiary.benefitedFromOrgs) {
             this.addBenefitedFromOrg();
           }
@@ -226,7 +206,7 @@ ngOnInit(): void {
             isCardIssued: response.isCardIssued,
             photo: response.photo,
             benefitedFromOrgs: response.benefitedFromOrgs
-          }, {onlySelf: true});
+          });
           this.leavingReasonSecondList = this.initialLooupsData.leavingReasons.filter(l =>
             l.lookupCode !== this.benef.leavingReason1.value);
           this.leavingReasonThirdList = this.leavingReasonSecondList.filter(l =>
@@ -241,27 +221,12 @@ ngOnInit(): void {
             this.topNeed3List = this.initialLooupsData.topNeeds.filter(l =>
               l.lookupCode !== topNeed2Filter && l.lookupCode !== topNeed3Filter);
           }
-          for (const member of this.beneficiary.individuals) {
-            const indForm: FormGroup =  this.newIndividual();
+          for (const individual of this.beneficiary.individuals) {
+            const indForm: FormGroup =  this.beneficiaryService.newIndividualForm();
             indForm.patchValue({
-              name: member.name,
-              fName: member.fName,
-              gender: member.gender,
-              genderCode: member.genderCode,
-              maritalStatus: member.maritalStatus,
-              maritalStatusCode: member.maritalStatusCode,
-              age: member.age,
-              idType: member.idType,
-              idTypeCode: member.idTypeCode,
-              idNo: member.idNo,
-              relationship: member.relationship,
-              relationshipCode: member.relationshipCode,
-              contactNumber: member.contactNumber,
-              drName: member.drName,
-              drFName: member.drFName,
-            }, {onlySelf: true});
+             ...individual
+            });
             (this.beneficiaryForm.get('individuals') as FormArray).push(indForm);
-            // this.individualForm.get('name').pa
           }
           const originProvince = this.beneficiaryForm.get('originProvince').value;
           if (originProvince){
@@ -474,7 +439,7 @@ setBroughtItemsForm() {
   }
 setMoneySourceForm() {
     const moneySourceArray = this.beneficiaryForm.get('moneySources') as FormArray;
-    moneySourceArray.clear()
+    moneySourceArray.clear();
     this.moneySourcesList.forEach((reason) => {
       moneySourceArray.push(this.setCheckboxOptionFormArray(reason));
     });
@@ -494,7 +459,6 @@ setDeterminationsFormArray(determination: DeterminationForView){
       answerCode: [determination.answerCode]
     }, {validators : determinationOtherValidator});
   }
-
 
 setPostArrivalNeedsForm() {
     const needsArray = this.beneficiaryForm.get('postArrivalNeeds') as FormArray;
@@ -536,20 +500,9 @@ setReturnReasonForm() {
       comment: [need.comment],
     }, { validators : postArrivalNeedPDateValidator});
   }
-newBenefitedFromOrg(): FormGroup{
-    return this.fb.group({
-      id: [null],
-      beneficiaryID: [null],
-      date: [null, Validators.required],
-      provinceCode: [null, Validators.required],
-      districtID: [null, Validators.required],
-      village: [null],
-      orgCode: [null, Validators.required],
-      assistanceProvided: [null, Validators.required]
-    });
-  }
+
 addBenefitedFromOrg(){
-    this.benefitedFromOrgs.push(this.newBenefitedFromOrg());
+    this.benefitedFromOrgs.push(this.beneficiaryService.newBenefitedFromOrg());
     this.filterBenefitedFromOgr2List();
   }
 filterBenefitedFromOgr2List(){
@@ -622,6 +575,7 @@ originProvinceChanged(event: any){
     if (event.value){
       this.lookupService.getDistrictLookups(event.value).subscribe((response: Lookup[]) => {
         this.originDistricts = response;
+        this.benef.originDistrict.setValue(null);
       }, (error) => {
         console.log('erro is >>>>>>' + JSON.stringify(error));
         this.alertifyService.error('Unable to load origin districts.');
@@ -640,8 +594,9 @@ hostCountryProvinceChanged(event: any){
   }
 loadHostCountryProvinces(country: string){
     this.hostCountryDistricts = [];
-    if (country && (country == 'Iran' || country == 'Pakistan')){
-      const ountryCode = country == 'Iran' ? 'IRN' : 'PAK';
+    if (country && (country === 'Iran' || country === 'Pakistan')){
+      this.benef.countryOfExilOther.setValue(null);
+      const ountryCode = country === 'Iran' ? 'IRN' : 'PAK';
       this.lookupService.getHostCountryProvinces(ountryCode).subscribe((response: HostCountryProvince[]) => {
       this.hostCountryProvinces = response;
     }, (error) => {
@@ -665,23 +620,39 @@ loadHostCountryDistrict(provinceID: number) {
     }
   }
 hostCountryChanged(event: any){
+  this.benef.beforReturnProvince.setValue(null);
+  this.benef.beforReturnDistrictID.setValue(null);
     this.loadHostCountryProvinces(event.value);
   }
 returnProvinceChanged(event: any){
     if (event.value){
       this.lookupService.getDistrictLookups(event.value).subscribe((response: Lookup[]) => {
         this.returnDistricts = response;
+        this.benef.returnDistrict.setValue(null);
       }, (error) => {
         console.log('erro is >>>>>>' + JSON.stringify(error));
         this.alertifyService.error('Unable to load origin districts.');
       });
     }
   }
+whereWillYouLiveChanged(envet: any){
+if(envet.value === 'RH'){
+  this.benef.rentPayForAccom.setValue(null);
+  this.benef.rentPayCurrency.setValue(null);
+  this.setMoneySourceForm();
+}
+  }
+
+  helpObtainlivelihoodOpt(event: any){
+    if (event.source && !event.checked && event.source.value === 'POT'){
+       this.livelihoodEmpNeeds.clear();
+    }
+  }
 
 editIndividual(i: number){
  this.beneficiaryService.individualForm.patchValue({
-   ...this.individuals[i]
- },{onlySelf:true});
+   ...this.individualsArray.controls[i].value
+ });
  const dialogRef = this.dialog.open(IndividualFormDialogComponent, {
   width: '60%',
   data: {}
@@ -690,26 +661,24 @@ editIndividual(i: number){
  dialogRef.afterClosed().subscribe(result => {
   if (result === 1){
     const indFormValue =  this.beneficiaryService.individualForm.value;
-    const newIndividual: Individual = {
-    ...indFormValue
-  };
+    const selectedIndividual = this.individualsArray.controls[i] as FormControl;
+    this.individualsArray.controls[i].patchValue({...indFormValue});
     if (indFormValue.genderCode){
-  const gender = this.initialLooupsData.gender.find(l => l.lookupCode === indFormValue.genderCode).lookupName;
-  newIndividual.gender = gender;
+    const gender = this.initialLooupsData.gender.find(l => l.lookupCode === indFormValue.genderCode).lookupName;
+    selectedIndividual.patchValue({gender});
   }
     if (indFormValue.maritalStatusCode){
   const maritalStatus = this.initialLooupsData.maritalStatus.find(l => l.lookupCode === indFormValue.maritalStatusCode).lookupName;
-  newIndividual.maritalStatus = maritalStatus;
+  selectedIndividual.patchValue({maritalStatus});
   }
     if (indFormValue.idTypeCode){
   const idType = this.initialLooupsData.idTypes.find(l => l.lookupCode === indFormValue.idTypeCode).lookupName;
-  newIndividual.idType = idType;
+  selectedIndividual.patchValue({idType});
 }
     if (indFormValue.relationshipCode){
   const relationship = this.initialLooupsData.relationships.find(l => l.lookupCode === indFormValue.relationshipCode).lookupName;
-  newIndividual.relationship = relationship;
+  selectedIndividual.patchValue({relationship});
 }
-    this.individuals[i] = newIndividual;
     this.beneficiaryService.resetIndividualForm();
     this.individualTable.renderRows();
   }
@@ -717,14 +686,14 @@ editIndividual(i: number){
 }
 deleteIndividual(i: number){
   // window.alert(i);
-  const dialogRef = this.dialog.open(IndividualDeleteDialogComponent, {
+  const dialogRef = this.dialog.open(DeleteDialogComponent, {
     width: '300px',
     // data: {}
   });
 
   dialogRef.afterClosed().subscribe(result => {
     if (result){
-      this.individuals.splice(i, 1);
+      this.individualsArray.removeAt(i);
       this.individualTable.renderRows();
     }
   });
@@ -732,7 +701,7 @@ deleteIndividual(i: number){
 
 benefitedFromOrgsChange(event: any){
   if (event.value){
-  this.benefitedFromOrgs.push(this.newBenefitedFromOrg());
+  this.benefitedFromOrgs.push(this.beneficiaryService.newBenefitedFromOrg());
 }else{
   this.benefitedFromOrgs.clear();
 }
@@ -744,12 +713,19 @@ leavingReasonFirstChanged(event: any){
     this.leavingReasonThirdList = [];
     this.benef.leavingReason2.setValue(null);
     this.benef.leavingReason3.setValue(null);
+
+    this.benef.leavingReason1Other.setValue(null);
+    this.benef.leavingReason2Other.setValue(null);
+    this.benef.leavingReason3Other.setValue(null);
   }
 }
 leavingReasonSecondChanged(event: any){
   if(event.value){
     this.leavingReasonThirdList = this.leavingReasonSecondList.filter(l => l.lookupCode !== event.value);
     this.benef.leavingReason3.setValue(null);
+
+    this.benef.leavingReason2Other.setValue(null);
+    this.benef.leavingReason3Other.setValue(null);
   }
 }
 topNeedFirstChanged(event: any){
@@ -757,8 +733,14 @@ topNeedFirstChanged(event: any){
     const topNeedSecondFilter = event.value !== 'TNOther' ? event.value : '';
     this.topNeed2List = this.topNeed1List.filter(l => l.lookupCode !== topNeedSecondFilter);
     this.topNeed3List = [];
+    
     this.benef.topNeed2.setValue(null);
     this.benef.topNeed3.setValue(null);
+
+    this.benef.topNeed1Other.setValue(null);
+    this.benef.topNeed2Other.setValue(null);
+    this.benef.topNeed3Other.setValue(null);
+
   }
 }
 topNeedSecondChanged(event: any){
@@ -766,40 +748,73 @@ topNeedSecondChanged(event: any){
     const topNeedThirdFilter = event.value !== 'TNOther' ? event.value : '';
     this.topNeed3List = this.topNeed2List.filter(l => l.lookupCode !== topNeedThirdFilter);
     this.benef.topNeed3.setValue(null);
+
+    this.benef.topNeed2Other.setValue(null);
+    this.benef.topNeed3Other.setValue(null);
+
+  }
+}
+intendToDoChanged(event: any){
+  if (event.value && event.value !== 'RTH'){
+    this.benef.intendToReturnToHostReason.setValue(null);
+  }
+}
+professionChanged(event: any){
+  if (event.value && event.value !== 'ProfOther'){
+    this.benef.professionInHostCountryOther.setValue(null);
   }
 }
 nextTab(){
 
 }
 addIndividual(){
+  if (this.individualsArray.length === 0 ){
+    if (this.benef.beneficiaryType.value === 'Family'){
+      this.beneficiaryService.individualForm.patchValue({relationshipCode: 'HH'});
+    }else if (this.benef.beneficiaryType.value === 'Individual'){
+      this.beneficiaryService.individualForm.patchValue({relationshipCode: 'HSelf'});
+    }
+    console.log(this.beneficiaryService.individualForm.value);
+  }
   const dialogRef = this.dialog.open(IndividualFormDialogComponent, {
     width: '60%',
     data: {}
   });
-
   dialogRef.afterClosed().subscribe(result => {
     if (result === 1){
       const indFormValue =  this.beneficiaryService.individualForm.value;
+      const newIndividualForm = this.beneficiaryService.newIndividualForm();
+      newIndividualForm.patchValue({
+        ...indFormValue
+      });
       const newIndividual: Individual = {
       ...indFormValue
     };
       if (indFormValue.genderCode){
     const gender = this.initialLooupsData.gender.find(l => l.lookupCode === indFormValue.genderCode).lookupName;
-    newIndividual.gender = gender;
+    newIndividualForm.patchValue({
+      gender
+    });
     }
       if (indFormValue.maritalStatusCode){
     const maritalStatus = this.initialLooupsData.maritalStatus.find(l => l.lookupCode === indFormValue.maritalStatusCode).lookupName;
-    newIndividual.maritalStatus = maritalStatus;
+    newIndividualForm.patchValue({
+      maritalStatus
+    });
     }
       if (indFormValue.idTypeCode){
     const idType = this.initialLooupsData.idTypes.find(l => l.lookupCode === indFormValue.idTypeCode).lookupName;
-    newIndividual.idType = idType;
+    newIndividualForm.patchValue({
+      idType
+    });
   }
       if (indFormValue.relationshipCode){
     const relationship = this.initialLooupsData.relationships.find(l => l.lookupCode === indFormValue.relationshipCode).lookupName;
-    newIndividual.relationship = relationship;
+    newIndividualForm.patchValue({
+      relationship
+    });
   }
-      this.individuals.push(newIndividual);
+      this.individualsArray.push(newIndividualForm);
       this.beneficiaryService.resetIndividualForm();
       this.individualTable.renderRows();
     }
@@ -807,10 +822,43 @@ addIndividual(){
 }
 onSubmit() {
   this.benefSubmitted = true;
-  if (this.beneficiaryForm.invalid && this.individuals.length === 0){
+  if (this.beneficiaryForm.invalid){
     return;
   }
+  if(this.beneficiaryForm.value.beneficiaryID){
+    this.beneficiaryService.updateBeneficiary().subscribe((response: any)=>{
+      this.alertifyService.success('Successfull updated beneficiary');
+      this.router.navigate(['/beneficiarySearch']);
+    },(error)=>{
+      this.alertifyService.error('Unable to update beneficiary');
+    })
+  }else{
+    this.beneficiaryService.addBeneficiary().subscribe((response: any) =>{
+      this.alertifyService.success('Successfull added beneficiary');
+      this.router.navigate(['/beneficiarySearch']);
+    },(error) =>{
+      this.alertifyService.error('Unable to add beneficiary');
+    })
+  }
+  
   alert('Success!!!');
+}
+deleteBeneficiary(){
+  const dialogRef = this.dialog.open(DeleteDialogComponent, {
+    width: '500px',
+    // data: {}
+  });
+
+  dialogRef.afterClosed().subscribe(result => {
+    if (result && this.benef.beneficiaryID.value){
+      this.beneficiaryService.deleteBeneficiary(this.benef.beneficiaryID.value)
+      .subscribe((response: any)=>{
+        this.alertifyService.success('Beneficiary Successfuly deleted.');
+      },(error: any ) =>{
+        this.alertifyService.error('Un able to delete beneficiary.')
+      })
+    }
+  });
 }
 ngAfterViewInit(): void {
 

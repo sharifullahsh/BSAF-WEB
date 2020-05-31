@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using BSAF.Models;
 using BSAFWebApi.Dtos;
+using BSAFWebApi.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,9 +13,10 @@ namespace BSAFWebApi.Helpers
     {
         public AutoMapperProfile()
         {
+            CreateMap<ApplicationUser, UserForListDto>();
             CreateMap<Beneficiary, BeneficiaryDto>();
             CreateMap<BeneficiaryDto, Beneficiary>();
-            CreateMap<BeneficiaryFormDto, Beneficiary>();
+            CreateMap<BeneficiaryFormDto, Beneficiary>().ForSourceMember(s=>s.BeneficiaryID,opt=>opt.DoNotValidate());
             CreateMap<Beneficiary, BeneficiaryFormDto>();
             CreateMap<IndividualDto, Individual>();
             CreateMap<Individual, IndividualDto>();

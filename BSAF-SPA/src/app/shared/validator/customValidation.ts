@@ -1,6 +1,7 @@
-import { CheckboxForView } from './../models/CheckboxForView';
+import { CheckboxForView } from '../../models/CheckboxForView';
 import { ValidatorFn, FormGroup, ValidationErrors, FormArray } from '@angular/forms';
-import { DeterminationForView } from '../models/Determination';
+import { DeterminationForView } from '../../models/Determination';
+import { Individual } from '../../models/Individual';
 
 export const chkOtherValidator: ValidatorFn = (control: FormGroup): ValidationErrors | null => {
     const lookupName = control.get('lookupName');
@@ -129,6 +130,11 @@ export const mainConcernValidator: ValidatorFn = (control: FormGroup): Validatio
     const mainConcerns = control.get('mainConcerns').value as CheckboxForView[];
     const numbSelected =  mainConcerns.filter(r => r.isSelected === true).length;
     return numbSelected === 0 ? { mainConcernRequired: true } : null;
+  };
+export const individualValidator: ValidatorFn = (control: FormGroup): ValidationErrors | null => {
+    const individuals = (control.get('individuals').value as Individual[]);
+    const houseHolds =  individuals.find(r => r.relationshipCode === 'HH' || r.relationshipCode === "HSelf");
+    return !houseHolds ? { individualRequired: true } : null;
   };
 // export const rentAmountRequiredValidator: ValidatorFn = (control: FormGroup): ValidationErrors | null => {
 //     const whereWillLive = control.get('whereWillLive');

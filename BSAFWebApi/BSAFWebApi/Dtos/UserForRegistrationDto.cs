@@ -6,12 +6,18 @@ using System.Threading.Tasks;
 
 namespace BSAFWebApi.Dtos
 {
-    public class UserRegistrationDto
+    public class UserForRegistrationDto
     {
         [Required]
         public string UserName { get; set; }
+
+        [Required]
+        public string DisplayName { get; set; }
+
         [Required]
         public string Password { get; set; }
-        public ICollection<string> Role { get; set; }
+
+        public string[] Roles { get; set; }
+
     }
 }

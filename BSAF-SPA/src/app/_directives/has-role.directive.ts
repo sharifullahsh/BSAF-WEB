@@ -13,6 +13,7 @@ isVisible = false;
     private authService: AuthService
   ) { }
   ngOnInit(): void {
+    console.log("user are "+ JSON.stringify(this.authService.decodedToken?.role));
     const userRoles = this.authService.decodedToken.role as Array<string>;
     if (!userRoles){
       this.viewContaninerRef.clear();

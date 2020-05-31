@@ -31,5 +31,7 @@ namespace BSAF.Models
 
         public string ContactNumber { get; set; }
 
+        public bool IsActive { get; set; }
+
     }
 }

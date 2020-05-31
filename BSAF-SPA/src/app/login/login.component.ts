@@ -25,7 +25,7 @@ export class LoginComponent{
               private router: Router,
               private alertifyService: AlertifyService) {}
 
-  onSubmit() {
+    login() {
     this.submitted = true;
     if (this.loginForm.invalid){
       return;

@@ -1,7 +1,13 @@
-import { familyMemStayedBehindNoValidator, intendToReturnToHostReasonValidator, professionInHostCountryOtherValidator, hoHEducationLevelValidator, hoHEducationLevelOtherValidator, numChildrenAttendedSchooleValidator, atLeastOnePSNValidator, atLeastOneReturnReasonValidator, atLeastOneDeterminationValidator, mainConcernValidator } from './../shared/customValidation';
+import { CheckboxForView } from './../models/CheckboxForView';
+import { familyMemStayedBehindNoValidator, intendToReturnToHostReasonValidator, 
+  professionInHostCountryOtherValidator, hoHEducationLevelValidator,
+  hoHEducationLevelOtherValidator, numChildrenAttendedSchooleValidator, 
+  atLeastOnePSNValidator, atLeastOneReturnReasonValidator, 
+  atLeastOneDeterminationValidator, mainConcernValidator,
+  individualValidator } from '../shared/validator/customValidation';
 import { leavingReasonFirstOtherValidator, leavingReasonSecondOtherValidator,
-  leavingReasonThirdOtherValidator, countryOfExilOtherValidator, beforeReturnProvinceValidator } from 'src/app/shared/customValidation';
-import {topNeed1OtherValidator, topNeed2OtherValidator, topNeed3OtherValidator} from 'src/app/shared/customValidation';
+  leavingReasonThirdOtherValidator, countryOfExilOtherValidator, beforeReturnProvinceValidator } from 'src/app/shared/validator/customValidation';
+import {topNeed1OtherValidator, topNeed2OtherValidator, topNeed3OtherValidator} from 'src/app/shared/validator/customValidation';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AlertifyService } from './alertify.service';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
@@ -9,7 +15,9 @@ import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import { Observable } from 'rxjs';
 import { InitialLookups } from '../models/InitialLookups';
-import { CheckboxForView } from '../models/CheckboxForView';
+import { isArray } from 'util';
+import { DeterminationForView } from '../models/Determination';
+import { PostArrivalNeedForView } from '../models/PostArrivalNeeds';
 
 const httpOptions = {
   headers: new HttpHeaders({'Content-Type': 'application/json'})
@@ -18,6 +26,7 @@ const httpOptions = {
   providedIn: 'root'
 })
 export class BeneficiaryService {
+ 
   initialLooupsData: InitialLookups;
   baseUrl = environment.apiUrl;
   constructor(private fb: FormBuilder, private http: HttpClient) { }
@@ -81,13 +90,7 @@ export class BeneficiaryService {
     doHaveSecureLivelihood: [null, Validators.required],
     didChildrenGoToSchoole: [null, Validators.required],
     numChildrenAttendedSchoole: [null],
-    isSubmitted: [null],
-    isCardIssued: [null],
     photo: [null],
-    insertedBy: [null],
-    insertedDate: [null],
-    lastUpdatedBy: [null],
-    lastUpdatedDate: [null],
     individuals: this.fb.array([]),
     benefitedFromOrgs: this.fb.array([]),
     postArrivalNeeds: this.fb.array([]),
@@ -104,15 +107,17 @@ export class BeneficiaryService {
     // postalCode: [null, Validators.compose([
     //   Validators.required, Validators.minLength(5), Validators.maxLength(5)])
     // ],
-  }, {validators: [leavingReasonFirstOtherValidator, leavingReasonSecondOtherValidator,
-     leavingReasonThirdOtherValidator, countryOfExilOtherValidator,
-     beforeReturnProvinceValidator, familyMemStayedBehindNoValidator,
-     topNeed1OtherValidator, topNeed2OtherValidator, topNeed3OtherValidator,
+  }, {validators: [individualValidator, leavingReasonFirstOtherValidator,
+     leavingReasonSecondOtherValidator, leavingReasonThirdOtherValidator,
+     countryOfExilOtherValidator, beforeReturnProvinceValidator,
+     familyMemStayedBehindNoValidator, topNeed1OtherValidator,
+     topNeed2OtherValidator, topNeed3OtherValidator,
      intendToReturnToHostReasonValidator, professionInHostCountryOtherValidator,
      hoHEducationLevelValidator, hoHEducationLevelOtherValidator,
      numChildrenAttendedSchooleValidator, atLeastOnePSNValidator,
-     atLeastOneReturnReasonValidator,atLeastOneDeterminationValidator,
+     atLeastOneReturnReasonValidator, atLeastOneDeterminationValidator,
      mainConcernValidator]});
+
   individualForm = this.fb.group({
     individualID: [null],
     name: [null, Validators.required],
@@ -131,7 +136,40 @@ export class BeneficiaryService {
     relationship: [null],
     contactNumber: [null],
   });
-  showNeedTools():boolean{
+  newIndividualForm(): FormGroup{
+    return this.fb.group({
+      individualID: [null],
+      beneficiaryID: [null],
+      name: [null],
+      drName: [null],
+      fName: [null],
+      drFName: [null],
+      genderCode: [null],
+      gender: [null],
+      maritalStatusCode: [null],
+      maritalStatus: [null],
+      age: [null],
+      idTypeCode: [null],
+      idType: [null],
+      idNo: [null],
+      relationshipCode: [null],
+      relationship: [null],
+      contactNumber: [null],
+    });
+  }
+  newBenefitedFromOrg(): FormGroup{
+    return this.fb.group({
+      id: [null],
+      beneficiaryID: [null],
+      date: [null, Validators.required],
+      provinceCode: [null, Validators.required],
+      districtID: [null, Validators.required],
+      village: [null],
+      orgCode: [null, Validators.required],
+      assistanceProvided: [null, Validators.required]
+    });
+  }
+  showNeedTools(): boolean{
     const livelihoodEmpNeeds = this.beneficiaryForm.get('livelihoodEmpNeeds').value  as CheckboxForView[];
     const provideToolsSelected =  livelihoodEmpNeeds.filter(l => l.lookupCode === 'POT' && l.isSelected === true).length;
     if (provideToolsSelected){
@@ -150,8 +188,64 @@ export class BeneficiaryService {
   getSearchedBeneficiary(searchCritria: any): Observable<any> {
     return this.http.post(this.baseUrl + 'beneficiary/listPartial', searchCritria, httpOptions);
   }
-  getBeneficiary(id:number){
-    return this.http.get(this.baseUrl+'beneficiary/'+id);
+  getBeneficiary(id: number){
+    return this.http.get(this.baseUrl + 'beneficiary/' + id);
+  }
+  deleteBeneficiary(id: number){
+    return this.http.delete(this.baseUrl + 'beneficiary/' + id);
+  }
+  addBeneficiary(): Observable<any> {
+    return this.http.post(this.baseUrl + 'beneficiary/', this.getBeneficiaryFormValue(), httpOptions);
+  }
+  updateBeneficiary() {
+    console.log(this.beneficiaryForm.getRawValue());
+    console.log(this.getBeneficiaryFormValue());
+    return this.http.put(this.baseUrl + 'beneficiary/' +
+    this.beneficiaryForm.value.beneficiaryID, this.getBeneficiaryFormValue(), httpOptions);
+  }
+  getBeneficiaryFormValue(){
+    const formValue = (this.beneficiaryForm.getRawValue());
+    if (formValue.psns && Array.isArray(formValue.psns)) {
+    formValue.psns = (formValue.psns as CheckboxForView[]).filter(p => p.isSelected === true)
+    .map(p => ({ lookupCode: p.lookupCode, other: p.other}));
+    }
+    if (formValue.returnReasons && Array.isArray(formValue.returnReasons)) {
+      formValue.returnReasons = (formValue.returnReasons as CheckboxForView[]).filter(p => p.isSelected === true)
+      .map(p => ({ lookupCode: p.lookupCode, other: p.other}));
+      }
+    if (formValue.determinations && Array.isArray(formValue.determinations)) {
+          formValue.determinations = (formValue.determinations as DeterminationForView[]).filter(p => !!p.answerCode)
+          .map(p => ({ lookupCode: p.lookupCode, answerCode: p.answerCode, other: p.other}));
+          }
+    if (formValue.moneySources && Array.isArray(formValue.moneySources)) {
+          formValue.moneySources = (formValue.moneySources as CheckboxForView[]).filter(p => p.isSelected === true)
+          .map(p => ({ lookupCode: p.lookupCode, other: p.other}));
+          }
+    if (formValue.broughtItems && Array.isArray(formValue.broughtItems)) {
+          formValue.broughtItems = (formValue.broughtItems as CheckboxForView[]).filter(p => p.isSelected === true)
+          .map(p => ({ lookupCode: p.lookupCode, other: p.other}));
+         }
+    if (formValue.postArrivalNeeds && Array.isArray(formValue.postArrivalNeeds)) {
+          formValue.postArrivalNeeds = (formValue.postArrivalNeeds as PostArrivalNeedForView[]).filter(p => p.isProvided === true)
+          .map(p => ({id: p.id, lookupCode: p.lookupCode, isProvided: p.isProvided, providedDate: p.providedDate, comment: p.comment}));
+          }
+    if (formValue.transportations && Array.isArray(formValue.transportations)) {
+          formValue.transportations = (formValue.transportations as CheckboxForView[]).filter(p => p.isSelected === true)
+          .map(p => ({ lookupCode: p.lookupCode, other: p.other}));
+           }
+    if (formValue.livelihoodEmpNeeds && Array.isArray(formValue.livelihoodEmpNeeds)) {
+          formValue.livelihoodEmpNeeds = (formValue.livelihoodEmpNeeds as CheckboxForView[]).filter(p => p.isSelected === true)
+          .map(p => ({ lookupCode: p.lookupCode, other: p.other}));
+          }
+    if (formValue.needTools && Array.isArray(formValue.needTools)) {
+          formValue.needTools = (formValue.needTools as CheckboxForView[]).filter(p => p.isSelected === true)
+          .map(p => ({ lookupCode: p.lookupCode, other: p.other}));
+          }
+    if (formValue.mainConcerns && Array.isArray(formValue.mainConcerns)) {
+         formValue.mainConcerns = (formValue.mainConcerns as CheckboxForView[]).filter(p => p.isSelected === true)
+         .map(p => ({ lookupCode: p.lookupCode, other: p.other}));
+          }
+    return formValue;
   }
 }
 

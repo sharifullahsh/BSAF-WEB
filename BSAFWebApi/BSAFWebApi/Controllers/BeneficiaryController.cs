@@ -32,14 +32,15 @@ namespace BSAFWebApi.Controllers
         {
             // var beneficiary = await db.Beneficiaries.Where(b => b.BeneficiaryID == id && b.IsActive == true).FirstOrDefaultAsync();
             var beneficiary = await (from b in db.Beneficiaries
-                                    join ind in db.Individuals on b.BeneficiaryID equals ind.BeneficiaryID into familyMember
-                                    where b.IsActive == true
-                                    select new BeneficiaryForListDto
+                                    join ind in db.Individuals on b.BeneficiaryID equals ind.BeneficiaryID
+                                    where b.IsActive == true && ind.IsActive == true
+                                    && (ind.RelationshipCode == "HH" || ind.RelationshipCode == "HSelf")
+                                     select new BeneficiaryForListDto
                                     {
                                         BeneficiaryID = b.BeneficiaryID,
                                         CardID = b.CardID,
-                                        Name = familyMember.Where(f => f.RelationshipCode == "HH" || f.RelationshipCode == "HSelf").Select(i => i.Name).FirstOrDefault(),
-                                        FName = familyMember.Where(f => f.RelationshipCode == "HH" || f.RelationshipCode == "HSelf").Select(i => i.FName).FirstOrDefault(),
+                                        Name = ind.Name,
+                                        FName = ind.FName,
                                         ScreeningDate = b.ScreeningDate,
                                         BorderPoint = b.BorderPoint,
                                         BeneficiaryType = b.BeneficiaryType,
@@ -113,7 +114,7 @@ namespace BSAFWebApi.Controllers
             if (beneficiary != null)
             {
                 var beneficiaryToReturn = _mapper.Map<BeneficiaryFormDto>(beneficiary);
-                var individuals = await db.Individuals.Where(i => i.BeneficiaryID == beneficiary.BeneficiaryID)
+                var individuals = await db.Individuals.Where(i => i.BeneficiaryID == beneficiary.BeneficiaryID && i.IsActive == true)
                     .Select(i =>
                     new IndividualDto
                     {
@@ -174,6 +175,7 @@ namespace BSAFWebApi.Controllers
                         foreach (var ind in model.Individuals)
                         {
                             var member = _mapper.Map<Individual>(model.Individuals);
+                            member.IsActive = true;
                             db.Individuals.Add(member);
                         }
 
@@ -335,8 +337,229 @@ namespace BSAFWebApi.Controllers
 
         // PUT: api/Beneficiary/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        public async Task<IActionResult> Put(int id, [FromBody] BeneficiaryFormDto model)
         {
+            var beneficiaryInDb = db.Beneficiaries.Where(b => b.IsActive == true && b.BeneficiaryID == id).FirstOrDefault();
+            if(beneficiaryInDb == null)
+            {
+                return NotFound("Beneficiary not found.");
+            }
+            if(model != null)
+            {
+                using (var trans = db.Database.BeginTransaction())
+                {
+                    try
+                    {
+                        var currentUser = HttpContext.User;
+                        _mapper.Map(model,beneficiaryInDb);
+                        beneficiaryInDb.LastUpdatedBy = currentUser.Identity.Name;
+                        beneficiaryInDb.LastUpdatedDate = DateTime.Now;
+                        //beneficiaryInDb.upd
+                        db.SaveChanges();
+                        var _Individuals = db.Individuals.Where(x => x.BeneficiaryID == id).ToList();
+                        _Individuals.ForEach(x => x.IsActive = false);
+                        db.SaveChanges();
+                        foreach (var row in model.Individuals)
+                        {
+                            if (row != null)
+                            {
+                                if (row.IndividualID == 0)
+                                {
+                                    var newIndividual = _mapper.Map<Individual>(row);
+                                    newIndividual.BeneficiaryID = model.BeneficiaryID;
+                                    newIndividual.IsActive = true;
+                                    db.Individuals.Add(newIndividual);
+                                    db.SaveChanges();
+                                }
+                                else
+                                {
+                                    var individualInDb = db.Individuals.Where(i => i.BeneficiaryID == model.BeneficiaryID &&
+                                    i.IndividualID == row.IndividualID).FirstOrDefault();
+                                    if(individualInDb != null)
+                                    {
+                                        _mapper.Map(row,individualInDb);
+                                        individualInDb.BeneficiaryID = model.BeneficiaryID;
+                                        individualInDb.IsActive = true;
+                                        db.SaveChanges();
+                                    }
+                                }
+                            }
+                        }
+
+                        db.PSNs.Where(x => x.BeneficiaryID == model.BeneficiaryID).ToList().ForEach(x => db.PSNs.Remove(x));
+
+                        foreach (var psn in model.PSNs)
+                        {
+                            var psnObj = new PSN
+                            {
+                                BeneficiaryID = beneficiaryInDb.BeneficiaryID,
+                                PSNCode = psn.LookupCode,
+                                PSNOther = psn.Other
+                            };
+                            db.PSNs.Add(psnObj);
+                        }
+                        db.ReturnReasons.Where(x => x.BeneficiaryID == model.BeneficiaryID).ToList().ForEach(x => db.ReturnReasons.Remove(x));
+
+                        foreach (var rReason in model.ReturnReasons)
+                        {
+                            var rrObj = new ReturnReason
+                            {
+                                BeneficiaryID = beneficiaryInDb.BeneficiaryID,
+                                ReasonCode = rReason.LookupCode,
+                                Other = rReason.Other
+                            };
+                            db.ReturnReasons.Add(rrObj);
+                        }
+
+                        db.Determinations.Where(x => x.BeneficiaryID == model.BeneficiaryID).ToList().ForEach(x => db.Determinations.Remove(x));
+
+                        foreach (var d in model.Determinations)
+                        {
+                            var dObj = new Determination
+                            {
+                                BeneficiaryID = beneficiaryInDb.BeneficiaryID,
+                                DeterminationCode = d.LookupCode,
+                                AnswerCode = d.AnswerCode,
+                                Other = d.Other
+                            };
+                            db.Determinations.Add(dObj);
+                        }
+
+                        db.MoneySources.Where(x => x.BeneficiaryID == model.BeneficiaryID).ToList().ForEach(x => db.MoneySources.Remove(x));
+
+                        foreach (var m in model.MoneySources)
+                        {
+                            var moneySObj = new MoneySource
+                            {
+                                BeneficiaryID = beneficiaryInDb.BeneficiaryID,
+                                MoneySourceCode = m.LookupCode,
+                                MoneySourceOther = m.Other
+                            };
+                            db.MoneySources.Add(moneySObj);
+                        }
+
+                        db.BroughtItems.Where(x => x.BeneficiaryID == model.BeneficiaryID).ToList().ForEach(x => db.BroughtItems.Remove(x));
+
+                        foreach (var bi in model.BroughtItems)
+                        {
+                            var biObj = new BroughtItem
+                            {
+                                BeneficiaryID = beneficiaryInDb.BeneficiaryID,
+                                ItemCode = bi.LookupCode,
+                                ItemOther = bi.Other
+                            };
+                            db.BroughtItems.Add(biObj);
+                        }
+
+                        db.PostArrivalNeeds.Where(x => x.BeneficiaryID == model.BeneficiaryID).ToList().ForEach(x => db.PostArrivalNeeds.Remove(x));
+
+                        foreach (var p in model.PostArrivalNeeds)
+                        {
+                            var panObj = new PostArrivalNeed
+                            {
+                                BeneficiaryID = beneficiaryInDb.BeneficiaryID,
+                                NeedCode = p.LookupCode,
+                                Provided = p.IsProvided,
+                                ProvidedDate = (DateTime)p.ProvidedDate,
+                                Comment = p.Comment
+                            };
+                            db.PostArrivalNeeds.Add(panObj);
+                        }
+                        db.BenefitedFromOrgs.Where(x => x.BeneficiaryID == model.BeneficiaryID).ToList().ForEach(x => db.BenefitedFromOrgs.Remove(x));
+                        if (model.HaveFamilyBenefited == true)
+                        {
+                            foreach (var a in model.BenefitedFromOrgs)
+                            {
+                                var assisOrgInfo = new BenefitedFromOrg
+                                {
+                                    BeneficiaryID = beneficiaryInDb.BeneficiaryID,
+                                    Date = a.Date,
+                                    ProvinceCode = a.ProvinceCode,
+                                    DistrictID = a.DistrictID,
+                                    Village = a.Village,
+                                    OrgCode = a.OrgCode,
+                                    AssistanceProvided = a.AssistanceProvided
+                                };
+                                db.BenefitedFromOrgs.Add(assisOrgInfo);
+                            }
+                        }
+                        db.Transportations.Where(x => x.BeneficiaryID == model.BeneficiaryID).ToList().ForEach(x => db.Transportations.Remove(x));
+
+                        foreach (var tran in model.Transportations)
+                        {
+                            var tranObj = new Transportation
+                            {
+                                BeneficiaryID = beneficiaryInDb.BeneficiaryID,
+                                TypedCode = tran.LookupCode,
+                                Other = tran.Other
+                            };
+                            db.Transportations.Add(tranObj);
+                        }
+                        db.LivelihoodEmpNeeds.Where(x => x.BeneficiaryID == model.BeneficiaryID).ToList().ForEach(x => db.LivelihoodEmpNeeds.Remove(x));
+
+                        foreach (var li in model.LivelihoodEmpNeeds)
+                        {
+                            var liObj = new LivelihoodEmpNeed
+                            {
+                                BeneficiaryID = beneficiaryInDb.BeneficiaryID,
+                                NeedCode = li.LookupCode
+                            };
+                            db.LivelihoodEmpNeeds.Add(liObj);
+                        }
+
+                        db.NeedTools.Where(x => x.BeneficiaryID == model.BeneficiaryID).ToList().ForEach(x => db.NeedTools.Remove(x));
+
+                        foreach (var needTool in model.NeedTools)
+                        {
+                            var needToolObj = new NeedTool
+                            {
+                                BeneficiaryID = beneficiaryInDb.BeneficiaryID,
+                                ToolCode = needTool.LookupCode,
+                                Other = needTool.Other
+                            };
+                            db.NeedTools.Add(needToolObj);
+                        }
+
+                        db.MainConcerns.Where(x => x.BeneficiaryID == model.BeneficiaryID).ToList().ForEach(x => db.MainConcerns.Remove(x));
+
+                        foreach (var mConcern in model.MainConcerns)
+                        {
+                            var mcObj = new MainConcern
+                            {
+                                BeneficiaryID = beneficiaryInDb.BeneficiaryID,
+                                ConcernCode = mConcern.LookupCode,
+                                Other = mConcern.Other
+                            };
+                            db.MainConcerns.Add(mcObj);
+                        }
+
+                        db.HostCountrySchools.Where(x => x.BeneficiaryID == model.BeneficiaryID).ToList().ForEach(x => db.HostCountrySchools.Remove(x));
+
+                        foreach (var hc in model.HostCountrySchools)
+                        {
+                            var hcObj = new HostCountrySchool
+                            {
+                                BeneficiaryID = beneficiaryInDb.BeneficiaryID,
+                                SchoolTypeCode = hc.LookupCode
+                            };
+                            db.HostCountrySchools.Add(hcObj);
+                        }
+
+                        db.SaveChanges();
+
+                        trans.Commit();
+                        return NoContent();
+                    }
+                    catch (Exception e)
+                    {
+                        trans.Rollback();
+                        throw new Exception($"Updating failed on save");
+                    }
+                }
+
+            }
+
+            return NoContent();
         }
 
         // DELETE: api/ApiWithActions/5

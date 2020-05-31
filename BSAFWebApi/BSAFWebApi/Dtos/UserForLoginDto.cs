@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BSAFWebApi.Dtos
 {
-    public class UserModelDto
+    public class UserForLoginDto
     {
         [Required]
         public string Username { get; set; }

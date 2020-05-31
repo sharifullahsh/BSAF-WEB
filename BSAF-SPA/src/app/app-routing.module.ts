@@ -1,5 +1,5 @@
 import { MainlayoutComponent } from './mainlayout/mainlayout.component';
-import { UserManagementComponent } from './user-management/user-management.component';
+import { UserManagementComponent } from './admin/user-management/user-management.component';
 import { LoginComponent } from './login/login.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';

@@ -20,9 +20,8 @@ import { PageNotFoundComponent } from './page-not-found/page-not-found.component
 import { LoginComponent } from './login/login.component';
 import { MainlayoutComponent } from './mainlayout/mainlayout.component';
 import { JwtModule } from '@auth0/angular-jwt';
-import { UserManagementComponent } from './user-management/user-management.component';
+import { UserManagementComponent } from './admin/user-management/user-management.component';
 import { HasRoleDirective } from './_directives/has-role.directive';
-import { IndividualsComponent } from './beneficiary/individuals/individuals.component';
 import { IndividualDialogComponent } from './beneficiary/individual-dialog/individual-dialog.component';
 import { TestFormComponent } from './test-form/test-form.component';
 import { LayoutModule } from '@angular/cdk/layout';
@@ -36,8 +35,9 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatCardModule } from '@angular/material/card';
 import { ReactiveFormsModule } from '@angular/forms';
-import { IndividualFormDialogComponent } from './beneficiary/dialog/individual-dialog/individual-form/individual-form-dialog.component';
-import { IndividualDeleteDialogComponent } from './beneficiary/dialog/individual-dialog/individual-delete/individual-delete-dialog.component';
+import { IndividualFormDialogComponent } from './beneficiary/dialog/individual-form/individual-form-dialog.component';
+import { DeleteDialogComponent } from './shared/dialog/delete/delete-dialog.component';
+import { AddUserDialogComponent } from './admin/dialog/add-user-dialog/add-user-dialog.component';
 
 export function tokenGetter() {
   return localStorage.getItem('token');
@@ -54,11 +54,11 @@ export function tokenGetter() {
     MainlayoutComponent,
     UserManagementComponent,
     HasRoleDirective,
-    IndividualsComponent,
     IndividualDialogComponent,
     IndividualFormDialogComponent,
     TestFormComponent,
-    IndividualDeleteDialogComponent,
+    DeleteDialogComponent,
+    AddUserDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -87,8 +87,10 @@ export function tokenGetter() {
     ReactiveFormsModule,
 
   ],
-  providers: [AuthService, AdminService, AuthGuard, HttpInterceptorService, LookupService],
-  entryComponents: [IndividualDialogComponent, IndividualFormDialogComponent, IndividualDeleteDialogComponent],
+  providers: [AuthService, AdminService, AuthGuard,
+     HttpInterceptorService, LookupService],
+  entryComponents: [IndividualDialogComponent, IndividualFormDialogComponent,
+    DeleteDialogComponent, AddUserDialogComponent],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

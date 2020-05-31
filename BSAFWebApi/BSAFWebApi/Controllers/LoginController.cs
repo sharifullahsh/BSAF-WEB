@@ -1,4 +1,5 @@
-﻿using BSAF.Models;
+﻿using AutoMapper;
+using BSAF.Models;
 using BSAFWebApi.Dtos;
 using BSAFWebApi.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -25,23 +26,30 @@ namespace BSAFWebApi.Controllers
         private readonly IConfiguration _config;
         private UserManager<ApplicationUser> _userManager = null;
         private SignInManager<ApplicationUser> _signInManager = null;
+        private readonly IMapper _mapper;
+
         //private readonly RoleManager<IdentityRole> _roleManager;
         BWDbContext db = null;
 
         public LoginController(IConfiguration config, UserManager<ApplicationUser> userManager,
         SignInManager<ApplicationUser> signInManager, 
+        IMapper mapper,
         //RoleManager<IdentityRole> rolMgr,
         BWDbContext context)
         {
             _config = config;
             _userManager = userManager;
             _signInManager = signInManager;
+            _mapper = mapper;
             //_roleManager = rolMgr;
             db = context;
         }
+
+        public IMapper Mapper { get; }
+
         [AllowAnonymous]
         [HttpPost("login")]
-        public async Task<IActionResult> Login([FromBody] UserModelDto model)
+        public async Task<IActionResult> Login([FromBody] UserForLoginDto model)
         {
             var user = await _userManager.FindByNameAsync(model.Username);
             if (user == null)
@@ -59,9 +67,11 @@ namespace BSAFWebApi.Controllers
             {
                 var appUser = await _userManager.Users
                     .FirstOrDefaultAsync(u => u.NormalizedUserName == model.Username.ToUpper());
+                var userToReturn = _mapper.Map<UserForListDto>(user);
                 return Ok(new
                 {
                     token = GenerateJwtToken(appUser).Result,
+                    user = userToReturn
                 });
             }
             return Unauthorized();
