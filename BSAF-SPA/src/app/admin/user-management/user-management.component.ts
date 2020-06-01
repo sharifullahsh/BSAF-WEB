@@ -1,3 +1,4 @@
+import { DeleteDialogComponent } from 'src/app/shared/dialog/delete/delete-dialog.component';
 import { UserService } from './../../_services/user.service';
 import { AlertifyService } from '../../_services/alertify.service';
 import { AdminService } from '../../_services/admin.service';
@@ -8,6 +9,7 @@ import { MatTable, MatTableDataSource } from '@angular/material/table';
 import { User } from '../../models/User';
 import { MatDialog } from '@angular/material/dialog';
 import { AddUserDialogComponent } from '../dialog/add-user-dialog/add-user-dialog.component';
+import { EditUserDialogComponent } from '../dialog/edit-user-dialog/edit-user-dialog.component';
 
 @Component({
   selector: 'app-user-management',
@@ -29,10 +31,10 @@ export class UserManagementComponent implements AfterViewInit, OnInit {
              public userService: UserService){
  }
   ngOnInit() {
-    this.getUsersWithRoles();
+    this.getAllUserWithRoles();
   }
-  getUsersWithRoles(){
-    this.userService.getUsersWithRoles().subscribe((users: User[]) => {
+  getAllUserWithRoles(){
+    this.userService.getAllUserWithRoles().subscribe((users: User[]) => {
       this.dataSource = new MatTableDataSource(users);
       this.dataSource.paginator = this.paginator;
       this.table.dataSource = this.dataSource;
@@ -55,8 +57,23 @@ export class UserManagementComponent implements AfterViewInit, OnInit {
     this.searchKey = '';
     this.applyFilter();
   }
-  DisableUser(userId: number){
-     console.log("user is >>>>>>>>>>> "+ userId);
+  deleteUser(userId: string){
+     const dialogRef = this.dialog.open(DeleteDialogComponent, {
+      width: '30%',
+      data: {title: 'Delete User', description: 'Are you sure to delete this user?'}
+    });
+     dialogRef.afterClosed().subscribe(result => {
+      if (result === 1){
+        this.userService.deleteUser(userId).subscribe((response: any)=>{
+          this.getAllUserWithRoles();
+          //this.table.renderRows();
+          this.alertifyService.success('User has been deleted');
+        },error =>{
+          this.alertifyService.error('Unable to delete the user');
+        })
+        console.log("delete yes clicked");
+      }
+    });
   }
   addUser(){
     const dialogRef = this.dialog.open(AddUserDialogComponent, {
@@ -65,7 +82,24 @@ export class UserManagementComponent implements AfterViewInit, OnInit {
     });
     dialogRef.afterClosed().subscribe(result => {
       if (result === 1){
-        this.getUsersWithRoles();
+        this.getAllUserWithRoles();
+      }
+    });
+  }
+  editUser(user: User){
+    if (!user){
+      return;
+    }
+    this.userService.editUserForm.patchValue({
+      ...user
+    });
+    const dialogRef = this.dialog.open(EditUserDialogComponent, {
+      width: '60%',
+      data: {}
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      if (result === 1){
+        this.getAllUserWithRoles();
       }
     });
   }

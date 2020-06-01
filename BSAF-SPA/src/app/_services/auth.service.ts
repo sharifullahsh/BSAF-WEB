@@ -68,7 +68,6 @@ constructor(private http: HttpClient,
     if (this.currentUser) {
       return this.currentUser;
     }
-    console.log(JSON.parse(localStorage.getItem('user')));
     this.currentUser = JSON.parse(localStorage.getItem('user'));
     return this.currentUser;
   }

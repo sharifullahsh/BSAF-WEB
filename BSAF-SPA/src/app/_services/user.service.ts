@@ -19,7 +19,7 @@ export class UserService {
      'DataEntry'
    ];
 
- userForm: FormGroup = this.fb.group({
+   addUserForm: FormGroup = this.fb.group({
     userName: [null,
     {
       validators: [Validators.required],
@@ -31,14 +31,31 @@ export class UserService {
     confirmPassword: [null, Validators.required],
     roles: [null, Validators.required]
   }, {validator : MustMatch('password', 'confirmPassword')});
+
+  editUserForm: FormGroup = this.fb.group({
+    id: [null],
+    userName: [{value: null, disabled: true}],
+    displayName: [null, Validators.required],
+    roles: [null, Validators.required]
+  });
+
 constructor(public fb: FormBuilder,
             private http: HttpClient,
             public uniqueUserNameValidator: UniqueUserNameValidator) { }
-getUsersWithRoles(){
-    return this.http.get(this.baseUrl + 'admin/usersWithRoles');
+getAllUserWithRoles(){
+    return this.http.get(this.baseUrl + 'admin/allUserWithRoles');
+  }
+getUserWithRoles(){
+    return this.http.get(this.baseUrl + 'admin/userWithRoles');
   }
   addUser(){
-    return this.http.post(this.baseUrl + 'admin/register', this.userForm.value);
+    return this.http.post(this.baseUrl + 'admin/register', this.addUserForm.value);
+  }
+  editUser(){
+    return this.http.post(this.baseUrl + 'admin/editUser/' + this.editUserForm.getRawValue().userName, this.editUserForm.getRawValue());
+  }
+  deleteUser(userId: string) {
+    return this.http.delete(this.baseUrl + 'admin/deleteUser/' + userId);
   }
 
 }

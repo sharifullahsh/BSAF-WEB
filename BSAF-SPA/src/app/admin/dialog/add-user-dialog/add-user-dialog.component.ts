@@ -20,28 +20,27 @@ export class AddUserDialogComponent implements OnInit {
   ) { }
 
  get f(){
-  return this.userService.userForm.controls;
+  return this.userService.addUserForm.controls;
  }
 
   ngOnInit(): void {
   }
   cancelClick(){
-    this.userService.userForm.reset();
+    this.userService.addUserForm.reset();
     this.dialogRef.close();
   }
   addUser(){
     this.userSubmitted = true;
-    console.log("form valid "+ this.userService.userForm.valid);
-    if(this.userService.userForm.invalid){
+    if( this.userService.addUserForm.invalid){
       return;
     }
     this.userService.addUser().subscribe((response: any) => {
       this.alertifyService.success('User created successfully');
-      this.userService.userForm.reset();
+      this.userService.addUserForm.reset();
       this.dialogRef.close(1);
     }, error => {
       this.alertifyService.error('Unable to create user');
-    })   
+    });
   }
 
 }

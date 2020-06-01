@@ -7,8 +7,6 @@ import {
 import { Observable, of } from 'rxjs';
 import { map} from 'rxjs/internal/operators/map';
 import { catchError } from 'rxjs/internal/operators/catchError';
-import { UserService } from 'src/app/_services/user.service';
-import { delay } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 
@@ -16,7 +14,7 @@ import { environment } from 'src/environments/environment';
 export class UniqueUserNameValidator implements AsyncValidator {
   baseUrl = environment.apiUrl;
 
-  constructor(public userService: UserService, private http: HttpClient) {}
+  constructor(private http: HttpClient) {}
 
  validate(
     ctrl: AbstractControl

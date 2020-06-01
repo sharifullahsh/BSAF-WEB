@@ -8,7 +8,9 @@ namespace BSAFWebApi.Dtos
 {
     public class UserForUpdateDto
     {
-        public string[] RoleNames { get; set; }
+        public string id { get; set; }
+        public string displayName { get; set; }
+        public string[] Roles { get; set; }
 
     }
 }

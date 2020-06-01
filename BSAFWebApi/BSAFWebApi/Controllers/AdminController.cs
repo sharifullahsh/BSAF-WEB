@@ -29,12 +29,39 @@ namespace BSAFWebApi.Controllers
             _roleManager = rolMgr;
             _cotext = cotext;
         }
+        
         [AllowAnonymous]
-        [HttpGet("usersWithRoles")]
-        public async Task<IActionResult> GetUsersWithRoles()
+        [HttpGet("userWithRoles/{id}")]
+        public async Task<IActionResult> GetUserWithRoles(string id)
         {
             var userList = await (from user in _cotext.Users
                                   orderby user.Created descending
+                                  where user.IsDeleted == false && user.Id == id
+                                  select new
+                                  {
+                                      user.Id,
+                                      user.UserName,
+                                      user.DisplayName,
+                                      user.StationCode,
+                                      Roles = (from userRole in _cotext.UserRoles
+                                               join role in _cotext.Roles
+                                               on userRole.RoleId
+                                               equals role.Id
+                                               where userRole.UserId == user.Id
+                                               select role.Name).ToList()
+
+                                  }).FirstOrDefaultAsync();
+            return Ok(userList);
+
+        }
+
+        [AllowAnonymous]
+        [HttpGet("allUserWithRoles")]
+        public async Task<IActionResult> GetAllUserWithRoles()
+        {
+            var userList = await (from user in _cotext.Users
+                                  orderby user.Created descending
+                                  where user.IsDeleted == false && user.UserName != "admin"
                                   select new
                                   {
                                        user.Id,
@@ -81,6 +108,8 @@ namespace BSAFWebApi.Controllers
             }
             return BadRequest("Failed to register user");
         }
+
+        [AllowAnonymous]
         [HttpPost("editUser/{userName}")]
         public async Task<IActionResult> EditUser(string userName,[FromBody] UserForUpdateDto model)
         {
@@ -88,7 +117,7 @@ namespace BSAFWebApi.Controllers
 
             var userRoles = await _userManager.GetRolesAsync(user);
 
-            var selectedRoles = model.RoleNames;
+            var selectedRoles = model.Roles;
             selectedRoles = selectedRoles ?? new string[] { };
 
             var result = _userManager.AddToRolesAsync(user, selectedRoles.Except(userRoles)).Result;
@@ -96,15 +125,15 @@ namespace BSAFWebApi.Controllers
             {
                 return BadRequest("Failed to add to roles");
             }
-            var test =new string[] { };
+          
             result = await _userManager.RemoveFromRolesAsync(user, userRoles.Except(selectedRoles));
-           
+            var test = await _userManager.GetRolesAsync(user);
             if (!result.Succeeded)
             {
               
                 return BadRequest("Failed to remove the roles");
             }
-            return Ok(await _userManager.GetRolesAsync(user));
+            return Ok();
         }
         
         [HttpGet("isUserNameAvailable/{userName}")]
@@ -120,6 +149,22 @@ namespace BSAFWebApi.Controllers
             return isTaken;
         }
 
+        //[Authorize(Roles = "Admin")]
+        [HttpDelete("deleteUser/{id}")]
+        public async Task<IActionResult> DeleteUser(string id)
+        {
+            var user = await _userManager.FindByIdAsync(id);
+            user.IsDeleted = true;
+
+            var result = await _userManager.UpdateAsync(user);
+
+            if (result.Succeeded)
+            {
+                return Ok();
+            }
+
+            return BadRequest(result.Errors.ToString());
+        }
         [HttpGet("test")]
         [AllowAnonymous]
         public IActionResult test()

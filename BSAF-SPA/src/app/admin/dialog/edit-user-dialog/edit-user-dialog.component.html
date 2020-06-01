@@ -1,72 +1,35 @@
-<!-- [mat-dialog-close]="data.animal" -->
-<form [formGroup]="userService.formModalUser" novalidate (ngSubmit)="addIndividual()">
-    <h1 mat-dialog-title>Add User</h1>
-    <input type="hidden" formControlName="individualID">
+<form [formGroup]="userService.editUserForm" novalidate (ngSubmit)="editUser()">
+    <h1 mat-dialog-title>Edit User</h1>
     <div mat-dialog-content>
-        <div fxLayout="row" fxLayoutGap="32px">
+        <div fxLayout="column">
             <mat-form-field class="full-width" fxFlex="0 1 calc(50% - 32px)">
-                <input formControlName="name" matInput placeholder="Name">
+                <input matInput formControlName="userName" [attr.disabled]="true" placeholder="User Name">
             </mat-form-field>
             <mat-form-field class="full-width" fxFlex="0 1 calc( 50% - 32px)">
-                <input formControlName="fName" matInput placeholder="Faher Name">
+                <input formControlName="displayName" matInput placeholder="Display Name">
+                <mat-error *ngIf="userSubmitted && f.displayName.hasError('required')">
+                    Display name is <strong>required</strong>
+                </mat-error>
             </mat-form-field>
-        </div>
-        <div fxLayout="row" fxLayoutGap="32px">
-            <mat-form-field class="full-width" fxFlex="0 1 calc( 50% - 32px)">
-                <mat-select formControlName="genderCode" placeholder="Gender">
-                    <mat-option *ngFor="let gender of initialLooupsData?.gender" [value]="gender.lookupCode">
-                        {{ gender.lookupName }}
-                    </mat-option>
+            <mat-form-field>
+                <mat-label>Roles</mat-label>
+                <mat-select formControlName="roles" multiple>
+                    <!-- <mat-select-trigger>
+                        {{Rolse.value ? toppings.value[0] : ''}}
+                        <span *ngIf="Rolse.value?.length > 1" class="example-additional-selection">
+                      (+{{Rolse.value.length - 1}} {{Rolse.value?.length === 2 ? 'other' : 'others'}})
+                    </span>
+                    </mat-select-trigger> -->
+                    <mat-option *ngFor="let role of userService.availableRoles" [value]="role">{{role}}</mat-option>
                 </mat-select>
-            </mat-form-field>
-            <mat-form-field class="full-width" fxFlex="0 1 calc( 50% - 32px)">
-                <mat-select formControlName="maritalStatusCode" placeholder="Marital Status">
-                    <mat-option *ngFor="let mStatus of initialLooupsData?.maritalStatus" [value]="mStatus.lookupCode">
-                        {{ mStatus.lookupName }}
-                    </mat-option>
-                </mat-select>
-            </mat-form-field>
-        </div>
-        <div fxLayout="row" fxLayoutGap="32px">
-            <mat-form-field class="full-width" fxFlex="0 1 calc( 50% - 32px)">
-                <input formControlName="age" type="number" matInput placeholder="Age">
-            </mat-form-field>
-            <mat-form-field class="full-width" fxFlex="0 1 calc( 50% - 32px)">
-                <mat-select formControlName="relationshipCode" placeholder="Relationship">
-                    <mat-option *ngFor="let relationship of initialLooupsData?.relationships" [value]="relationship.lookupCode">
-                        {{ relationship.lookupName }}
-                    </mat-option>
-                </mat-select>
-            </mat-form-field>
-        </div>
-        <div fxLayout="row" fxLayoutGap="32px">
-            <mat-form-field class="full-width" fxFlex="0 1 calc( 50% - 32px)">
-                <mat-select formControlName="idTypeCode" placeholder="ID Type">
-                    <mat-option *ngFor="let idType of initialLooupsData?.idTypes" [value]="idType.lookupCode">
-                        {{ idType.lookupName }}
-                    </mat-option>
-                </mat-select>
-            </mat-form-field>
-            <mat-form-field class="full-width" fxFlex="0 1 calc( 50% - 32px)">
-                <input formControlName="idNo" matInput placeholder="ID #">
-            </mat-form-field>
-        </div>
-        <div fxLayout="row">
-            <mat-form-field class="full-width" fxFlex="0 1 calc( 100% - 0px)">
-                <input formControlName="contactNumber" matInput placeholder="Contact No">
-            </mat-form-field>
-        </div>
-        <div fxLayout="row" style="text-align: right;" fxLayoutGap="32px">
-            <mat-form-field class="full-width" fxFlex="0 1 calc( 50% - 32px)">
-                <input style="text-align: right;" formControlName="drName" matInput placeholder="نوم/نام" style="text-align: right;">
-            </mat-form-field>
-            <mat-form-field style="text-align: right;" class="full-width" fxFlex="0 1 calc( 50% - 32px)">
-                <input formControlName="drFName" matInput placeholder="ولد" style="text-align: right;">
+                <mat-error *ngIf="userSubmitted && f.roles.hasError('required')">
+                    Roles name is <strong>required</strong>
+                </mat-error>
             </mat-form-field>
         </div>
     </div>
     <div mat-dialog-actions align="end">
         <button mat-button type="button" (click)="cancelClick()">Cancle</button>
-        <button mat-button mat-raised-button color="primary" cdkFocusInitial>Save</button>
+        <button mat-button mat-raised-button color="primary" type="submit" cdkFocusInitial>Save</button>
     </div>
 </form>

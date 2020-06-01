@@ -688,7 +688,7 @@ deleteIndividual(i: number){
   // window.alert(i);
   const dialogRef = this.dialog.open(DeleteDialogComponent, {
     width: '300px',
-    // data: {}
+     data: {title: 'Delete Family Member', description: 'Are you sure to delte this family member?'}
   });
 
   dialogRef.afterClosed().subscribe(result => {
@@ -846,7 +846,7 @@ onSubmit() {
 deleteBeneficiary(){
   const dialogRef = this.dialog.open(DeleteDialogComponent, {
     width: '500px',
-    // data: {}
+     data: {title: 'Delete Beneficiary', description: 'Are you sure to delete this beneficiary?'}
   });
 
   dialogRef.afterClosed().subscribe(result => {

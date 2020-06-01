@@ -1,3 +1,4 @@
+import { EditUserDialogComponent } from './admin/dialog/edit-user-dialog/edit-user-dialog.component';
 import { LookupService } from 'src/app/_services/lookup.service';
 import { AdminService } from './_services/admin.service';
 import { AuthGuard } from './_guards/auth.guard';
@@ -58,7 +59,8 @@ export function tokenGetter() {
     IndividualFormDialogComponent,
     TestFormComponent,
     DeleteDialogComponent,
-    AddUserDialogComponent
+    AddUserDialogComponent,
+    EditUserDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -90,7 +92,7 @@ export function tokenGetter() {
   providers: [AuthService, AdminService, AuthGuard,
      HttpInterceptorService, LookupService],
   entryComponents: [IndividualDialogComponent, IndividualFormDialogComponent,
-    DeleteDialogComponent, AddUserDialogComponent],
+    DeleteDialogComponent, AddUserDialogComponent, EditUserDialogComponent],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
