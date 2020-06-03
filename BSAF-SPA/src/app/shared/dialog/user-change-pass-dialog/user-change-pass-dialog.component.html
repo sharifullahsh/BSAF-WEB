@@ -1,0 +1,36 @@
+<!-- [mat-dialog-close]="data.animal" -->
+<form [formGroup]="userService.userChangePasswordForm" novalidate (ngSubmit)="changePassword()">
+    <h1 mat-dialog-title>Change Password</h1>
+    <div mat-dialog-content>
+        <div fxLayout="column">
+            <mat-form-field class="full-width">
+                <input type="password" formControlName="currentPassword" matInput placeholder="Current Password">
+                <mat-error *ngIf="userSubmitted && f.currentPassword.hasError('required')">
+                    Current password is <strong>required</strong>
+                </mat-error>
+            </mat-form-field>
+            <mat-form-field class="full-width">
+                <input type="password" formControlName="newPassword" matInput placeholder="New Password">
+                <mat-error *ngIf="f.newPassword.hasError('minLength')">
+                    Password should be minim 4 characters
+                </mat-error>
+                <mat-error *ngIf="userSubmitted && f.newPassword.hasError('required')">
+                    Password is <strong>required</strong>
+                </mat-error>
+            </mat-form-field>
+            <mat-form-field class="full-width">
+                <input type="password" formControlName="confirmNewPassword" matInput placeholder="Confirm new password">
+                <mat-error *ngIf="userSubmitted && f.confirmNewPassword.hasError('required')">
+                    Confirm password is <strong>required</strong>
+                </mat-error>
+                <mat-error *ngIf="f.confirmNewPassword.errors?.mustMatch">
+                    Confirm password <strong>not match</strong>
+                </mat-error>
+            </mat-form-field>
+        </div>
+    </div>
+    <div mat-dialog-actions align="end">
+        <button mat-button type="button" (click)="cancelClick()">Cancle</button>
+        <button mat-button mat-raised-button color="primary" cdkFocusInitial>Change</button>
+    </div>
+</form>

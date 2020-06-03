@@ -38,7 +38,19 @@ export class UserService {
     displayName: [null, Validators.required],
     roles: [null, Validators.required]
   });
-
+  adminChangePasswordForm: FormGroup = this.fb.group({
+    id: [null],
+    password: [null, Validators.required],
+    currentPassword: [null, Validators.required],
+    newPassword: [null, Validators.required],
+    confirmNewPassword: [null, Validators.required],
+  }, {validator : MustMatch('newPassword', 'confirmNewPassword')});
+  userChangePasswordForm: FormGroup = this.fb.group({
+    id: [null],
+    currentPassword: [null, Validators.required],
+    newPassword: [null, [Validators.required, Validators.minLength(4)]],
+    confirmNewPassword: [null, Validators.required],
+  }, {validator : MustMatch('newPassword', 'confirmNewPassword')});
 constructor(public fb: FormBuilder,
             private http: HttpClient,
             public uniqueUserNameValidator: UniqueUserNameValidator) { }
@@ -57,5 +69,13 @@ getUserWithRoles(){
   deleteUser(userId: string) {
     return this.http.delete(this.baseUrl + 'admin/deleteUser/' + userId);
   }
-
+  adminChangePassword() {
+    const formData = this.adminChangePasswordForm.value;
+    return this.http.post(this.baseUrl + 'admin/adminChangeUserPassword/' +
+    formData.id, formData);
+  }
+  userChangePassword() {
+    const formData = this.userChangePasswordForm.value;
+    return this.http.post(this.baseUrl + 'admin/userChangePassword', formData);
+  }
 }

@@ -60,7 +60,7 @@
                             <button mat-icon-button mat-mini-fab color="primary" (click)="editUser(row)" title="Edit user" aria-label="Edit user">
                             <mat-icon>edit</mat-icon>
                         </button>
-                            <button mat-icon-button mat-mini-fab color="disabled" title="Change password user" aria-label="Change user password">
+                            <button mat-icon-button mat-mini-fab color="disabled" title="Change password user" (click)="changePassword(row.id)" aria-label="Change user password">
                             <mat-icon>vpn_key</mat-icon>
                         </button>
                         </td>

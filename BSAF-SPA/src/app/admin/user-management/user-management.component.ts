@@ -1,3 +1,4 @@
+import { AdminChangePassDialogComponent } from './../dialog/admin-change-pass-dialog/admin-change-pass-dialog.component';
 import { DeleteDialogComponent } from 'src/app/shared/dialog/delete/delete-dialog.component';
 import { UserService } from './../../_services/user.service';
 import { AlertifyService } from '../../_services/alertify.service';
@@ -100,6 +101,22 @@ export class UserManagementComponent implements AfterViewInit, OnInit {
     dialogRef.afterClosed().subscribe(result => {
       if (result === 1){
         this.getAllUserWithRoles();
+      }
+    });
+  }
+  changePassword(userId: string){
+    if (!userId){
+      return;
+    }
+    this.userService.adminChangePasswordForm.patchValue({
+      id: userId
+    });
+    const dialogRef = this.dialog.open(AdminChangePassDialogComponent, {
+      width: '40%',
+      data: {}
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      if (result === 1){
       }
     });
   }

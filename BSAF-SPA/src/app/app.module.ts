@@ -1,3 +1,4 @@
+import { AdminChangePassDialogComponent } from './admin/dialog/admin-change-pass-dialog/admin-change-pass-dialog.component';
 import { EditUserDialogComponent } from './admin/dialog/edit-user-dialog/edit-user-dialog.component';
 import { LookupService } from 'src/app/_services/lookup.service';
 import { AdminService } from './_services/admin.service';
@@ -39,6 +40,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { IndividualFormDialogComponent } from './beneficiary/dialog/individual-form/individual-form-dialog.component';
 import { DeleteDialogComponent } from './shared/dialog/delete/delete-dialog.component';
 import { AddUserDialogComponent } from './admin/dialog/add-user-dialog/add-user-dialog.component';
+import { UserChangePassDialogComponent } from './shared/dialog/user-change-pass-dialog/user-change-pass-dialog.component';
 
 export function tokenGetter() {
   return localStorage.getItem('token');
@@ -60,7 +62,9 @@ export function tokenGetter() {
     TestFormComponent,
     DeleteDialogComponent,
     AddUserDialogComponent,
-    EditUserDialogComponent
+    EditUserDialogComponent,
+    AdminChangePassDialogComponent,
+    UserChangePassDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -92,7 +96,8 @@ export function tokenGetter() {
   providers: [AuthService, AdminService, AuthGuard,
      HttpInterceptorService, LookupService],
   entryComponents: [IndividualDialogComponent, IndividualFormDialogComponent,
-    DeleteDialogComponent, AddUserDialogComponent, EditUserDialogComponent],
+    DeleteDialogComponent, AddUserDialogComponent, EditUserDialogComponent,
+  AdminChangePassDialogComponent,UserChangePassDialogComponent],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

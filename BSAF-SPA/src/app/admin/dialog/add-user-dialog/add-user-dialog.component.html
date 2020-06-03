@@ -34,13 +34,13 @@
                 </mat-error>
             </mat-form-field>
             <mat-form-field class="full-width">
-                <input formControlName="password" matInput placeholder="Password">
+                <input type="password" formControlName="password" matInput placeholder="Password">
                 <mat-error *ngIf="userSubmitted && f.password.hasError('required')">
                     Password is <strong>required</strong>
                 </mat-error>
             </mat-form-field>
             <mat-form-field class="full-width">
-                <input formControlName="confirmPassword" matInput placeholder="Confirm password">
+                <input type="password" formControlName="confirmPassword" matInput placeholder="Confirm password">
                 <mat-error *ngIf="userSubmitted && f.confirmPassword.hasError('required')">
                     Confirm password is <strong>required</strong>
                 </mat-error>

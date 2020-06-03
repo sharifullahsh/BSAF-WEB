@@ -36,9 +36,9 @@
                         <mat-icon>account_circle</mat-icon>
                       </button>
                     <mat-menu #menu="matMenu" fxf>
-                        <button mat-menu-item>
-                          <mat-icon>perm_identity</mat-icon>
-                          <span>Profile</span>
+                        <button mat-menu-item (click)="changePassword()">
+                          <mat-icon>vpn_key</mat-icon>
+                          <span>Change Password</span>
                         </button>
                         <button mat-menu-item (click)="logout()">
                           <mat-icon>exit_to_app</mat-icon>

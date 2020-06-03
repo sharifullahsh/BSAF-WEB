@@ -165,6 +165,41 @@ namespace BSAFWebApi.Controllers
 
             return BadRequest(result.Errors.ToString());
         }
+
+        [Authorize(Roles = "Admin")]
+        [HttpPost("adminChangeUserPassword/{id}")]
+        public async Task<IActionResult> AdminChangeUserPassword(string id,[FromBody]AdminChangeUserPasswordDto model)
+        {
+            var user = await _userManager.FindByIdAsync(id);
+            if (user == null)
+            {
+                return NotFound();
+            }
+            var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+           
+            var result = await _userManager.ResetPasswordAsync(user, token, model.Password);
+
+            if (result.Succeeded)
+            {
+                return Ok();
+            }
+
+            return BadRequest(result.Errors.ToString());
+        }
+        [Authorize]
+        [HttpPost("userChangePassword")]
+        public async Task<IActionResult> UserChangePassword(UserPasswordChangeDto userPassChangeDto)
+        {
+            var user = await _userManager.FindByIdAsync(userPassChangeDto.Id.ToString());
+            var result = await _userManager.ChangePasswordAsync(user, userPassChangeDto.CurrentPassword, userPassChangeDto.NewPassword);
+
+            if (result.Succeeded)
+            {
+                return Ok();
+            }
+
+            return BadRequest(result.Errors.ToString());
+        }
         [HttpGet("test")]
         [AllowAnonymous]
         public IActionResult test()
