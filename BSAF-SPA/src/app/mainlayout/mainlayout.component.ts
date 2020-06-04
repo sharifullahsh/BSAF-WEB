@@ -34,7 +34,7 @@ export class MainlayoutComponent implements OnInit{
   this.authService.logout();
  }
 
-changePassword(userId: string){
+changePassword(){
   if (!this.currentUser){
     return;
   }

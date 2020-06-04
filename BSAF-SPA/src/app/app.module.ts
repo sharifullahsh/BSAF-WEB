@@ -41,6 +41,7 @@ import { IndividualFormDialogComponent } from './beneficiary/dialog/individual-f
 import { DeleteDialogComponent } from './shared/dialog/delete/delete-dialog.component';
 import { AddUserDialogComponent } from './admin/dialog/add-user-dialog/add-user-dialog.component';
 import { UserChangePassDialogComponent } from './shared/dialog/user-change-pass-dialog/user-change-pass-dialog.component';
+import { PreventUnsavedChangesGuard } from './_guards/prevent-unsaved-changes.guard';
 
 export function tokenGetter() {
   return localStorage.getItem('token');
@@ -94,10 +95,10 @@ export function tokenGetter() {
 
   ],
   providers: [AuthService, AdminService, AuthGuard,
-     HttpInterceptorService, LookupService],
+     HttpInterceptorService, LookupService, PreventUnsavedChangesGuard],
   entryComponents: [IndividualDialogComponent, IndividualFormDialogComponent,
     DeleteDialogComponent, AddUserDialogComponent, EditUserDialogComponent,
-  AdminChangePassDialogComponent,UserChangePassDialogComponent],
+  AdminChangePassDialogComponent, UserChangePassDialogComponent],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

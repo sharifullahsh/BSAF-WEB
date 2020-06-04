@@ -8,6 +8,7 @@ body {
 body {
     margin: 0;
     font-family: Roboto, "Helvetica Neue", sans-serif;
+    font-size: 14px !important;
 }
 
 .hide {
@@ -27,16 +28,6 @@ body {
 .infoAlert {
     background-color: #17a2b8!important;
     color: white;
-}
-
-html,
-body {
-    height: 100%;
-}
-
-body {
-    margin: 0;
-    font-family: Roboto, "Helvetica Neue", sans-serif;
 }
 
 .p5 {

@@ -6,9 +6,10 @@ import { PageNotFoundComponent } from './page-not-found/page-not-found.component
 import { BeneficiarySearchComponent } from './beneficiary/beneficiary-search/beneficiary-search.component';
 import { BeneficiaryFormComponent } from './beneficiary/beneficiary-form/beneficiary-form.component';
 import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
+import { Routes, RouterModule, CanDeactivate } from '@angular/router';
 import { AuthGuard } from './_guards/auth.guard';
 import { BeneficiaryResolverService } from './_resolvers/beneficiary-resolver.service';
+import { PreventUnsavedChangesGuard } from './_guards/prevent-unsaved-changes.guard';
 
 const routes: Routes = [
   {path: 'login', component: LoginComponent},
@@ -21,7 +22,7 @@ const routes: Routes = [
        component: BeneficiaryFormComponent,
        resolve: {
         initialLookups: BeneficiaryResolverService
-      }
+      }, canDeactivate: [PreventUnsavedChangesGuard]
       },
     {path: 'beneficiarySearch', component: BeneficiarySearchComponent},
     {path: 'userManagement',  data: { roles: ['Admin']}, canActivate: [AuthGuard], component: UserManagementComponent},
