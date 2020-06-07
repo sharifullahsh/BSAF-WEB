@@ -12,4 +12,7 @@ export class DashboardService {
   getTileData(){
     return this.http.get(this.baseUrl + 'dashboard/getTileData');
   }
+  getChartsData(formData:any){
+    return this.http.post(this.baseUrl + 'dashboard/getChartsData', formData);
+  }
 }

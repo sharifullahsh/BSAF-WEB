@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using BSAFWebApi.Dtos;
 using BSAFWebApi.Models;
+using BSAFWebApi.Models.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -15,9 +16,11 @@ namespace BSAFWebApi.Controllers
     public class DashboardController : ControllerBase
     {
         private readonly BWDbContext db = null;
+        BeneficiaryRepository beneficiaryRepositor = null;
         public DashboardController(BWDbContext context)
         {
             db = context;
+            beneficiaryRepositor  = new BeneficiaryRepository(db);
         }
         [AllowAnonymous]
         [HttpGet("getTileData")]
@@ -31,6 +34,14 @@ namespace BSAFWebApi.Controllers
                 TotalIndividualCases = db.Beneficiaries.Where(b => b.BeneficiaryType == "Individual").Count()
             };
             return  Ok(tileData);
+        }
+        [AllowAnonymous]
+        [HttpPost("getChartsData")]
+        public async Task<IActionResult> GetChartsData(DashboardSearchDto searchModel)
+        {
+            DashboardChartstDto model = new DashboardChartstDto();
+            model.bcp = beneficiaryRepositor.BeneficiaryByBCPList(searchModel);
+            return Ok(model);
         }
     }
 }

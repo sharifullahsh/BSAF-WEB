@@ -31,7 +31,6 @@ import { MatNativeDateModule } from '@angular/material/core';
 import { MatDialogModule, MatDialogContent } from '@angular/material/dialog';
 
 const modules: any[] = [
-  FlexLayoutModule,
   MatAutocompleteModule,
   MatCheckboxModule,
   MatDatepickerModule,

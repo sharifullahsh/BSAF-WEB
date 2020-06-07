@@ -1,4 +1,4 @@
-<div class="grid-container">
+<div class="container">
     <h1 class="mat-h1">Dashboard</h1>
     <div fxLayout="row wrap" fxLayoutGap="15px">
         <mat-card class="card-tile" fxFlex="0 1 calc(30% - 15px)" fxFlex.lt-md="0 1 calc(50% - 15px)" fxFlex.lt-sm="100%">
@@ -43,7 +43,7 @@
               <button mat-button>SHARE</button> -->
             </mat-card-actions>
         </mat-card>
-        <mat-card class="card-tile" fxFlex="0 1 calc(20% - 15px)" fxFlex.lt-md="0 1 calc(50% - 15px)" fxFlex.lt-sm="100%">
+        <mat-card class="card-tile" fxFlex="0 1 calc(20%)" fxFlex.lt-md="0 1 calc(50% - 15px)" fxFlex.lt-sm="100%">
             <mat-card-header>
                 <mat-card-title>{{tileData.totalIndividualCases}}</mat-card-title>
             </mat-card-header>
@@ -59,16 +59,44 @@
         </mat-card>
     </div>
 
-    <!-- <mat-card class="">
+    <mat-card style="margin-top: 15px;">
         <mat-card-header>
             <mat-card-title>
-                title
+                General Figures
             </mat-card-title>
         </mat-card-header>
         <mat-card-content class="dashboard-card-content">
+            <form [formGroup]="searchForm" novalidate (ngSubmit)="onSubmit()">
+                <div fxLayout="row wrap" fxLayoutGap="32px">
+                    <mat-form-field fxFlex="0 1 calc(30% - 32px)" fxFlex.lt-md="0 1 calc(50% - 32px)" fxFlex.lt-sm="100%">
+                        <mat-label>From Date</mat-label>
+                        <input matInput [matDatepicker]="fromDate" formControlName="fromDate" (click)="fromDate.open()">
+                        <mat-datepicker-toggle matSuffix [for]="fromDate"></mat-datepicker-toggle>
+                        <mat-datepicker #fromDate></mat-datepicker>
+                    </mat-form-field>
+                    <div fxFlex="0 1 calc(30% - 32px)" fxFlex.lt-md="0 1 calc(50% - 32px)" fxFlex.lt-sm="100%">
+                        <mat-form-field fxFlex="100%">
+                            <mat-label>To Date</mat-label>
+                            <input matInput [matDatepicker]="toDate" formControlName="toDate" (click)="toDate.open()">
+                            <mat-datepicker-toggle matSuffix [for]="toDate"></mat-datepicker-toggle>
+                            <mat-datepicker #toDate></mat-datepicker>
+
+                        </mat-form-field>
+                    </div>
+                    <div fxFlex="0 1 calc(30% - 32px)" fxLayoutAlign="start start" fxFlex.lt-md="0 1 calc(50% - 32px)" fxFlex.lt-sm="100%">
+                        <button mat-raised-button color="primary" aria-label="Search Beneficiary">
+                          Search
+                        <mat-icon>search</mat-icon>
+                      </button>
+                    </div>
+                </div>
+            </form>
+
+            <highcharts-chart [update]="updateBeneficiaryChart" [Highcharts]="beneficiaryByBCPCharts" [options]="beneficiaryByBCPChartOptions" [runOutsideAngular]="true" [oneToOne]="true" style="width: 100%; height: 400px; display: block;"></highcharts-chart>
             <div>Card Content Here</div>
+            <app-chart></app-chart>
         </mat-card-content>
-    </mat-card> -->
+    </mat-card>
 
     <!-- <mat-grid-list cols="2" rowHeight="350px">
         <mat-grid-tile *ngFor="let card of cards | async" [colspan]="card.cols" [rowspan]="card.rows">

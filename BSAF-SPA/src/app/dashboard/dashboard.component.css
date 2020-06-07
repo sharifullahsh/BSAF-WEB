@@ -1,4 +1,4 @@
-.grid-container {
+.container {
     margin: 20px;
 }
 
@@ -22,4 +22,12 @@
 
 .dashboard-card-content {
     text-align: center;
+}
+
+svg[style] {
+    width: 100%!important;
+}
+
+:host /deep/ svg {
+    width: 100%!important;
 }

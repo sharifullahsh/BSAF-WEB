@@ -1,3 +1,4 @@
+import { ChartComponent } from './dashboard/chart.component';
 import { AdminChangePassDialogComponent } from './admin/dialog/admin-change-pass-dialog/admin-change-pass-dialog.component';
 import { EditUserDialogComponent } from './admin/dialog/edit-user-dialog/edit-user-dialog.component';
 import { LookupService } from 'src/app/_services/lookup.service';
@@ -26,22 +27,12 @@ import { UserManagementComponent } from './admin/user-management/user-management
 import { HasRoleDirective } from './_directives/has-role.directive';
 import { IndividualDialogComponent } from './beneficiary/individual-dialog/individual-dialog.component';
 import { TestFormComponent } from './test-form/test-form.component';
-import { LayoutModule } from '@angular/cdk/layout';
-import { MatToolbarModule } from '@angular/material/toolbar';
-import { MatButtonModule } from '@angular/material/button';
-import { MatSidenavModule } from '@angular/material/sidenav';
-import { MatIconModule } from '@angular/material/icon';
-import { MatListModule } from '@angular/material/list';
-import { MatInputModule } from '@angular/material/input';
-import { MatSelectModule } from '@angular/material/select';
-import { MatRadioModule } from '@angular/material/radio';
-import { MatCardModule } from '@angular/material/card';
-import { ReactiveFormsModule } from '@angular/forms';
 import { IndividualFormDialogComponent } from './beneficiary/dialog/individual-form/individual-form-dialog.component';
 import { DeleteDialogComponent } from './shared/dialog/delete/delete-dialog.component';
 import { AddUserDialogComponent } from './admin/dialog/add-user-dialog/add-user-dialog.component';
 import { UserChangePassDialogComponent } from './shared/dialog/user-change-pass-dialog/user-change-pass-dialog.component';
 import { PreventUnsavedChangesGuard } from './_guards/prevent-unsaved-changes.guard';
+import { HighchartsChartModule } from 'highcharts-angular';
 
 export function tokenGetter() {
   return localStorage.getItem('token');
@@ -65,7 +56,8 @@ export function tokenGetter() {
     AddUserDialogComponent,
     EditUserDialogComponent,
     AdminChangePassDialogComponent,
-    UserChangePassDialogComponent
+    UserChangePassDialogComponent,
+    ChartComponent
   ],
   imports: [
     BrowserModule,
@@ -74,6 +66,7 @@ export function tokenGetter() {
     SharedModule,
     CoreModule,
     AngularMaterialModule,
+    HighchartsChartModule,
     JwtModule.forRoot({
       config: {
         tokenGetter,
@@ -81,17 +74,6 @@ export function tokenGetter() {
         blacklistedRoutes: ['localhost:5000/api/auth']
       }
     }),
-    LayoutModule,
-    MatToolbarModule,
-    MatButtonModule,
-    MatSidenavModule,
-    MatIconModule,
-    MatListModule,
-    MatInputModule,
-    MatSelectModule,
-    MatRadioModule,
-    MatCardModule,
-    ReactiveFormsModule,
 
   ],
   providers: [AuthService, AdminService, AuthGuard,
