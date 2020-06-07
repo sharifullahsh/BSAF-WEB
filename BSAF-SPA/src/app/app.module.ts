@@ -1,4 +1,3 @@
-import { ChartComponent } from './dashboard/chart.component';
 import { AdminChangePassDialogComponent } from './admin/dialog/admin-change-pass-dialog/admin-change-pass-dialog.component';
 import { EditUserDialogComponent } from './admin/dialog/edit-user-dialog/edit-user-dialog.component';
 import { LookupService } from 'src/app/_services/lookup.service';
@@ -32,7 +31,7 @@ import { DeleteDialogComponent } from './shared/dialog/delete/delete-dialog.comp
 import { AddUserDialogComponent } from './admin/dialog/add-user-dialog/add-user-dialog.component';
 import { UserChangePassDialogComponent } from './shared/dialog/user-change-pass-dialog/user-change-pass-dialog.component';
 import { PreventUnsavedChangesGuard } from './_guards/prevent-unsaved-changes.guard';
-import { HighchartsChartModule } from 'highcharts-angular';
+
 
 export function tokenGetter() {
   return localStorage.getItem('token');
@@ -56,8 +55,7 @@ export function tokenGetter() {
     AddUserDialogComponent,
     EditUserDialogComponent,
     AdminChangePassDialogComponent,
-    UserChangePassDialogComponent,
-    ChartComponent
+    UserChangePassDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -66,7 +64,6 @@ export function tokenGetter() {
     SharedModule,
     CoreModule,
     AngularMaterialModule,
-    HighchartsChartModule,
     JwtModule.forRoot({
       config: {
         tokenGetter,

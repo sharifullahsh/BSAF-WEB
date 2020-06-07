@@ -5,14 +5,14 @@ using System.Threading.Tasks;
 
 namespace BSAFWebApi.Models.ViewModels
 {
-    public class HighCharts
+    public class Ng2Charts
     {
         public string[] categories { get; set; }
         public Series[] series { get; set; }
     }
     public class Series
     {
-        public string name { get; set; }
+        public string label { get; set; }
         public int[] data { get; set; }
     }
 }

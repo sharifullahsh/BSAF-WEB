@@ -6,6 +6,6 @@ export interface HightChartData{
     series: Series[];
 }
 export interface Series{
-    name: string;
+    label: string;
     data: number[];
 }

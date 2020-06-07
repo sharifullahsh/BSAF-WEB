@@ -8,6 +8,6 @@ namespace BSAFWebApi.Dtos
 {
     public class DashboardChartstDto
     {
-        public HighCharts bcp { get; set; }
+        public Ng2Charts bcp { get; set; }
     }
 }

@@ -7,7 +7,9 @@ import { DashboardTileData } from './../models/DashboardTileData';
 import { Component, OnInit } from '@angular/core';
 import { map } from 'rxjs/operators';
 import { Breakpoints, BreakpointObserver } from '@angular/cdk/layout';
-import * as Highcharts from 'highcharts';
+import { ChartOptions, ChartType, ChartDataSets } from 'chart.js';
+// import * as pluginDataLabels from 'chartjs-plugin-datalabels';
+import { Label } from 'ng2-charts';
 
 @Component({
   selector: 'app-dashboard',
@@ -24,49 +26,32 @@ export class DashboardComponent implements OnInit{
               private alertifyService: AlertifyService
               ) {}
   tileData: DashboardTileData = {};
-  beneficiaryByBCPCharts: typeof Highcharts = Highcharts;
-  updateBeneficiaryChart = false;
-  updateDemo = false;
-  beneficiaryByBCPChartOptions = {
-    chart: {
-      type: 'column'
-    },
-    title: {
-      text: 'Beneficiary by border point'
-    },
-    subtitle: {
-      text: 'From date to date'
-    },
-    xAxis: {
-      categories: [],
-      crosshair: true
-    },
-    yAxis: {
-      min: 0,
-      title: {
-        text: 'Number of case per border point'
+
+  ////////
+  public barChartOptions: ChartOptions = {
+    responsive: true,
+    // We use these empty structures as placeholders for dynamic theming.
+    scales: { xAxes: [{}], yAxes: [{}] },
+    plugins: {
+      datalabels: {
+        anchor: 'end',
+        align: 'end',
       }
-    },
-    tooltip: {
-      headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
-      pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
-        '<td style="padding:0"><b>{point.y:.1f}</b></td></tr>',
-      footerFormat: '</table>',
-      shared: true,
-      useHTML: false
-    },
-    credits:{
-      enabled: false
-    },
-    exporting: {
-      enabled: true
-    },
-    series: [
-      {name: 'bar1', data: []},
-      {name: 'bar2', data: []},
-      {name: 'bar3', data: []}
-]
+    }
   };
+  public barChartLabels: Label[] = [];
+  public barChartType: ChartType = 'bar';
+  public barChartLegend = true;
+  // public barChartPlugins = [pluginDataLabels];
+
+  public barChartData: ChartDataSets[] = [
+    { data: [0, 0, 0], label: 'Series A' },
+    { data: [0, 0, 0], label: 'Series B' },
+    { data: [0, 0, 0], label: 'Series C' }
+  ];
+
+  ///////
+ 
   ngOnInit(): void {
     this.searchForm = this.fb.group({
       fromDate:[new Date(new Date().getFullYear(), 0, 1)],
@@ -86,37 +71,39 @@ export class DashboardComponent implements OnInit{
     
   }
 
-  // cards = this.breakpointObserver.observe(Breakpoints.Handset).pipe(
-  //   map(({ matches }) => {
-  //     if (matches) {
-  //       return [
-  //         { title: 'Card 1', cols: 1, rows: 1 },
-  //         { title: 'Card 2', cols: 1, rows: 1 },
-  //         { title: 'Card 3', cols: 1, rows: 1 },
-  //         { title: 'Card 4', cols: 1, rows: 1 }
-  //       ];
-  //     }
-
-  //     return [
-  //       { title: 'Card 1', cols: 2, rows: 1 },
-  //       { title: 'Card 2', cols: 1, rows: 1 },
-  //       { title: 'Card 3', cols: 1, rows: 2 },
-  //       { title: 'Card 4', cols: 1, rows: 1 }
-  //     ];
-  //   })
-  // );
-
- loadBeneficiaryByBCP(highChartData: HightChartData){
-
-  this.beneficiaryByBCPChartOptions.xAxis.categories = highChartData.categories;
-  this.beneficiaryByBCPChartOptions.series = highChartData.series;
-
+ loadBeneficiaryByBCP(chartData: HightChartData){
   // this.beneficiaryByBCPChartOptions.xAxis.categories = highChartData.categories;
   // this.beneficiaryByBCPChartOptions.series = highChartData.series;
-   this.updateBeneficiaryChart = true;
-   
-   console.log('response is 2'+ JSON.stringify(highChartData));
+  // this.barChartData[0].data = chartData.series[0].data;
+  // this.barChartData[0].data = chartData.series[0].data;
+  // this.barChartData[1].data = chartData.series[1].data;
+  // this.barChartData[2].data = chartData.series[1].data;
+  this.barChartData = chartData.series;
+  this.barChartLabels = chartData.categories;
+
+   console.log('response is 2'+ JSON.stringify(chartData));
  }
+   // events
+   public chartClicked({ event, active }: { event: MouseEvent, active: {}[] }): void {
+    console.log(event, active);
+  }
+
+  public chartHovered({ event, active }: { event: MouseEvent, active: {}[] }): void {
+    console.log(event, active);
+  }
+
+  public randomize(): void {
+    // Only Change 3 values
+    const data = [
+      Math.round(Math.random() * 100),
+      59,
+      80,
+      (Math.random() * 100),
+      56,
+      (Math.random() * 100),
+      40];
+    this.barChartData[0].data = data;
+  }
   onSubmit(){
 
   }

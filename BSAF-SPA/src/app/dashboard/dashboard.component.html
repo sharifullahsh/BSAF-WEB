@@ -91,10 +91,17 @@
                     </div>
                 </div>
             </form>
-
-            <highcharts-chart [update]="updateBeneficiaryChart" [Highcharts]="beneficiaryByBCPCharts" [options]="beneficiaryByBCPChartOptions" [runOutsideAngular]="true" [oneToOne]="true" style="width: 100%; height: 400px; display: block;"></highcharts-chart>
+            <div>
+                <div>
+                    <div style="display: block">
+                        <!-- [plugins]="barChartPlugins" -->
+                        <canvas baseChart [datasets]="barChartData" [labels]="barChartLabels" [options]="barChartOptions" [legend]="barChartLegend" [chartType]="barChartType">
+                    </canvas>
+                    </div>
+                    <button mat-button mat-raised-button color="primary" (click)="randomize()">Update</button>
+                </div>
+            </div>
             <div>Card Content Here</div>
-            <app-chart></app-chart>
         </mat-card-content>
     </mat-card>
 

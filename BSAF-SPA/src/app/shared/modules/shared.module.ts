@@ -4,6 +4,7 @@ import { FlexLayoutModule } from '@angular/flex-layout';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { LayoutModule } from '@angular/cdk/layout';
 import { HttpClientModule } from '@angular/common/http';
+import { ChartsModule } from 'ng2-charts';
 
 const modules: any[] = [
   FlexLayoutModule,
@@ -12,7 +13,8 @@ const modules: any[] = [
   ReactiveFormsModule,
   FormsModule,
   HttpClientModule,
-  LayoutModule
+  LayoutModule,
+  ChartsModule
 ];
 @NgModule({
   declarations: [],

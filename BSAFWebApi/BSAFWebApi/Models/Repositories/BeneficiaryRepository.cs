@@ -16,7 +16,7 @@ namespace BSAFWebApi.Models.Repositories
             db = context;
         }
         //public void ReturneeByBCPList(DashboardSearchDto model)
-        public HighCharts BeneficiaryByBCPList(DashboardSearchDto model)
+        public Ng2Charts BeneficiaryByBCPList(DashboardSearchDto model)
         {
             var data = (from b in db.Beneficiaries
                          where b.IsActive == true && b.ScreeningDate >= model.FromDate && b.ScreeningDate <= model.ToDate
@@ -29,24 +29,24 @@ namespace BSAFWebApi.Models.Repositories
                              SR = ByBCP.Where(b=>b.ReturnStatus == "SR").Count()
                          }
                          ).ToList();
-            HighCharts bybcp = new HighCharts
+            Ng2Charts bybcp = new Ng2Charts
             {
                 categories = data.Select(x => x.BCPName).ToArray(),
                 series = new Series[]
                 {
                     new Series
                     {
-                        name = "Deported",
+                        label = "Deported",
                         data = data.Select(x => x.DEP).ToArray()
                     },
                     new Series
                     {
-                        name = "Document claimant",
+                        label = "Document claimant",
                         data = data.Select(x => x.DC).ToArray()
                     },
                     new Series
                     {
-                        name = "Spontaneous returnee",
+                        label = "Spontaneous returnee",
                         data = data.Select(x => x.SR).ToArray()
                     },
                 }
