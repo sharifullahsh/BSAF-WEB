@@ -1,7 +1,7 @@
 export interface DashboardCharts{
-    bcp: HightChartData;
+    bcp: Ng2ChartData;
 }
-export interface HightChartData{
+export interface Ng2ChartData{
     categories: string[];
     series: Series[];
 }
