@@ -27,7 +27,7 @@ namespace BSAFWebApi.Controllers
         }
         // GET: api/Beneficiary
         [HttpPost("listPartial")]
-        [AllowAnonymous]
+        [Authorize]
         public async Task<IActionResult> listPartial([FromBody]SearchBeneficiaryDto model)
         {
             // var beneficiary = await db.Beneficiaries.Where(b => b.BeneficiaryID == id && b.IsActive == true).FirstOrDefaultAsync();
@@ -104,7 +104,7 @@ namespace BSAFWebApi.Controllers
         }
 
         // GET: api/Beneficiary/5
-        [AllowAnonymous]
+        [Authorize]
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
@@ -156,7 +156,7 @@ namespace BSAFWebApi.Controllers
             return BadRequest();
         }
 
-        [AllowAnonymous]
+        [Authorize]
         [HttpGet("viewBeneficiary/{id}")]
         public async Task<IActionResult> ViewBeneficiary(int id)
         {
@@ -638,6 +638,7 @@ namespace BSAFWebApi.Controllers
         }
 
         // PUT: api/Beneficiary/5
+        [Authorize]
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(int id, [FromBody] BeneficiaryFormDto model)
         {
@@ -865,6 +866,7 @@ namespace BSAFWebApi.Controllers
         }
 
         // DELETE: api/ApiWithActions/5
+        [Authorize(Roles = "Admin")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {

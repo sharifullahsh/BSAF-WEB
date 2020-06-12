@@ -22,7 +22,7 @@ namespace BSAFWebApi.Controllers
             db = context;
             beneficiaryRepositor  = new BeneficiaryRepository(db);
         }
-        [AllowAnonymous]
+        [Authorize]
         [HttpGet("getTileData")]
         public async Task<IActionResult> GetTileData()
         {
@@ -35,7 +35,8 @@ namespace BSAFWebApi.Controllers
             };
             return  Ok(tileData);
         }
-        [AllowAnonymous]
+
+        [Authorize]
         [HttpPost("getChartsData")]
         public async Task<IActionResult> GetChartsData(DashboardSearchDto searchModel)
         {

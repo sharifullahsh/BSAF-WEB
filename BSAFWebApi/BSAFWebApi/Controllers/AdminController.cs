@@ -30,7 +30,7 @@ namespace BSAFWebApi.Controllers
             _cotext = cotext;
         }
         
-        [AllowAnonymous]
+        [Authorize]
         [HttpGet("userWithRoles/{id}")]
         public async Task<IActionResult> GetUserWithRoles(string id)
         {
@@ -55,7 +55,7 @@ namespace BSAFWebApi.Controllers
 
         }
 
-        [AllowAnonymous]
+        [Authorize(Roles = "Admin")]
         [HttpGet("allUserWithRoles")]
         public async Task<IActionResult> GetAllUserWithRoles()
         {
@@ -80,8 +80,16 @@ namespace BSAFWebApi.Controllers
 
         }
 
-        [AllowAnonymous]
-        //[Authorize(Roles = "Admin")]
+        [Authorize]
+        [HttpGet("availableRoles")]
+        public async Task<IActionResult> GetAvailableRoles()
+        {
+            var roles = _roleManager.Roles.Select(r=>r.Name).ToList();
+            return Ok(roles);
+        }
+
+
+        [Authorize(Roles = "Admin")]
         [HttpPost("register")]
         public async Task<IActionResult> Createuser([FromBody] UserForRegistrationDto model)
         {
@@ -109,7 +117,7 @@ namespace BSAFWebApi.Controllers
             return BadRequest("Failed to register user");
         }
 
-        [AllowAnonymous]
+        [Authorize(Roles = "Admin")]
         [HttpPost("editUser/{userName}")]
         public async Task<IActionResult> EditUser(string userName,[FromBody] UserForUpdateDto model)
         {
@@ -137,7 +145,7 @@ namespace BSAFWebApi.Controllers
         }
         
         [HttpGet("isUserNameAvailable/{userName}")]
-        [AllowAnonymous]
+        [Authorize]
         public async Task<bool> IsUserNameAvailable(string userName) {
             var isTaken = false;
             var result = await _userManager.FindByNameAsync(userName);
@@ -149,7 +157,7 @@ namespace BSAFWebApi.Controllers
             return isTaken;
         }
 
-        //[Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin")]
         [HttpDelete("deleteUser/{id}")]
         public async Task<IActionResult> DeleteUser(string id)
         {
@@ -190,22 +198,20 @@ namespace BSAFWebApi.Controllers
         [HttpPost("userChangePassword")]
         public async Task<IActionResult> UserChangePassword(UserPasswordChangeDto userPassChangeDto)
         {
+            var currentUser = HttpContext.User;
             var user = await _userManager.FindByIdAsync(userPassChangeDto.Id.ToString());
+            if (currentUser.Identity.Name != user.UserName)
+            {
+                return BadRequest("User is not the logged in user");
+            }
+
             var result = await _userManager.ChangePasswordAsync(user, userPassChangeDto.CurrentPassword, userPassChangeDto.NewPassword);
 
             if (result.Succeeded)
             {
                 return Ok();
             }
-
             return BadRequest(result.Errors.ToString());
-        }
-        [HttpGet("test")]
-        [AllowAnonymous]
-        public IActionResult test()
-        {
-            //var beneficiary = _cotext.Beneficiaries.Include(b => b.PSNs).ToList();
-            return Ok("Hi");
         }
     }
 }

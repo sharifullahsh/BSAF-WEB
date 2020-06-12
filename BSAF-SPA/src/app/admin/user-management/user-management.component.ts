@@ -33,6 +33,7 @@ export class UserManagementComponent implements AfterViewInit, OnInit {
  }
   ngOnInit() {
     this.getAllUserWithRoles();
+    this.userService.getAvailableRoles();
   }
   getAllUserWithRoles(){
     this.userService.getAllUserWithRoles().subscribe((users: User[]) => {

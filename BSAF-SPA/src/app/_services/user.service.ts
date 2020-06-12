@@ -1,3 +1,4 @@
+import { AlertifyService } from './alertify.service';
 import { UniqueUserNameValidator } from './../shared/validator/uniqueUserNameValidator';
 import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
 import { Injectable, OnInit } from '@angular/core';
@@ -14,10 +15,7 @@ import { delay } from 'rxjs/operators';
 })
 export class UserService {
   baseUrl = environment.apiUrl;
-  availableRoles: any[] = [
-    'Admin',
-     'DataEntry'
-   ];
+  availableRoles: any[] = [];
 
    addUserForm: FormGroup = this.fb.group({
     userName: [null,
@@ -53,7 +51,8 @@ export class UserService {
   }, {validator : MustMatch('newPassword', 'confirmNewPassword')});
 constructor(public fb: FormBuilder,
             private http: HttpClient,
-            public uniqueUserNameValidator: UniqueUserNameValidator) { }
+            public uniqueUserNameValidator: UniqueUserNameValidator,
+            private alertifyService: AlertifyService) { }
 getAllUserWithRoles(){
     return this.http.get(this.baseUrl + 'admin/allUserWithRoles');
   }
@@ -77,5 +76,12 @@ getUserWithRoles(){
   userChangePassword() {
     const formData = this.userChangePasswordForm.value;
     return this.http.post(this.baseUrl + 'admin/userChangePassword', formData);
+  }
+  getAvailableRoles() {
+    this.http.get(this.baseUrl + 'admin/availableRoles').subscribe((response: Array<string>)=>{
+      this.availableRoles  = response;
+    }, error =>{
+      this.alertifyService.error('Unable to load available roles');
+    });
   }
 }
