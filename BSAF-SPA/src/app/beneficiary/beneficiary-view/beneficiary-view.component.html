@@ -4,9 +4,9 @@
             Beneficairy Information
         </mat-card-title>
         <div fxLayout="row wrap" fxLayoutGap="10px" class="m10" fxLayoutAlign="end start">
-            <button mat-raised-button color="primary" (click)="deleteBeneficiary()" type="button">Edit</button>
-            <button mat-raised-button color="primary" (click)="deleteBeneficiary()" type="button">Print Card</button>
-            <button mat-raised-button color="primary" (click)="deleteBeneficiary()" type="button">Back to List</button>
+            <a mat-raised-button *appHasRole="['Admin']" color="primary" [routerLink]="['/beneficiaryForm',{id:beneficiaryId}]">Edit</a>
+            <button mat-raised-button color="primary" (click)="printCard()" type="button">Print Card</button>
+            <a mat-raised-button color="primary" [routerLink]="['/beneficiarySearch']">Back to List</a>
             <button mat-raised-button *appHasRole="['Admin']" color="warn" (click)="deleteBeneficiary()" type="button">Delete</button>
         </div>
     </mat-card-header>
