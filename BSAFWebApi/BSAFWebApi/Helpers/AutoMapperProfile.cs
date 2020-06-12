@@ -20,6 +20,7 @@ namespace BSAFWebApi.Helpers
             CreateMap<Beneficiary, BeneficiaryFormDto>();
             CreateMap<IndividualDto, Individual>();
             CreateMap<Individual, IndividualDto>();
+            CreateMap<Beneficiary, BeneficiaryForViewDto>();
             CreateMap<LookupValue,LookupDto>()
                 .ForMember(dest=>dest.LookupName,opt=> {
                     opt.MapFrom(src => src.EnName.FirstOrDefault());

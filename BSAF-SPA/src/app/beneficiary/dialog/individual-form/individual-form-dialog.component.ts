@@ -18,11 +18,11 @@ export class IndividualFormDialogComponent implements OnInit {
   // });
   constructor(private fb: FormBuilder, private lookupService: LookupService,
               public dialogRef: MatDialogRef<IndividualFormDialogComponent>,
-              private beneficiaryService: BeneficiaryService,
+              public beneficiaryService: BeneficiaryService,
               // @Inject(MAT_DIALOG_DATA) public data: DialogData
               ) { }
 
-  individualForm: FormGroup = this.beneficiaryService.individualForm;
+  // individualForm: FormGroup = this.beneficiaryService.individualForm;
 
   ngOnInit(): void {
     this.initialLooupsData =  this.beneficiaryService.initialLooupsData;
@@ -32,7 +32,7 @@ export class IndividualFormDialogComponent implements OnInit {
     this.dialogRef.close();
   }
   addIndividual(){
-    if(this.individualForm.invalid){
+    if (this.beneficiaryService.individualForm.invalid){
       return;
     }
     this.dialogRef.close(1);

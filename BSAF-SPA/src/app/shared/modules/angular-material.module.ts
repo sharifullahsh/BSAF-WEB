@@ -29,6 +29,7 @@ import { MatDividerModule } from '@angular/material/divider';
 import {MatTabsModule} from '@angular/material/tabs';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatDialogModule, MatDialogContent } from '@angular/material/dialog';
+import {MatChipsModule} from '@angular/material/chips';
 
 const modules: any[] = [
   MatAutocompleteModule,
@@ -39,6 +40,7 @@ const modules: any[] = [
   MatInputModule,
   MatRadioModule,
   MatSelectModule,
+  MatChipsModule,
   MatSliderModule,
   MatSlideToggleModule,
   MatToolbarModule,
@@ -57,6 +59,7 @@ const modules: any[] = [
   MatDividerModule,
   MatTabsModule,
   MatDialogModule,
+  
 ];
 
 @NgModule({

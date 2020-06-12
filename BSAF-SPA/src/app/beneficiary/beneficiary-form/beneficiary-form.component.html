@@ -1022,15 +1022,12 @@
                 </mat-tab>
                 <mat-tab label="Image & Card">
                     <div class="mt20">
-                        <img [src]="photoPath" class="mg-thumbnail" alt="Beneficiary Image" width="200px" height="200px">
+                        <img [src]="photoPath" class="img-thumbnail" alt="Beneficiary Image" width="200px" height="200px">
                     </div>
                 </mat-tab>
             </mat-tab-group>
         </mat-card-content>
         <mat-card-actions fxLayout="row" fxLayoutAlign="space-between start">
-            <div fxFlex *appHasRole="['Admin']">
-                <button mat-raised-button color="warn" *ngIf="benef.beneficiaryID.value" (click)="deleteBeneficiary()" type="button">Delete Beneficiary</button>
-            </div>
             <div fxFlex fxLayoutAlign="end start">
                 <button mat-raised-button color="primary" *ngIf="selectedTab.value!=0" (click)="selectedTab.setValue((selectedTab.value)-1)" type="button">Previous</button>
                 <button mat-raised-button color="primary" *ngIf="selectedTab.value!=6" (click)="selectedTab.setValue((selectedTab.value)+1)" type="button">Next</button>

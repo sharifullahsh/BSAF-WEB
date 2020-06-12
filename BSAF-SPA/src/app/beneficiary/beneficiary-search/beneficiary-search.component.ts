@@ -112,7 +112,7 @@ export class BeneficiarySearchComponent implements AfterViewInit, OnInit {
     this.length = event.length;
     this.getBeneficary();
   }
-  ViewBeneficiary(beneficiaryId:string){
-    this.router.navigate(['/beneficiaryForm/', {id: beneficiaryId}]);
+  ViewBeneficiary(beneficiaryId: string){
+    this.router.navigate(['/beneficiaryView/', beneficiaryId]);
   }
 }

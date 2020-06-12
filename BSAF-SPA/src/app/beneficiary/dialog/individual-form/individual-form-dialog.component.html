@@ -1,5 +1,5 @@
 <!-- [mat-dialog-close]="data.animal" -->
-<form [formGroup]="individualForm" novalidate (ngSubmit)="addIndividual()">
+<form [formGroup]="beneficiaryService.individualForm" novalidate (ngSubmit)="addIndividual()">
     <h1 mat-dialog-title>Add Family Memeber</h1>
     <input type="hidden" formControlName="individualID">
     <div mat-dialog-content>

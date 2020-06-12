@@ -81,11 +81,12 @@ constructor(private fb: FormBuilder, private lookupService: LookupService,
             public dialog: MatDialog,
             public createListService: CreateBenefFormListsService,
             public router: Router) {}
-beneficiaryForm: FormGroup = this.beneficiaryService.beneficiaryForm;
+// beneficiaryForm: FormGroup = this.beneficiaryService.beneficiaryForm;
 
 ngOnInit(): void {
-  this.beneficiaryService.resetBeneficiaryForm();
-  this.beneficiaryService.resetIndividualForm();
+  this.beneficiaryService.beneficiaryForm = this.beneficiaryService.createBeneficiaryForm();
+  this.beneficiaryService.individualForm = this.beneficiaryService.createIndividualForm();
+  // To make empty the array
   this.benefitedFromOrgs.clear();
   this.individualsArray.clear();
   this.route.data.subscribe((data: {initialLookups: InitialLookups}) => {
@@ -142,7 +143,7 @@ ngOnInit(): void {
           for (const iterator of this.beneficiary.benefitedFromOrgs) {
             this.addBenefitedFromOrg();
           }
-          this.beneficiaryForm.patchValue({
+          this.beneficiaryService.beneficiaryForm.patchValue({
             beneficiaryID: response.beneficiaryID,
             cardID: response.cardID,
             screeningDate: response.screeningDate,
@@ -222,13 +223,13 @@ ngOnInit(): void {
               l.lookupCode !== topNeed2Filter && l.lookupCode !== topNeed3Filter);
           }
           for (const individual of this.beneficiary.individuals) {
-            const indForm: FormGroup =  this.beneficiaryService.newIndividualForm();
+            const indForm: FormGroup =  this.beneficiaryService.createIndividualForm();
             indForm.patchValue({
              ...individual
             });
-            (this.beneficiaryForm.get('individuals') as FormArray).push(indForm);
+            (this.beneficiaryService.beneficiaryForm.get('individuals') as FormArray).push(indForm);
           }
-          const originProvince = this.beneficiaryForm.get('originProvince').value;
+          const originProvince = this.beneficiaryService.beneficiaryForm.get('originProvince').value;
           if (originProvince){
             this.lookupService.getDistrictLookups(originProvince).subscribe((response: Lookup[]) => {
               this.originDistricts = response;
@@ -237,7 +238,7 @@ ngOnInit(): void {
               this.alertifyService.error('Unable to load origin districts.');
             });
           }
-          const returnProvince = this.beneficiaryForm.get('returnProvince').value;
+          const returnProvince = this.beneficiaryService.beneficiaryForm.get('returnProvince').value;
           if (originProvince){
             this.lookupService.getDistrictLookups(returnProvince).subscribe((response: Lookup[]) => {
               this.returnDistricts = response;
@@ -396,56 +397,56 @@ ngOnInit(): void {
       }
   }
 setHostCountrySchoolsForm() {
-    const hostCountrySchoolsArray = this.beneficiaryForm.get('hostCountrySchools') as FormArray;
+    const hostCountrySchoolsArray = this.beneficiaryService.beneficiaryForm.get('hostCountrySchools') as FormArray;
     hostCountrySchoolsArray.clear();
     this.hostCountrySchoolsList.forEach((school) => {
       hostCountrySchoolsArray.push(this.setCheckboxOptionFormArray(school));
     });
   }
 setMainConcernsForm() {
-    const mainConcernsArray = this.beneficiaryForm.get('mainConcerns') as FormArray;
+    const mainConcernsArray = this.beneficiaryService.beneficiaryForm.get('mainConcerns') as FormArray;
     mainConcernsArray.clear();
     this.mainConcernsList.forEach((concern) => {
       mainConcernsArray.push(this.setCheckboxOptionFormArray(concern));
     });
   }
 setNeedToolsForm() {
-    const needToolsArray = this.beneficiaryForm.get('needTools') as FormArray;
+    const needToolsArray = this.beneficiaryService.beneficiaryForm.get('needTools') as FormArray;
     needToolsArray.clear();
     this.needToolsList.forEach((tool) => {
       needToolsArray.push(this.setCheckboxOptionFormArray(tool));
     });
   }
 setLivelihoodEmpNeedsForm() {
-    const livelihoodEmpNeedsArray = this.beneficiaryForm.get('livelihoodEmpNeeds') as FormArray;
+    const livelihoodEmpNeedsArray = this.beneficiaryService.beneficiaryForm.get('livelihoodEmpNeeds') as FormArray;
     livelihoodEmpNeedsArray.clear();
     this.livelihoodEmpNeedsList.forEach((need) => {
       livelihoodEmpNeedsArray.push(this.setCheckboxOptionFormArray(need));
     });
   }
 setTransportationForm() {
-    const transportationArray = this.beneficiaryForm.get('transportations') as FormArray;
+    const transportationArray = this.beneficiaryService.beneficiaryForm.get('transportations') as FormArray;
     transportationArray.clear();
     this.transportationsList.forEach((item) => {
       transportationArray.push(this.setCheckboxOptionFormArray(item));
     });
   }
 setBroughtItemsForm() {
-    const broughtItemseArray = this.beneficiaryForm.get('broughtItems') as FormArray;
+    const broughtItemseArray = this.beneficiaryService.beneficiaryForm.get('broughtItems') as FormArray;
     broughtItemseArray.clear();
     this.broughtItemsList.forEach((item) => {
       broughtItemseArray.push(this.setCheckboxOptionFormArray(item));
     });
   }
 setMoneySourceForm() {
-    const moneySourceArray = this.beneficiaryForm.get('moneySources') as FormArray;
+    const moneySourceArray = this.beneficiaryService.beneficiaryForm.get('moneySources') as FormArray;
     moneySourceArray.clear();
     this.moneySourcesList.forEach((reason) => {
       moneySourceArray.push(this.setCheckboxOptionFormArray(reason));
     });
   }
 setDeterminationForm() {
-    const determinationsArray = this.beneficiaryForm.get('determinations') as FormArray;
+    const determinationsArray = this.beneficiaryService.beneficiaryForm.get('determinations') as FormArray;
     determinationsArray.clear();
     this.determinationsList.forEach((determination) => {
       determinationsArray.push(this.setDeterminationsFormArray(determination));
@@ -461,21 +462,21 @@ setDeterminationsFormArray(determination: DeterminationForView){
   }
 
 setPostArrivalNeedsForm() {
-    const needsArray = this.beneficiaryForm.get('postArrivalNeeds') as FormArray;
+    const needsArray = this.beneficiaryService.beneficiaryForm.get('postArrivalNeeds') as FormArray;
     needsArray.clear();
     this.postArrivalNeedsList.forEach((need) => {
       needsArray.push(this.setPostArrivalNeedsFormArray(need));
     });
   }
 setPSNForm() {
-    const psnsArray = this.beneficiaryForm.get('psns') as FormArray;
+    const psnsArray = this.beneficiaryService.beneficiaryForm.get('psns') as FormArray;
     psnsArray.clear();
     this.psnList.forEach((psn) => {
     psnsArray.push(this.setCheckboxOptionFormArray(psn));
     });
   }
 setReturnReasonForm() {
-    const returnReasonArray = this.beneficiaryForm.get('returnReasons') as FormArray;
+    const returnReasonArray = this.beneficiaryService.beneficiaryForm.get('returnReasons') as FormArray;
     returnReasonArray.clear();
     this.returnReasonList.forEach((reason) => {
       returnReasonArray.push(this.setCheckboxOptionFormArray(reason));
@@ -511,46 +512,48 @@ filterBenefitedFromOgr2List(){
       this.organizationList[1] = this.initialLooupsData.organizations.filter(o => o.lookupCode !== orgs[0].orgCode);
     }
 }
-get benef() { return this.beneficiaryForm.controls; }
+get beneficiaryForm() { return this.beneficiaryService.beneficiaryForm; }
+
+get benef() { return this.beneficiaryService.beneficiaryForm.controls; }
 
 get psns(): FormArray {
-    return this.beneficiaryForm.get('psns') as FormArray;
+    return this.beneficiaryService.beneficiaryForm.get('psns') as FormArray;
   }
 get returnReasons(): FormArray {
-    return this.beneficiaryForm.get('returnReasons') as FormArray;
+    return this.beneficiaryService.beneficiaryForm.get('returnReasons') as FormArray;
   }
 get determinations(): FormArray {
-    return this.beneficiaryForm.get('determinations') as FormArray;
+    return this.beneficiaryService.beneficiaryForm.get('determinations') as FormArray;
   }
 get moneySources(): FormArray {
-    return this.beneficiaryForm.get('moneySources') as FormArray;
+    return this.beneficiaryService.beneficiaryForm.get('moneySources') as FormArray;
   }
 get broughtItems(): FormArray {
-    return this.beneficiaryForm.get('broughtItems') as FormArray;
+    return this.beneficiaryService.beneficiaryForm.get('broughtItems') as FormArray;
   }
 get transportations(): FormArray {
-    return this.beneficiaryForm.get('transportations') as FormArray;
+    return this.beneficiaryService.beneficiaryForm.get('transportations') as FormArray;
   }
 get livelihoodEmpNeeds(): FormArray {
-    return this.beneficiaryForm.get('livelihoodEmpNeeds') as FormArray;
+    return this.beneficiaryService.beneficiaryForm.get('livelihoodEmpNeeds') as FormArray;
   }
 get benefitedFromOrgs() {
-    return this.beneficiaryForm.get('benefitedFromOrgs') as FormArray;
+    return this.beneficiaryService.beneficiaryForm.get('benefitedFromOrgs') as FormArray;
   }
 get postArrivalNeeds(): FormArray {
-    return this.beneficiaryForm.get('postArrivalNeeds') as FormArray;
+    return this.beneficiaryService.beneficiaryForm.get('postArrivalNeeds') as FormArray;
   }
 get needTools(): FormArray {
-    return this.beneficiaryForm.get('needTools') as FormArray;
+    return this.beneficiaryService.beneficiaryForm.get('needTools') as FormArray;
   }
 get mainConcerns(): FormArray {
-    return this.beneficiaryForm.get('mainConcerns') as FormArray;
+    return this.beneficiaryService.beneficiaryForm.get('mainConcerns') as FormArray;
   }
 get hostCountrySchools(): FormArray {
-    return this.beneficiaryForm.get('hostCountrySchools') as FormArray;
+    return this.beneficiaryService.beneficiaryForm.get('hostCountrySchools') as FormArray;
   }
 get individualsArray(): FormArray {
-    return (this.beneficiaryForm.get('individuals') as FormArray);
+    return (this.beneficiaryService.beneficiaryForm.get('individuals') as FormArray);
   }
 getDistrictBenefitedIn(provinceCode: string, index: number){
     if (provinceCode){
@@ -636,7 +639,7 @@ returnProvinceChanged(event: any){
     }
   }
 whereWillYouLiveChanged(envet: any){
-if(envet.value === 'RH'){
+if (envet.value === 'RH'){
   this.benef.rentPayForAccom.setValue(null);
   this.benef.rentPayCurrency.setValue(null);
   this.setMoneySourceForm();
@@ -650,15 +653,16 @@ if(envet.value === 'RH'){
   }
 
 editIndividual(i: number){
- this.beneficiaryService.individualForm.patchValue({
+  this.beneficiaryService.individualForm = this.beneficiaryService.createIndividualForm();
+  this.beneficiaryService.individualForm.patchValue({
    ...this.individualsArray.controls[i].value
  });
- const dialogRef = this.dialog.open(IndividualFormDialogComponent, {
+  const dialogRef = this.dialog.open(IndividualFormDialogComponent, {
   width: '60%',
   data: {}
 });
 
- dialogRef.afterClosed().subscribe(result => {
+  dialogRef.afterClosed().subscribe(result => {
   if (result === 1){
     const indFormValue =  this.beneficiaryService.individualForm.value;
     const selectedIndividual = this.individualsArray.controls[i] as FormControl;
@@ -679,7 +683,6 @@ editIndividual(i: number){
   const relationship = this.initialLooupsData.relationships.find(l => l.lookupCode === indFormValue.relationshipCode).lookupName;
   selectedIndividual.patchValue({relationship});
 }
-    this.beneficiaryService.resetIndividualForm();
     this.individualTable.renderRows();
   }
 });
@@ -720,7 +723,7 @@ leavingReasonFirstChanged(event: any){
   }
 }
 leavingReasonSecondChanged(event: any){
-  if(event.value){
+  if (event.value){
     this.leavingReasonThirdList = this.leavingReasonSecondList.filter(l => l.lookupCode !== event.value);
     this.benef.leavingReason3.setValue(null);
 
@@ -768,6 +771,7 @@ nextTab(){
 
 }
 addIndividual(){
+  this.beneficiaryService.individualForm = this.beneficiaryService.createIndividualForm();
   if (this.individualsArray.length === 0 ){
     if (this.benef.beneficiaryType.value === 'Family'){
       this.beneficiaryService.individualForm.patchValue({relationshipCode: 'HH'});
@@ -783,7 +787,7 @@ addIndividual(){
   dialogRef.afterClosed().subscribe(result => {
     if (result === 1){
       const indFormValue =  this.beneficiaryService.individualForm.value;
-      const newIndividualForm = this.beneficiaryService.newIndividualForm();
+      const newIndividualForm = this.beneficiaryService.createIndividualForm();
       newIndividualForm.patchValue({
         ...indFormValue
       });
@@ -815,52 +819,34 @@ addIndividual(){
     });
   }
       this.individualsArray.push(newIndividualForm);
-      this.beneficiaryService.resetIndividualForm();
       this.individualTable.renderRows();
     }
   });
 }
 onSubmit() {
   this.benefSubmitted = true;
-  if (this.beneficiaryForm.invalid){
+  if (this.beneficiaryService.beneficiaryForm.invalid){
+    this.alertifyService.error('Form is invalid, please go back and provide required field');
     return;
   }
-  if(this.beneficiaryForm.value.beneficiaryID){
-    this.beneficiaryService.updateBeneficiary().subscribe((response: any)=>{
+  if (this.beneficiaryService.beneficiaryForm.value.beneficiaryID){
+    this.beneficiaryService.updateBeneficiary().subscribe((response: any) => {
       this.alertifyService.success('Successfull updated beneficiary');
       this.router.navigate(['/beneficiarySearch']);
-    },(error)=>{
+    }, (error) => {
       this.alertifyService.error('Unable to update beneficiary');
     })
   }else{
-    this.beneficiaryService.addBeneficiary().subscribe((response: any) =>{
+    this.beneficiaryService.addBeneficiary().subscribe((response: any) => {
       this.alertifyService.success('Successfull added beneficiary');
       this.router.navigate(['/beneficiarySearch']);
-    },(error) =>{
+    }, (error) => {
       this.alertifyService.error('Unable to add beneficiary');
-    })
+    });
   }
-  
-  alert('Success!!!');
 }
-deleteBeneficiary(){
-  const dialogRef = this.dialog.open(DeleteDialogComponent, {
-    width: '500px',
-     data: {title: 'Delete Beneficiary', description: 'Are you sure to delete this beneficiary?'}
-  });
 
-  dialogRef.afterClosed().subscribe(result => {
-    if (result && this.benef.beneficiaryID.value){
-      this.beneficiaryService.deleteBeneficiary(this.benef.beneficiaryID.value)
-      .subscribe((response: any)=>{
-        this.alertifyService.success('Beneficiary Successfuly deleted.');
-      },(error: any ) =>{
-        this.alertifyService.error('Un able to delete beneficiary.')
-      })
-    }
-  });
-}
-ngAfterViewInit(): void {
+//  ngAfterViewInit(): void {
 
-  }
+//   }
 }

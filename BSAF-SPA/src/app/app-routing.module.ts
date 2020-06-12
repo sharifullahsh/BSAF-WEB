@@ -1,3 +1,4 @@
+import { BeneficiaryViewComponent } from './beneficiary/beneficiary-view/beneficiary-view.component';
 import { MainlayoutComponent } from './mainlayout/mainlayout.component';
 import { UserManagementComponent } from './admin/user-management/user-management.component';
 import { LoginComponent } from './login/login.component';
@@ -24,6 +25,10 @@ const routes: Routes = [
         initialLookups: BeneficiaryResolverService
       }, canDeactivate: [PreventUnsavedChangesGuard]
       },
+      {
+        path: 'beneficiaryView/:id',
+         component: BeneficiaryViewComponent,
+        },
     {path: 'beneficiarySearch', component: BeneficiarySearchComponent},
     {path: 'userManagement',  data: { roles: ['Admin']}, canActivate: [AuthGuard], component: UserManagementComponent},
     {path: '**', component: PageNotFoundComponent}

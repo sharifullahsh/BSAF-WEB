@@ -6,7 +6,6 @@ import { AuthGuard } from './_guards/auth.guard';
 import { HttpInterceptorService } from './_services/http-interceptor.service';
 import { HttpInterceptor } from '@angular/common/http';
 import { AuthService } from './_services/auth.service';
-import { CoreModule } from './core/core.module';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 
@@ -31,6 +30,7 @@ import { DeleteDialogComponent } from './shared/dialog/delete/delete-dialog.comp
 import { AddUserDialogComponent } from './admin/dialog/add-user-dialog/add-user-dialog.component';
 import { UserChangePassDialogComponent } from './shared/dialog/user-change-pass-dialog/user-change-pass-dialog.component';
 import { PreventUnsavedChangesGuard } from './_guards/prevent-unsaved-changes.guard';
+import { BeneficiaryViewComponent } from './beneficiary/beneficiary-view/beneficiary-view.component';
 
 
 export function tokenGetter() {
@@ -55,14 +55,14 @@ export function tokenGetter() {
     AddUserDialogComponent,
     EditUserDialogComponent,
     AdminChangePassDialogComponent,
-    UserChangePassDialogComponent
+    UserChangePassDialogComponent,
+    BeneficiaryViewComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,
     SharedModule,
-    CoreModule,
     AngularMaterialModule,
     JwtModule.forRoot({
       config: {

@@ -1,0 +1,611 @@
+<mat-card class="beneficary-card">
+    <mat-card-header fxLayout="row" fxLayoutAlign="space-between center">
+        <mat-card-title>
+            Beneficairy Information
+        </mat-card-title>
+        <div fxLayout="row wrap" fxLayoutGap="10px" class="m10" fxLayoutAlign="end start">
+            <button mat-raised-button color="primary" (click)="deleteBeneficiary()" type="button">Edit</button>
+            <button mat-raised-button color="primary" (click)="deleteBeneficiary()" type="button">Print Card</button>
+            <button mat-raised-button color="primary" (click)="deleteBeneficiary()" type="button">Back to List</button>
+            <button mat-raised-button *appHasRole="['Admin']" color="warn" (click)="deleteBeneficiary()" type="button">Delete</button>
+        </div>
+    </mat-card-header>
+    <mat-card-content>
+        <mat-tab-group #beneficiaryTab>
+            <mat-tab label="Profile">
+                <h4 class="mt20">1. Border Crossing Point Information</h4>
+                <div fxLayout="row wrap" fxLayoutGap="20px">
+                    <div fxFlex="0 1 calc(80% - 20px)" fxLayout.lt-sm="column">
+                        <div fxLayout="row wrap" fxLayoutAlign="space-between" fxLayoutGap="32px">
+                            <div fxFlex="0 1 calc(25% - 32px)">
+                                <mat-form-field fxFlex="100%">
+                                    <mat-label>Card ID</mat-label>
+                                    <input matInput disabled [value]="beneficiary?.cardID">
+                                </mat-form-field>
+                            </div>
+                            <div fxFlex="0 1 calc(25% - 32px)">
+                                <mat-form-field fxFlex="100%">
+                                    <mat-label>Screening Date</mat-label>
+                                    <input matInput disabled value="{{beneficiary?.screeningDate | date}}">
+                                </mat-form-field>
+
+                            </div>
+                            <div fxFlex="0 1 calc(25% - 32px)">
+                                <mat-form-field class="full-width">
+                                    <mat-label>Province</mat-label>
+                                    <input matInput disabled [value]="beneficiary?.provinceBCP">
+                                </mat-form-field>
+                            </div>
+                            <div fxFlex="0 1 calc(25% - 32px)">
+                                <mat-form-field class="full-width">
+                                    <mat-label>Border Point</mat-label>
+                                    <input matInput disabled [value]="beneficiary?.borderPoint">
+                                </mat-form-field>
+                            </div>
+                        </div>
+                        <h4 class="mt20">2. Beneficiary Informaion</h4>
+                        <div fxLayout="row wrap">
+                            <div fxLayout="column" fxFlex="0 1 calc(40% - 20px)">
+                                <p>Beneficiary Type: </p>
+                                <mat-radio-group disabled fxLayoutGap="30px" [value]="beneficiary?.beneficiaryType">
+                                    <mat-radio-button value="Family">Family</mat-radio-button>
+                                    <mat-radio-button value="Individual">Individual</mat-radio-button>
+                                </mat-radio-group>
+                            </div>
+                            <div fxLayout="column" fxFlex="0 1 calc(60% - 20px)">
+                                <p>Return Status: </p>
+                                <mat-radio-group disabled fxLayoutGap="30px" [value]="beneficiary?.returnStatus">
+                                    <mat-radio-button value="DEP">Deported</mat-radio-button>
+                                    <mat-radio-button value="DC">Document claimant</mat-radio-button>
+                                    <mat-radio-button value="SR">Spontaneous returnee</mat-radio-button>
+                                </mat-radio-group>
+                            </div>
+                        </div>
+                    </div>
+                    <div fxFlex="0 1 calc(20% - 32px)" fxLayout.lt-sm="column" fxLayoutAlign="end center">
+                        <img [src]="photoPath" class="img-thumbnail" alt="Beneficiary Image" width="200px" height="200px">
+                    </div>
+                </div>
+                <mat-divider class="mt20">
+                </mat-divider>
+                <div class="mt20">
+                    <h4>3. Family members</h4>
+                    <div fxLayout="column" class="individualHolder">
+                        <table mat-table [dataSource]="beneficiary?.individuals" class="mat-elevation-z8">
+                            <ng-container matColumnDef="name">
+                                <th mat-header-cell *matHeaderCellDef> Name</th>
+                                <td mat-cell *matCellDef="let row">{{row.name}}
+                                </td>
+                            </ng-container>
+                            <ng-container matColumnDef="fName">
+                                <th mat-header-cell *matHeaderCellDef>Father Name</th>
+                                <td mat-cell *matCellDef="let row">{{row.fName}}</td>
+                            </ng-container>
+                            <ng-container matColumnDef="gender">
+                                <th mat-header-cell *matHeaderCellDef>Gender</th>
+                                <td mat-cell *matCellDef="let row">{{row.gender}}</td>
+                            </ng-container>
+                            <ng-container matColumnDef="maritalStatus">
+                                <th mat-header-cell *matHeaderCellDef>MaritalStatus</th>
+                                <td mat-cell *matCellDef="let row">{{row.maritalStatus}}</td>
+                            </ng-container>
+                            <ng-container matColumnDef="age">
+                                <th mat-header-cell *matHeaderCellDef>Age</th>
+                                <td mat-cell *matCellDef="let row">{{row.age}}</td>
+                            </ng-container>
+                            <ng-container matColumnDef="idType">
+                                <th mat-header-cell *matHeaderCellDef>ID Type</th>
+                                <td mat-cell *matCellDef="let row">{{row.idType}}</td>
+                            </ng-container>
+                            <ng-container matColumnDef="idNo">
+                                <th mat-header-cell *matHeaderCellDef>ID No</th>
+                                <td mat-cell *matCellDef="let row">{{row.idNo}}</td>
+                            </ng-container>
+                            <ng-container matColumnDef="relationship">
+                                <th mat-header-cell *matHeaderCellDef>Relationship</th>
+                                <td mat-cell *matCellDef="let row">{{row.relationship}}</td>
+                            </ng-container>
+                            <ng-container matColumnDef="contactNumber">
+                                <th mat-header-cell *matHeaderCellDef>ContactNo</th>
+                                <td mat-cell *matCellDef="let row">{{row.contactNumber}}</td>
+                            </ng-container>
+                            <ng-container matColumnDef="drFName">
+                                <th mat-header-cell *matHeaderCellDef>ولد</th>
+                                <td mat-cell *matCellDef="let row">{{row.drFName}}</td>
+                            </ng-container>
+                            <ng-container matColumnDef="drName">
+                                <th mat-header-cell *matHeaderCellDef>نوم/نام</th>
+                                <td mat-cell *matCellDef="let row">{{row.drName}}</td>
+                            </ng-container>
+                            <tr mat-header-row *matHeaderRowDef="individualsTbleColumns"></tr>
+                            <tr mat-row *matRowDef="let row; columns: individualsTbleColumns;"></tr>
+                        </table>
+                    </div>
+                </div>
+                <h4 class="mt20">4. Please indicate the place of origin and intended place of return </h4>
+                <div fxLayout="row wrap" fxLayoutAlign="space-between center">
+                    <div fxLayout="column" fxFlex="0 1 calc(50% - 32px)">
+                        <mat-form-field class="full-width">
+                            <mat-label>Origin Province</mat-label>
+                            <input matInput disabled [value]="beneficiary?.originProvince">
+                        </mat-form-field>
+                    </div>
+                    <div fxLayout="column" fxFlex="0 1 calc(50.3% - 32px)">
+                        <mat-form-field class="full-width">
+                            <mat-label>Return Province</mat-label>
+                            <input matInput disabled [value]="beneficiary?.originProvince">
+                        </mat-form-field>
+                    </div>
+                </div>
+                <div fxLayout="row wrap" fxLayoutAlign="space-between center">
+                    <div fxLayout="column" fxFlex="0 1 calc(50% - 32px)">
+                        <mat-form-field class="full-width">
+                            <mat-label>Origin District</mat-label>
+                            <input matInput disabled [value]="beneficiary?.originDistrict">
+                        </mat-form-field>
+                    </div>
+                    <div fxLayout="column" fxFlex="0 1 calc(50% - 32px)">
+                        <mat-form-field class="full-width">
+                            <mat-label>Return District</mat-label>
+                            <input matInput disabled [value]="beneficiary?.returnDistrict">
+                        </mat-form-field>
+                    </div>
+                </div>
+                <div fxLayout="row wrap" fxLayoutAlign="space-between center">
+                    <div fxLayout="column" fxFlex="0 1 calc(50% - 32px)">
+                        <mat-form-field class="full-width">
+                            <input matInput placeholder="Origin Village" disabled [value]="beneficiary?.originVillage">
+                        </mat-form-field>
+                    </div>
+                    <div fxLayout="column" fxFlex="0 1 calc(50% - 32px)">
+                        <mat-form-field class="full-width">
+                            <input matInput placeholder="Return Village" disabled [value]="beneficiary?.returnVillage">
+                        </mat-form-field>
+                    </div>
+                </div>
+            </mat-tab>
+            <mat-tab label="Protection">
+                <h4 class="mt20">5. Does this case have person with specific needs(PSN)</h4>
+                <div fxLayout="row wrap" fxLayout.lt-sm="column" fxLayoutGap="32px" fxLayoutAlign="flex-start">
+                    <mat-chip-list aria-label="PSN List">
+                        <mat-chip *ngFor="let psn of beneficiary?.psns">{{psn}}</mat-chip>
+                    </mat-chip-list>
+                </div>
+                <h4 class="mt20">6. What were the three main reasons for leaving Afghanistan?</h4>
+                <div fxLayout="column" fxLayoutAlign="space-between">
+                    <mat-form-field class="full-width">
+                        <mat-label>First Reason</mat-label>
+                        <input matInput disabled [value]="beneficiary?.leavingReason1" placeholder="First Reason Other">
+                    </mat-form-field>
+                    <mat-form-field class="full-width" *ngIf="beneficiary?.leavingReason2">
+                        <mat-label>Second Reason</mat-label>
+                        <input matInput disabled [value]="beneficiary?.leavingReason2" placeholder="Second Reason Other">
+                    </mat-form-field>
+                    <mat-form-field class="full-width" *ngIf="beneficiary?.leavingReason2">
+                        <mat-label>Third Reason</mat-label>
+                        <input matInput disabled [value]="beneficiary?.leavingReason3" placeholder="Third Reason Other">
+                    </mat-form-field>
+                </div>
+                <h4>7. What are the main reasons behind your return to Afghanistan?</h4>
+                <div fxLayout="row wrap" fxLayout.lt-sm="column" fxLayoutGap="32px" fxLayoutAlign="flex-start">
+                    <mat-chip-list aria-label="Return reason list">
+                        <mat-chip *ngFor="let reason of beneficiary?.returnReasons">{{reason}}</mat-chip>
+                    </mat-chip-list>
+                </div>
+                <h4 class="mt20">8. Rank which of these options is the most important for you to determine your destination in Afghanistan</h4>
+                <div fxLayout="row wrap">
+                    <mat-chip-list aria-label="Answer color list">
+                        <mat-chip class="VIMP rankOption">Very Important</mat-chip>
+                        <mat-chip class="IMP rankOption">Important</mat-chip>
+                        <mat-chip class="SIMP rankOption">Slightly Important</mat-chip>
+                        <mat-chip class="NAAIMP rankOption">Not at all Important</mat-chip>
+                    </mat-chip-list>
+                </div>
+                <div class="pt10" fxLayout="row wrap" fxLayoutAlign="space-between start">
+                    <mat-chip-list aria-label="Return determination list">
+                        <ng-container *ngFor="let deter of beneficiary?.determinations">
+                            <mat-chip *ngIf="deter?.answerCode == 'VIMP'" class="VIMP">{{deter?.determinationName}}</mat-chip>
+                            <mat-chip *ngIf="deter?.answerCode == 'IMP'" class="IMP">{{deter?.determinationName}}</mat-chip>
+                            <mat-chip *ngIf="deter?.answerCode == 'SIMP'" class="SIMP">{{deter?.determinationName}}</mat-chip>
+                            <mat-chip *ngIf="deter?.answerCode == 'NAAIMP'" class="NAAIMP">{{deter?.determinationName}}</mat-chip>
+                        </ng-container>
+                    </mat-chip-list>
+                </div>
+                <mat-divider class="mb10" style="background-color: #3f51b5; height: 1px;">
+                </mat-divider>
+                <div class="mt20" fxLayout="row wrap" fxLayoutAlign="space-between start" fxLayoutGap="20px">
+                    <h4 fxFelx>9. Do you own housing (house/apartment)?</h4>
+                    <mat-radio-group disabled [value]="beneficiary?.ownHouse" fxFlex fxLayoutGap="20px" fxLayout.lt-sm="column" aria-label="Select an option">
+                        <mat-radio-button [value]="true">Yes</mat-radio-button>
+                        <mat-radio-button [value]="false">No</mat-radio-button>
+                    </mat-radio-group>
+                </div>
+                <div fxLayout="row wrap" fxLayoutAlign="space-between start" fxLayoutAlign="start center" fxLayoutGap="20px">
+                    <h4 fxFelx style="text-align: center;">10. Where will you live?</h4>
+                    <mat-form-field fxFlex="0 1 40%" fxLayout.lt-sm="column" floatLabel="never">
+                        <mat-label>Where will you live?</mat-label>
+                        <input disabled matInput disabled [value]="beneficiary?.whereWillLive">
+                    </mat-form-field>
+                </div>
+                <div *ngIf="beneficiary?.whereWillLive == 'Rent a house'">
+                    <div class="mt20" fxLayout="row wrap" fxLayoutAlign="space-between start" fxLayoutGap="20px">
+                        <h4 fxFelx class="pt20">11. How much rent would you pay per month for accommodation?</h4>
+                        <mat-form-field fxFlexAlign="start" fxFlex floatLabel="never">
+                            <input disabled [value]="beneficiary?.rentPayForAccom" matInput type="number" placeholder="Rent amont">
+                        </mat-form-field>
+                        <mat-radio-group disabled [value]="beneficiary?.rentPayCurrency" class="pt20" fxFlex fxLayoutGap="20px" fxLayout.lt-sm="column" aria-label="Select an option">
+                            <mat-radio-button value="USD">USD</mat-radio-button>
+                            <mat-radio-button value="AFG">AFG</mat-radio-button>
+                        </mat-radio-group>
+                    </div>
+                    <h4>12. How would you find the money for rental payments?</h4>
+                    <div fxLayout="row wrap" fxLayout.lt-sm="column" fxLayoutGap="32px" fxLayoutAlign="flex-start">
+                        <mat-chip-list aria-label="Money source List">
+                            <mat-chip *ngFor="let source of beneficiary?.moneySources">{{source}}</mat-chip>
+                        </mat-chip-list>
+                    </div>
+                </div>
+                <div class="mt20" fxLayout="row wrap" fxLayoutAlign="space-between start" fxLayoutGap="20px">
+                    <h4 fxFelx>13. If there was a job opening for your wife, sister, daughter or adult female family member, would you allow her to work? </h4>
+                    <mat-radio-group disabled [value]="beneficiary?.allowForJob" fxFlex fxLayoutGap="20px" fxLayout.lt-sm="column" aria-label="Select an option">
+                        <mat-radio-button [value]="true">Yes</mat-radio-button>
+                        <mat-radio-button [value]="false">No</mat-radio-button>
+                    </mat-radio-group>
+                </div>
+            </mat-tab>
+            <mat-tab label="Host Country">
+                <div class="mt20" fxLayout="row wrap" fxLayoutGap="32px">
+                    <h4 fxFlex="0 1 calc(20% - 32px)" class="pt20">14. Country of Exile</h4>
+                    <mat-radio-group disabled [value]="beneficiary?.countryOfExile" fxFlex="0 1 calc(30% - 32px)" class="pt20" fxLayoutGap="30px" fxLayout.lt-sm="column" aria-label="Select an option">
+                        <mat-radio-button value="Iran">Iran</mat-radio-button>
+                        <mat-radio-button value="Pakistan">Pakistan</mat-radio-button>
+                        <mat-radio-button value="COther">Other</mat-radio-button>
+                    </mat-radio-group>
+                    <div *ngIf="beneficiary?.countryOfExile == 'COther'" fxFlex="0 1 calc(50% - 32px)">
+                        <div fxLayout="column">
+                            <mat-form-field class="full-width">
+                                <input matInput [value]="beneficiary?.countryOfExilOther" placeholder="Other Country">
+                            </mat-form-field>
+                        </div>
+                    </div>
+                </div>
+                <h4>15. Place of residence before return/deportation</h4>
+                <div *ngIf="beneficiary?.countryOfExile != 'COther'" fxLayout="row wrap" fxLayoutAlign="space-between">
+                    <div fxLayout="column" fxFlex="0 1 calc(30% - 32px)">
+                        <mat-form-field class="full-width">
+                            <input disabled matInput [value]="beneficiary?.beforReturnProvince" placeholder="Province">
+                        </mat-form-field>
+                    </div>
+                    <div fxFlex="0 1 calc(30% - 32px)">
+                        <mat-form-field class="full-width">
+                            <input disabled matInput [value]="beneficiary?.beforReturnDistrict" placeholder="District">
+                        </mat-form-field>
+                    </div>
+                    <div fxFlex="0 1 calc(40% - 32px)">
+                        <mat-form-field class="full-width">
+                            <input disabled matInput [value]="beneficiary?.beforReturnRemarks" placeholder="Remarks">
+                        </mat-form-field>
+                    </div>
+                </div>
+                <div class="mt20" fxLayout="row wrap" fxLayoutGap="32px">
+                    <h4 fxFlex="0 1 calc(30% - 32px)" class="pt20">Do you have family members who stayed behind? </h4>
+                    <mat-radio-group disabled [value]="beneficiary?.familyMemStayedBehind" fxFlex="0 1 calc(20% - 32px)" class="pt20" name="FamilyMemStayedBehind" fxLayoutGap="20px" fxLayout.lt-sm="column" aria-label="Select an option">
+                        <mat-radio-button [value]="true">Yes</mat-radio-button>
+                        <mat-radio-button [value]="false">No</mat-radio-button>
+                    </mat-radio-group>
+                    <ng-container *ngIf="beneficiary?.familyMemStayedBehind === true">
+                        <mat-label fxFlex="0 1 calc(15% - 32px)" class="mt20">If yes how many</mat-label>
+                        <div fxLayout="column" fxFlex="0 1 calc(35% - 32px)">
+                            <mat-form-field class="full-width">
+                                <input [value]="beneficiary?.familyMemStayedBehindNo" matInput type="number" placeholder="Number of member stayed behind">
+                            </mat-form-field>
+                        </div>
+                    </ng-container>
+                </div>
+
+                <div class="mt20" fxLayout="row wrap" fxLayoutAlign="space-between start" fxLayoutGap="20px">
+                    <h4 fxFelex class="pt20">16. Length of stay in host country </h4>
+                    <mat-form-field fxFlex>
+                        <mat-label>Years</mat-label>
+                        <input [value]="beneficiary?.lengthOfStayYears" matInput type="number">
+                    </mat-form-field>
+                    <mat-form-field fxFlex>
+                        <mat-label>Months</mat-label>
+                        <input [value]="beneficiary?.lengthOfStayMonths" matInput type="number">
+                    </mat-form-field>
+                    <mat-form-field fxFlex>
+                        <mat-label>Days</mat-label>
+                        <input [value]="beneficiary?.lengthOfStayDays" matInput type="number">
+                    </mat-form-field>
+                </div>
+                <h4>17. Items brought from host country</h4>
+                <div fxLayout="row wrap" fxLayout.lt-sm="column" fxLayoutGap="20px" fxLayoutAlign="flex-start">
+                    <mat-chip-list aria-label="Item brought from host country List">
+                        <mat-chip *ngFor="let itmem of beneficiary?.broughtItems">{{itmem}}</mat-chip>
+                    </mat-chip-list>
+                </div>
+                <div class="mt20" fxLayout="row wrap" fxLayoutAlign="space-between start" fxLayoutGap="20px">
+                    <h4 fxFelx>18. If you had the opportunity would you return to Pakistan/Iran?</h4>
+                    <mat-radio-group disabled [value]="beneficiary?.wouldYouReturn" fxFlex fxLayoutGap="20px" fxLayout.lt-sm="column" aria-label="Select an option">
+                        <mat-radio-button [value]="true">Yes</mat-radio-button>
+                        <mat-radio-button [value]="false">No</mat-radio-button>
+                    </mat-radio-group>
+                </div>
+            </mat-tab>
+            <mat-tab label="Assistance Needs 1">
+                <h4 class="pt20">19. Post Arrival Humanitarian Assistance Needs</h4>
+                <table mat-table [dataSource]="beneficiary?.postArrivalNeeds" style="width: 100%;" class="mat-elevation-z8">
+                    <ng-container matColumnDef="NeedAssistance">
+                        <th mat-header-cell *matHeaderCellDef> Need/Assistance </th>
+                        <td mat-cell *matCellDef="let row; let i = index;"> {{row.need}} </td>
+                    </ng-container>
+                    <ng-container matColumnDef="IsProvided">
+                        <th mat-header-cell *matHeaderCellDef> Is Provided </th>
+                        <td mat-cell *matCellDef="let row; let i=index;">
+                            <mat-checkbox disabled checked="{{row?.isProvided}}"></mat-checkbox>
+                        </td>
+                    </ng-container>
+                    <ng-container matColumnDef="ProvidedDate">
+                        <th mat-header-cell *matHeaderCellDef> Date Provided </th>
+                        <td mat-cell *matCellDef="let row; let i=index;">
+                            <mat-form-field>
+                                <input matInput value="{{row.providedDate | date}}">
+                            </mat-form-field>
+                        </td>
+                    </ng-container>
+                    <ng-container matColumnDef="Comments">
+                        <th mat-header-cell *matHeaderCellDef> Comments </th>
+                        <td mat-cell *matCellDef="let row; let i=index;">
+                            <mat-form-field class="full-width" floatLabel="never">
+                                <input matInput [value]="row.comment" placeholder="Comments">
+                            </mat-form-field>
+                        </td>
+                    </ng-container>
+                    <tr mat-header-row *matHeaderRowDef="postArrivalNeedTbleColumns"></tr>
+                    <tr mat-row *matRowDef="let row; columns: postArrivalNeedTbleColumns;"></tr>
+                </table>
+            </mat-tab>
+            <mat-tab label="Assistance Needs 2">
+                <div class="mt20" fxLayout="row wrap" fxLayoutAlign="space-between start" fxLayoutGap="20px">
+                    <h4 fxFelx>20. Have you or your family benefited from UNHCR or IOM programming in the past? </h4>
+                    <mat-radio-group disabled [value]="beneficiary?.haveFamilyBenefited" fxFlex fxLayoutGap="20px" fxLayout.lt-sm="column" aria-label="Select an option">
+                        <mat-radio-button [value]="true">Yes</mat-radio-button>
+                        <mat-radio-button [value]="false">No</mat-radio-button>
+                    </mat-radio-group>
+                </div>
+                <div fxLayout="column" *ngIf="beneficiary?.haveFamilyBenefited == true">
+                    <div fxLayout="column" fxLayoutAlign="end" fxLayoutAlign="space-between start">
+                        <p>If yes, when and where</p>
+                        <table mat-table [dataSource]="beneficiary?.benefitedFromOrgs" style="width: 100%;" class="mat-elevation-z8">
+                            <ng-container matColumnDef="Date">
+                                <th mat-header-cell *matHeaderCellDef> Date </th>
+                                <td mat-cell *matCellDef="let row; let i = index;"> {{row?.providedDate | date}} </td>
+                            </ng-container>
+                            <ng-container matColumnDef="Province">
+                                <th mat-header-cell *matHeaderCellDef> Province </th>
+                                <td mat-cell *matCellDef="let row; let i=index;">
+                                    {{row?.province}}
+                                </td>
+                            </ng-container>
+                            <ng-container matColumnDef="District">
+                                <th mat-header-cell *matHeaderCellDef> District </th>
+                                <td mat-cell *matCellDef="let row; let i=index;">
+                                    {{row?.district}}
+                                </td>
+                            </ng-container>
+                            <ng-container matColumnDef="VillageNehya">
+                                <th mat-header-cell *matHeaderCellDef> Village/Nehya </th>
+                                <td mat-cell *matCellDef="let row; let i=index;">
+                                    {{row?.village}}
+                                </td>
+                            </ng-container>
+                            <ng-container matColumnDef="Organization">
+                                <th mat-header-cell *matHeaderCellDef> Organization </th>
+                                <td mat-cell *matCellDef="let row; let i=index;">
+                                    {{row?.organization}}
+                                </td>
+                            </ng-container>
+                            <ng-container matColumnDef="AssistanceProvided">
+                                <th mat-header-cell *matHeaderCellDef> Assistance Provided </th>
+                                <td mat-cell *matCellDef="let row; let i=index;">
+                                    {{row?.assistanceProvided}}
+                                </td>
+                            </ng-container>
+                            <tr mat-header-row *matHeaderRowDef="benefitedFromOrgTbleColumns"></tr>
+                            <tr mat-row *matRowDef="let row; columns: benefitedFromOrgTbleColumns;"></tr>
+                        </table>
+
+                    </div>
+                </div>
+                <div fxLayout="row wrap" class="mt20" fxLayoutGap="20px">
+                    <h4 class="mt20" fxFelx>21. Transportation (UMC and other cases with difficulties)</h4>
+                    <div fxFlex="20%">
+                        <mat-form-field floatLabel="never" fxFlex="100%">
+                            <mat-label>Date</mat-label>
+                            <input value="{{beneficiary?.transportationDate | date}}" matInput>
+                        </mat-form-field>
+                    </div>
+                </div>
+                <div fxLayout="row wrap" fxLayout.lt-sm="column" fxLayoutGap="32px" fxLayoutAlign="flex-start">
+                    <mat-chip-list aria-label="Transportation option List">
+                        <mat-chip *ngFor="let trans of beneficiary?.transportations">{{trans}}</mat-chip>
+                    </mat-chip-list>
+                </div>
+                <div fxLayout="column" class="mt10">
+                    <mat-form-field class="full-width">
+                        <input matInput disabled [value]="beneficiary?.transportationInfo" placeholder="Additional information">
+                    </mat-form-field>
+                </div>
+                <div fxLayout="row" fxLayoutGap="30px">
+                    <mat-form-field fxFlex="0 1 calc(50% - 32px)" fxLayout.lt-sm="column" class="full-width">
+                        <input matInput disabled [value]="beneficiary?.transportAccompaniedBy" placeholder="Accompanied by">
+                    </mat-form-field>
+                    <mat-form-field fxFlex="0 1 calc(50% - 32px)" fxLayout.lt-sm="column" class="full-width">
+                        <input matInput disabled [value]="beneficiary?.transportAccomByNo" placeholder="Mobile">
+                    </mat-form-field>
+                </div>
+            </mat-tab>
+            <mat-tab label="Reintegration Need">
+                <h4 class="mt20">22. What are the three top needs in order of importance</h4>
+                <mat-form-field fxLayout="column" class="full-width">
+                    <input matInput disabled [value]="beneficiary?.topNeed1" placeholder="First top need">
+                </mat-form-field>
+                <mat-form-field fxLayout="column" class="full-width" *ngIf="beneficiary?.topNeed2">
+                    <input matInput disabled [value]="beneficiary?.topNeed2" placeholder="Second top need">
+                </mat-form-field>
+                <mat-form-field fxLayout="column" class="full-width" *ngIf="beneficiary?.topNeed3">
+                    <input matInput disabled [value]="beneficiary?.topNeed3" placeholder="Third top need">
+                </mat-form-field>
+                <div fxLayout="row wrap" fxLayoutGap="20px">
+                    <h4 class="mt20" fxFlex="0 1 calc(30% - 20px)">23. What do you intend to do?</h4>
+                    <div fxFlex="0 1 calc(30% - 20px)">
+                        <mat-form-field class="full-width" floatLabel="never">
+                            <input matInput disabled [value]="beneficiary?.intendToDo" placeholder="Intend to do">
+                        </mat-form-field>
+                    </div>
+                    <div fxFlex="0 1 calc(40% - 20px)" fxLayout="column" *ngIf="beneficiary?.intendToDo == 'Return to host country, state reason'">
+                        <mat-form-field fxFlex="100%">
+                            <mat-label>State Reason</mat-label>
+                            <input disabled matInput [value]="beneficiary?.intendToReturnToHostReason" placeholder="State Reason">
+                        </mat-form-field>
+                    </div>
+                </div>
+                <div fxLayout="row wrap" fxLayoutGap="20px">
+                    <h4 class="mt20" fxFlex="0 1 calc(30% - 20px)">24. What was your profession in Pakistan/Iran?</h4>
+                    <div fxFlex="0 1 calc(70% - 20px)">
+                        <mat-form-field class="full-width" floatLabel="never">
+                            <input disabled matInput [value]="beneficiary?.professionInHostCountry" placeholder="Profession">
+                        </mat-form-field>
+                    </div>
+                </div>
+                <h4 class="mt20" fxFlex="0 1 calc(40% - 20px)">25. What can help you obtain livelihood opportunities or employment in Afghanistan?</h4>
+                <div fxLayout="row wrap" fxLayoutGap="40px">
+                    <mat-chip-list aria-label="livelihood and employment need list">
+                        <mat-chip *ngFor="let help of beneficiary?.livelihoodEmpNeeds">{{help}}</mat-chip>
+                    </mat-chip-list>
+                </div>
+                <fieldset *ngIf="showNeedTools()">
+                    <legend>Tools</legend>
+                    <div fxLayout="row wrap" fxLayout.lt-sm="column" fxLayoutGap="32px" fxLayoutAlign="flex-start">
+                        <mat-chip-list aria-label="livelihood and employment need tools list">
+                            <mat-chip *ngFor="let tool of beneficiary?.needTools">{{tool}}</mat-chip>
+                        </mat-chip-list>
+                    </div>
+                </fieldset>
+                <div class="mt20" fxLayout="row wrap" fxLayoutAlign="space-between start" fxLayoutGap="20px">
+                    <h4 fxFelx>26 Can you read and write- HoH</h4>
+                    <mat-radio-group disabled [value]="beneficiary?.hoHCanReadWrite" fxFlex fxLayoutGap="20px" fxLayout.lt-sm="column" aria-label="Select an option">
+                        <mat-radio-button [value]="true">Yes</mat-radio-button>
+                        <mat-radio-button [value]="false">No</mat-radio-button>
+                    </mat-radio-group>
+                </div>
+                <div *ngIf="beneficiary?.hoHCanReadWrite == true" fxLayout="row wrap" fxLayoutGap="20px">
+                    <h4 class="mt20" fxFlex="0 1 calc(40% - 20px)">27. What is the highest education level achieved by the HoH?</h4>
+                    <mat-form-field fxFlex="0 1 calc(60% - 20px)">
+                        <mat-label>Education level</mat-label>
+                        <input disabled [value]="beneficiary?.hoHEducationLevel" matInput placeholder="Education level Other">
+                    </mat-form-field>
+                </div>
+                <h4>28. What are your main concerns in Afghanistan?</h4>
+                <fieldset>
+                    <legend>Main concerns</legend>
+                    <div fxLayout="row wrap" fxLayout.lt-sm="column" fxLayoutGap="32px" fxLayoutAlign="flex-start">
+                        <mat-chip-list aria-label="Main concerns list">
+                            <mat-chip *ngFor="let concern of beneficiary?.mainConcerns">{{concern}}</mat-chip>
+                        </mat-chip-list>
+                    </div>
+                </fieldset>
+                <h4 class="mt20">29. How many members of Household have Afghan documentation?</h4>
+                <table style="width: 100%;">
+                    <thead>
+                        <tr>
+                            <th style="width: 40%;">Document Type</th>
+                            <th>Number of household members</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><label for="">Tazkira</label></td>
+                            <td>
+                                <mat-form-field class="full-width">
+                                    <input disabled matInput [value]="beneficiary?.numHHHaveTaskira" placeholder="Number of household members have tazkira">
+                                </mat-form-field>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><label for="">Passport</label></td>
+                            <td>
+                                <mat-form-field class="full-width">
+                                    <input disabled matInput [value]="beneficiary?.numHHHavePassport" placeholder="Number of household members have passport">
+                                </mat-form-field>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><label for="">Other (driver’s license, marriage certificate, school certificates etc.)</label></td>
+                            <td>
+                                <mat-form-field class="full-width">
+                                    <input disabled matInput [value]="beneficiary?.numHHHaveDocOther" placeholder="Number of household members have other document">
+                                </mat-form-field>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="mt20" fxLayout="row wrap" fxLayoutAlign="space-between start" fxLayoutGap="20px">
+                    <h4 fxFelx>30. Do you have any secure means of livelihood or savings to subsist from? </h4>
+                    <mat-radio-group disabled [value]="beneficiary?.doHaveSecureLivelihood" fxFlex fxLayoutGap="20px" fxLayout.lt-sm="column" aria-label="Select an option">
+                        <mat-radio-button [value]="true">Yes</mat-radio-button>
+                        <mat-radio-button [value]="false">No</mat-radio-button>
+                    </mat-radio-group>
+                </div>
+
+                <div class="mt20" fxLayout="row wrap" fxLayoutAlign="space-between start" fxLayoutGap="20px">
+                    <h4 fxFelx>31. Did your children go to school in host country?</h4>
+                    <mat-radio-group disabled [value]="beneficiary?.didChildrenGoToSchoole" fxFlex fxLayoutGap="20px" fxLayout.lt-sm="column" aria-label="Select an option">
+                        <mat-radio-button [value]="true">Yes</mat-radio-button>
+                        <mat-radio-button [value]="false">No</mat-radio-button>
+                    </mat-radio-group>
+                </div>
+
+                <fieldset *ngIf="beneficiary?.didChildrenGoToSchoole == true">
+                    <legend>if Yes, specify</legend>
+                    <div fxLayout="row wrap" fxLayoutGap="40px">
+                        <!-- <div fxFlex="0 1 calc(50% - 40px)" fxLayout="row wrap" fxLayoutGap="50px" class="mt20"> -->
+                        <mat-chip-list aria-label="Host country schools list">
+                            <mat-chip *ngFor="let school of beneficiary?.hostCountrySchools">{{school}}</mat-chip>
+                        </mat-chip-list>
+                        <!-- </div> -->
+                        <div fxFlex="0 1 calc(50% - 40px)" fxLayout="column">
+                            <mat-form-field class="full-width">
+                                <input disabled matInput [value]="beneficiary?.numChildrenAttendedSchoole" type="number" placeholder="How many of your children attended school? ">
+                            </mat-form-field>
+                        </div>
+                    </div>
+                </fieldset>
+            </mat-tab>
+            <mat-tab label="Registration Information">
+                <div class="mt20">
+                    <table style="text-align: left;">
+                        <tr>
+                            <th>Inserted By</th>
+                            <td>{{beneficiary?.insertedBy}}</td>
+                        </tr>
+                        <tr>
+                            <th>Inserted Date</th>
+                            <td>{{beneficiary?.insertedDate | date}}</td>
+                        </tr>
+                        <tr>
+                            <th>Updated By</th>
+                            <td>{{beneficiary?.lastUpdatedBy}}</td>
+                        </tr>
+                        <tr>
+                            <th>Last Updated Date</th>
+                            <td>{{beneficiary?.lastUpdatedDate | date}}</td>
+                        </tr>
+                    </table>
+                </div>
+            </mat-tab>
+        </mat-tab-group>
+    </mat-card-content>
+    <mat-card-actions fxLayout="row" fxLayoutAlign="space-between start">
+    </mat-card-actions>
+</mat-card>

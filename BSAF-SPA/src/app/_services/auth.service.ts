@@ -47,10 +47,11 @@ constructor(private http: HttpClient,
   }
   loggedIn() {
     const token = localStorage.getItem('token');
-    if (token){
-      this.decodedToken = this.jwtHelper.decodeToken(localStorage.getItem('token'));
+    if (token && !this.jwtHelper.isTokenExpired(token)){
+      this.decodedToken = this.jwtHelper.decodeToken(token);
+      return true;
     }
-    return !!token;
+    return false;
   }
 
   roleMatch(allowedRoles): boolean {

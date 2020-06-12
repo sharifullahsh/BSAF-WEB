@@ -1,0 +1,46 @@
+.beneficary-card {
+    min-width: 120px;
+    margin: 10px;
+}
+
+input {
+    color: rgba(0, 0, 0, 1) !important;
+}
+
+div.mat-radio-label-content {
+    color: rgba(0, 0, 0, 1) !important;
+}
+
+.VIMP {
+    background-color: red;
+    color: white;
+    ;
+}
+
+.IMP {
+    background-color: yellow;
+}
+
+.SIMP {
+    background-color: blue;
+    color: white;
+}
+
+.NAAIMP {}
+
+.mat-chip.rankOption {
+    padding: 6px !important;
+    line-height: 0px !important;
+    min-height: 20px !important;
+    font-size: 12px !important;
+    font-weight: 400px !important;
+}
+
+.img-thumbnail {
+    padding: .25rem;
+    background-color: #fff;
+    border: 1px solid #dee2e6;
+    border-radius: .25rem;
+    max-width: 100%;
+    height: auto;
+}

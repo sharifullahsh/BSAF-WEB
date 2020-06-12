@@ -156,6 +156,308 @@ namespace BSAFWebApi.Controllers
             return BadRequest();
         }
 
+        [AllowAnonymous]
+        [HttpGet("viewBeneficiary/{id}")]
+        public async Task<IActionResult> ViewBeneficiary(int id)
+        {
+            var beneficiaryInDb = await db.Beneficiaries
+                .Where(b => b.BeneficiaryID == id && b.IsActive == true)
+                .FirstOrDefaultAsync();
+            if (beneficiaryInDb != null)
+            {
+                var beneficiaryToReturn = _mapper.Map<BeneficiaryForViewDto>(beneficiaryInDb);
+
+                beneficiaryToReturn.ProvinceBCP = db.Provinces.Where(p => p.ProvinceCode == beneficiaryInDb.ProvinceBCP).Select(p => p.EnName).FirstOrDefault();
+                beneficiaryToReturn.BorderPoint = db.BorderCrossingPoints.Where(b => b.BCPCode == beneficiaryInDb.BorderPoint).Select(b => b.EnName).FirstOrDefault();
+                beneficiaryToReturn.OriginProvince = db.Provinces.Where(b => b.ProvinceCode == beneficiaryInDb.OriginProvince).Select(b => b.EnName).FirstOrDefault();
+                beneficiaryToReturn.OriginDistrict = db.Districts.Where(b => b.DistrictCode == beneficiaryInDb.OriginDistrict).Select(b => b.EnName).FirstOrDefault();
+                beneficiaryToReturn.ReturnProvince = db.Provinces.Where(b => b.ProvinceCode == beneficiaryInDb.ReturnProvince).Select(b => b.EnName).FirstOrDefault();
+                beneficiaryToReturn.ReturnDistrict = db.Districts.Where(b => b.DistrictCode == beneficiaryInDb.ReturnDistrict).Select(b => b.EnName).FirstOrDefault();
+                if(beneficiaryInDb.LeavingReason1 == "LROther")
+                {
+                    beneficiaryToReturn.LeavingReason1 = beneficiaryInDb.LeavingReason1Other;
+                }
+                else
+                {
+                    beneficiaryToReturn.LeavingReason1 = db.LookupValues.Where(b => b.ValueCode == beneficiaryInDb.LeavingReason1).Select(b => b.EnName).FirstOrDefault();
+                }
+
+                if (!string.IsNullOrEmpty(beneficiaryInDb.LeavingReason2))
+                {
+                    if(beneficiaryInDb.LeavingReason2 == "LROther")
+                    {
+                        beneficiaryToReturn.LeavingReason2 = beneficiaryInDb.LeavingReason2Other;
+                    }
+                    else
+                    {
+                        beneficiaryToReturn.LeavingReason2 = db.LookupValues.Where(b => b.ValueCode == beneficiaryInDb.LeavingReason2).Select(b => b.EnName).FirstOrDefault();
+                    }
+                }
+                if (!string.IsNullOrEmpty(beneficiaryInDb.LeavingReason3))
+                {
+                    if(beneficiaryInDb.LeavingReason3 == "LROther")
+                    {
+                        beneficiaryToReturn.LeavingReason3 = beneficiaryInDb.LeavingReason3Other;
+                    }
+                    else
+                    {
+                        beneficiaryToReturn.LeavingReason3 = db.LookupValues.Where(b => b.ValueCode == beneficiaryInDb.LeavingReason3).Select(b => b.EnName).FirstOrDefault();
+                    }
+                }
+                beneficiaryToReturn.WhereWillLive = db.LookupValues.Where(b => b.ValueCode == beneficiaryInDb.WhereWillLive).Select(b => b.EnName).FirstOrDefault();
+                if(beneficiaryInDb.CountryOfExile != "COther")
+                {
+                    beneficiaryToReturn.BeforReturnProvince = db.HostCountryProvinces.Where(p => p.ProvinceId == beneficiaryInDb.BeforReturnProvince).Select(p => p.EnName).FirstOrDefault();
+                    beneficiaryToReturn.BeforReturnDistrict = db.HostCountryDistricts.Where(d => d.DistrictId == beneficiaryInDb.BeforReturnDistrictID).Select(p => p.EnName).FirstOrDefault();
+                }
+                if(beneficiaryInDb.TopNeed1 == "TNOther")
+                {
+                    beneficiaryToReturn.TopNeed1 = beneficiaryInDb.TopNeed1Other;
+                }
+                else
+                {
+                    beneficiaryToReturn.TopNeed1 = db.LookupValues.Where(l => l.ValueCode == beneficiaryInDb.TopNeed1).Select(l => l.EnName).FirstOrDefault();
+                }
+
+                if (!string.IsNullOrEmpty(beneficiaryInDb.TopNeed2))
+                {
+                    if(beneficiaryInDb.TopNeed2 == "TNOther")
+                    {
+                        beneficiaryToReturn.TopNeed2 = beneficiaryInDb.TopNeed2Other;
+                    }
+                    else
+                    {
+                        beneficiaryToReturn.TopNeed2 = db.LookupValues.Where(l => l.ValueCode == beneficiaryInDb.TopNeed2).Select(l => l.EnName).FirstOrDefault();
+                    }
+                }
+                if (!string.IsNullOrEmpty(beneficiaryInDb.TopNeed3))
+                {
+                    if(beneficiaryInDb.TopNeed3 == "TNOther")
+                    {
+                        beneficiaryToReturn.TopNeed3 = beneficiaryInDb.TopNeed3Other;
+                    }
+                    else
+                    {
+                        beneficiaryToReturn.TopNeed3 = db.LookupValues.Where(l => l.ValueCode == beneficiaryInDb.TopNeed3).Select(l => l.EnName).FirstOrDefault();
+                    }
+                }
+                beneficiaryToReturn.IntendToDo = db.LookupValues.Where(l => l.ValueCode == beneficiaryInDb.IntendToDo).Select(l => l.EnName).FirstOrDefault();
+                beneficiaryToReturn.ProfessionInHostCountry = db.LookupValues.Where(l => l.ValueCode == beneficiaryInDb.ProfessionInHostCountry).Select(l => l.EnName).FirstOrDefault();
+                beneficiaryToReturn.HoHEducationLevel = db.LookupValues.Where(l => l.ValueCode == beneficiaryInDb.HoHEducationLevel).Select(l => l.EnName).FirstOrDefault();
+
+                if(beneficiaryInDb.ProfessionInHostCountry == "ProfOther")
+                {
+                    beneficiaryToReturn.ProfessionInHostCountry = beneficiaryInDb.ProfessionInHostCountryOther;
+                }
+                else
+                {
+                    beneficiaryToReturn.ProfessionInHostCountry = db.LookupValues.Where(l => l.ValueCode == beneficiaryInDb.ProfessionInHostCountry).Select(l => l.EnName).FirstOrDefault();
+                }
+
+                if (beneficiaryInDb.HoHEducationLevel == "EDUOther")
+                {
+                    beneficiaryToReturn.HoHEducationLevel = beneficiaryInDb.HoHEducationLevelOther;
+                }
+                else
+                {
+                    beneficiaryToReturn.HoHEducationLevel = db.LookupValues.Where(l => l.ValueCode == beneficiaryInDb.HoHEducationLevel).Select(l => l.EnName).FirstOrDefault();
+                }
+                var individuals = await db.Individuals.Where(i => i.BeneficiaryID == beneficiaryInDb.BeneficiaryID && i.IsActive == true)
+                    .Select(i =>
+                    new IndividualForViewDto
+                    {
+                        IndividualID = i.IndividualID,
+                        Name = i.Name,
+                        DrName = i.DrName,
+                        FName = i.FName,
+                        DrFName = i.DrFName,
+                        Gender = db.LookupValues.Where(l => l.ValueCode == i.GenderCode).Select(l => l.EnName).FirstOrDefault(),
+                        MaritalStatus = db.LookupValues.Where(l => l.ValueCode == i.MaritalStatusCode).Select(l => l.EnName).FirstOrDefault(),
+                        Age = i.Age,
+                        IDType = db.LookupValues.Where(l => l.ValueCode == i.IDTypeCode).Select(l => l.EnName).FirstOrDefault(),
+                        IDNo = i.IDNo,
+                        Relationship = db.LookupValues.Where(l => l.ValueCode == i.RelationshipCode).Select(l => l.EnName).FirstOrDefault(),
+                        ContactNumber = i.ContactNumber
+                    }).ToListAsync();
+                beneficiaryToReturn.Individuals = individuals;
+                var psns = db.PSNs.Where(b => b.BeneficiaryID == beneficiaryInDb.BeneficiaryID)
+                    .Select(p => new { p.PSNCode,p.PSNOther}).ToList();
+                foreach(var p in psns)
+                {
+                    if (p.PSNCode == "PSNOther")
+                    {
+                        beneficiaryToReturn.psns.Add(p.PSNOther);
+                    }
+                    else
+                    {
+                        var psn = db.LookupValues.Where(l => l.ValueCode == p.PSNCode).Select(l => l.EnName).FirstOrDefault();
+                        beneficiaryToReturn.psns.Add(psn);
+                    }
+                }
+                var returnReasons = db.ReturnReasons.Where(b => b.BeneficiaryID == beneficiaryInDb.BeneficiaryID)
+                    .Select(p => new { p.ReasonCode, p.Other }).ToList();
+                foreach (var r in returnReasons)
+                {
+                    if (r.ReasonCode == "RROther")
+                    {
+                        beneficiaryToReturn.ReturnReasons.Add(r.Other);
+                    }
+                    else
+                    {
+                        var reason = db.LookupValues.Where(l => l.ValueCode == r.ReasonCode).Select(l => l.EnName).FirstOrDefault();
+                        beneficiaryToReturn.ReturnReasons.Add(reason);
+                    }
+                }
+                var determinations = db.Determinations.Where(b => b.BeneficiaryID == beneficiaryInDb.BeneficiaryID)
+                    .Select(p => new { p.AnswerCode,p.DeterminationCode,p.Other }).ToList();
+                foreach (var d in determinations)
+                {
+                    if (d.DeterminationCode == "RankImpOther")
+                    {
+                        var determination = new DeterminationForViewDto {
+                            DeterminationName = d.Other,
+                            AnswerCode = d.AnswerCode
+                        };
+                        beneficiaryToReturn.Determinations.Add(determination);
+                    }
+                    else
+                    {
+                        var determination = new DeterminationForViewDto
+                        {
+                            AnswerCode = d.AnswerCode
+                        };
+                        determination.DeterminationName = db.LookupValues.Where(l => l.ValueCode == d.DeterminationCode).Select(l => l.EnName).FirstOrDefault();
+                        beneficiaryToReturn.Determinations.Add(determination);
+                    }
+                }
+
+                var moneySources = db.MoneySources.Where(b => b.BeneficiaryID == beneficiaryInDb.BeneficiaryID)
+                    .Select(p => new { p.MoneySourceCode, p.MoneySourceOther }).ToList();
+                foreach (var m in moneySources)
+                {
+                    if (m.MoneySourceCode == "MFRPOther")
+                    {
+                        beneficiaryToReturn.MoneySources.Add(m.MoneySourceOther);
+                    }
+                    else
+                    {
+                        var source = db.LookupValues.Where(l => l.ValueCode == m.MoneySourceCode).Select(l => l.EnName).FirstOrDefault();
+                        beneficiaryToReturn.MoneySources.Add(source);
+                    }
+                }
+
+                var broughtItems = db.BroughtItems.Where(b => b.BeneficiaryID == beneficiaryInDb.BeneficiaryID)
+                    .Select(p => new { p.ItemCode, p.ItemOther }).ToList();
+                foreach (var i in broughtItems)
+                {
+                    if (i.ItemCode == "ITEMSOther")
+                    {
+                        beneficiaryToReturn.BroughtItems.Add(i.ItemOther);
+                    }
+                    else
+                    {
+                        var item = db.LookupValues.Where(l => l.ValueCode == i.ItemCode).Select(l => l.EnName).FirstOrDefault();
+                        beneficiaryToReturn.BroughtItems.Add(item);
+                    }
+                }
+
+                var postArrivalNeeds = db.PostArrivalNeeds.Where(b => b.BeneficiaryID == beneficiaryInDb.BeneficiaryID)
+                    .Select(p => new { p.NeedCode, p.ProvidedDate, p.Comment, p.Provided }).ToList();
+                foreach (var p in postArrivalNeeds)
+                {
+                    var needName = db.LookupValues.Where(l => l.ValueCode == p.NeedCode).Select(l => l.EnName).FirstOrDefault();
+                    var PostArrivalNeedObj = new PostArrivalNeedsForViewDto
+                    {
+                        Comment = p.Comment,
+                        IsProvided = p.Provided,
+                        Need = needName,
+                        ProvidedDate = p.ProvidedDate
+                    };
+                    beneficiaryToReturn.PostArrivalNeeds.Add(PostArrivalNeedObj);
+                    
+                }
+
+                var benefitedFromOrgs = db.BenefitedFromOrgs.Where(b => b.BeneficiaryID == beneficiaryInDb.BeneficiaryID)
+                    .Select(p => new { p.Date, p.ProvinceCode, p.DistrictID, p.Village, p.OrgCode, p.AssistanceProvided }).ToList();
+                foreach (var b in benefitedFromOrgs)
+                {
+                    var province = db.Provinces.Where(l => l.ProvinceCode == b.ProvinceCode).Select(l => l.EnName).FirstOrDefault();
+                    var district = db.Districts.Where(l => l.DistrictCode == b.DistrictID).Select(l => l.EnName).FirstOrDefault();
+                    var organization = db.LookupValues.Where(l => l.ValueCode == b.OrgCode).Select(l => l.EnName).FirstOrDefault();
+                    var postArrivalNeedObj = new BenefitedFromOrgsForViewDto
+                    {
+                        ProvidedDate = b.Date,
+                        Province = province,
+                        District = district,
+                        Village = b.Village,
+                        Organization = organization,
+                        AssistanceProvided = b.AssistanceProvided
+                    };
+                    beneficiaryToReturn.BenefitedFromOrgs.Add(postArrivalNeedObj);
+
+                }
+
+                var transportations = db.Transportations.Where(b => b.BeneficiaryID == beneficiaryInDb.BeneficiaryID)
+                   .Select(t => new { t.TypedCode, t.Other }).ToList();
+                foreach (var t in transportations)
+                {
+                    if (t.TypedCode == "TransportOther")
+                    {
+                        beneficiaryToReturn.Transportations.Add(t.Other);
+                    }
+                    else
+                    {
+                        var transportOptionName = db.LookupValues.Where(l => l.ValueCode == t.TypedCode).Select(l => l.EnName).FirstOrDefault();
+                        beneficiaryToReturn.Transportations.Add(transportOptionName);
+                    }
+                }
+                var livelihoodEmpNeeds = db.LivelihoodEmpNeeds.Where(b => b.BeneficiaryID == beneficiaryInDb.BeneficiaryID)
+                   .Select(t => new { t.NeedCode }).ToList();
+                foreach (var t in livelihoodEmpNeeds)
+                {
+                    var needName = db.LookupValues.Where(l => l.ValueCode == t.NeedCode).Select(l => l.EnName).FirstOrDefault();
+                    beneficiaryToReturn.LivelihoodEmpNeeds.Add(needName);
+                }
+
+                var needTools = db.NeedTools.Where(b => b.BeneficiaryID == beneficiaryInDb.BeneficiaryID)
+                   .Select(t => new { t.ToolCode, t.Other }).ToList();
+                foreach (var t in needTools)
+                {
+                    if (t.ToolCode == "ToolsOther")
+                    {
+                        beneficiaryToReturn.NeedTools.Add(t.Other);
+                    }
+                    else
+                    {
+                        var toolName = db.LookupValues.Where(l => l.ValueCode == t.ToolCode).Select(l => l.EnName).FirstOrDefault();
+                        beneficiaryToReturn.NeedTools.Add(toolName);
+                    }
+                }
+                var mainConcerns = db.MainConcerns.Where(b => b.BeneficiaryID == beneficiaryInDb.BeneficiaryID)
+                   .Select(t => new { t.ConcernCode, t.Other }).ToList();
+                foreach (var c in mainConcerns)
+                {
+                    if (c.ConcernCode == "WAY3MCOther")
+                    {
+                        beneficiaryToReturn.MainConcerns.Add(c.Other);
+                    }
+                    else
+                    {
+                        var concernName = db.LookupValues.Where(l => l.ValueCode == c.ConcernCode).Select(l => l.EnName).FirstOrDefault();
+                        beneficiaryToReturn.MainConcerns.Add(concernName);
+                    }
+                }
+                var hostCountrySchools = db.HostCountrySchools.Where(b => b.BeneficiaryID == beneficiaryInDb.BeneficiaryID)
+                   .Select(t => new { t.SchoolTypeCode }).ToList();
+                foreach (var s in hostCountrySchools)
+                {
+                    var schoolTypeName = db.LookupValues.Where(l => l.ValueCode == s.SchoolTypeCode).Select(l => l.EnName).FirstOrDefault();
+                    beneficiaryToReturn.HostCountrySchools.Add(schoolTypeName);
+                }
+                return Ok(beneficiaryToReturn);
+            }
+            return BadRequest("Beneficiary not found");
+        }
         // POST: api/Beneficiary
         [HttpPost]
         public bool Post([FromBody] BeneficiaryDto model)
@@ -564,8 +866,16 @@ namespace BSAFWebApi.Controllers
 
         // DELETE: api/ApiWithActions/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
+            var obj =  db.Beneficiaries.Find(id);
+            if(obj != null)
+            {
+                obj.IsActive = false;
+                db.SaveChanges();
+                return Ok();
+            }
+            return BadRequest("Beneficiary not found.");
         }
     }
 }

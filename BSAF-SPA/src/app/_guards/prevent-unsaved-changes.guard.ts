@@ -8,7 +8,7 @@ import { Observable } from 'rxjs';
 })
 export class PreventUnsavedChangesGuard implements CanDeactivate<BeneficiaryFormComponent> {
   canDeactivate(component: BeneficiaryFormComponent) {
-    if( component.beneficiaryForm.dirty){
+    if( component.beneficiaryService.beneficiaryForm.dirty && component.beneficiaryService.beneficiaryForm.invalid){
       return confirm('Are you sure you want to continue? Any unsaved changes  will be lost');
     }
     return true;
